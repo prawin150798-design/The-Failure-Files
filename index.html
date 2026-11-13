@@ -4,30 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101a22">
+<meta name="color-scheme" content="dark">
 <title>The Failure Files — Case 001</title>
 <style>
-:root{--bg:#101a22;--panel:#182630;--panel2:#20323e;--line:#344955;--ink:#e9f0ed;--muted:#9eb0b5;--cyan:#61d5d0;--amber:#f2b75b;--red:#ef7770;--green:#8bd5a4;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#263d49 0,#101a22 58%);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-header{padding:16px max(16px,calc((100vw - 1180px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#101a22dd;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
-.brand{font-weight:850;letter-spacing:.13em;font-size:13px}.brand span{color:var(--cyan)}.save{font:12px var(--mono);color:var(--green)}
-main{max-width:1180px;margin:auto;padding:22px 16px 50px}.eyebrow{font:11px var(--mono);letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
+:root{--bg:#101a22;--line:#344955;--ink:#e9f0ed;--muted:#9eb0b5;--cyan:#61d5d0;--amber:#f2b75b;--red:#ef7770;--green:#8bd5a4;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:70px}body{margin:0;background:#101a22 radial-gradient(ellipse at 50% -20%,#263d49 0,#101a22 58%) no-repeat;color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:max(16px,env(safe-area-inset-top)) max(16px,calc((100vw - 1180px)/2)) 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#101a22ee;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.brand{font-weight:850;letter-spacing:.13em;font-size:13px}.brand span{color:var(--cyan)}.save{font:12px var(--mono);color:var(--green)}.save.err{color:var(--red)}
+main{max-width:1180px;margin:auto;padding:22px 16px calc(50px + env(safe-area-inset-bottom))}.eyebrow{font:11px var(--mono);letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
 h1{font-size:clamp(27px,4vw,42px);line-height:1.08;margin:7px 0 8px;letter-spacing:-.04em}h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:0 0 8px;color:#dce8e5}
 .sub{color:var(--muted);max-width:760px;margin:0 0 20px}
-.grid{display:grid;grid-template-columns: minmax(0,1.25fr) minmax(280px,.75fr);gap:14px}.panel{background:linear-gradient(145deg,#1b2b35,#17252e);border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 12px 32px #0002}
-.panel + .panel{margin-top:14px}.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:14px}.panel{background:linear-gradient(145deg,#1b2b35,#17252e);border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 12px 32px #0002}
+.panel+.panel{margin-top:14px}.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .pill{font:11px var(--mono);border:1px solid var(--line);border-radius:99px;padding:4px 9px;color:var(--muted)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:#0f1b23;border:1px solid #2c414c;border-radius:10px;padding:10px}.stat small{display:block;color:var(--muted);font:10px var(--mono);letter-spacing:.08em}.stat b{font:22px var(--mono);display:block;margin-top:4px}.unit{font-size:11px;color:var(--muted)}
-.tabs{display:flex;gap:7px;overflow:auto;margin:18px 0 14px;padding-bottom:3px}.tab,button{border:1px solid var(--line);background:#20323e;color:var(--ink);border-radius:9px;padding:10px 13px;font:600 13px system-ui;cursor:pointer;white-space:nowrap}.tab.active{background:#244d52;border-color:#4ca8a4;color:#eafffc}button.primary{background:var(--cyan);border-color:var(--cyan);color:#102326}button.warn{border-color:#9c6e31;color:#ffd99d}button:disabled{opacity:.38;cursor:not-allowed}button:active{transform:translateY(1px)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.reading{display:flex;justify-content:space-between;border-bottom:1px solid #2c414c;padding:8px 0;color:var(--muted);font-size:13px}.reading b{font:13px var(--mono);color:var(--ink)}
+.tabs{display:flex;gap:7px;overflow:auto;margin:18px 0 14px;padding-bottom:3px}.tab,button{border:1px solid var(--line);background:#20323e;color:var(--ink);border-radius:9px;padding:10px 13px;font:600 13px system-ui;cursor:pointer;white-space:nowrap}.tab.active{background:#244d52;border-color:#4ca8a4;color:#eafffc}button.primary{background:var(--cyan);border-color:var(--cyan);color:#102326}button:disabled{opacity:.38;cursor:not-allowed}button:active{transform:translateY(1px)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.reading{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #2c414c;padding:8px 0;color:var(--muted);font-size:13px}.reading b{font:13px var(--mono);color:var(--ink);text-align:right}
 .note{border-left:3px solid var(--amber);padding:9px 12px;background:#2a2b25;border-radius:0 8px 8px 0;color:#e9d9b9;font-size:13px;margin:12px 0}
-.good{border-color:#3e805e;background:#1d342b;color:#c5f4d3}.bad{border-color:#8b4b48;background:#382422;color:#ffd0cb}
-.schematic{width:100%;background:#0c171e;border:1px solid #2e4652;border-radius:12px;padding:10px}.schematic svg{width:100%;height:auto;display:block}.part{cursor:pointer}.part rect,.part circle{fill:#1d303a;stroke:#70a5aa;stroke-width:2}.part:hover rect,.part:hover circle,.part.selected rect,.part.selected circle{stroke:var(--amber);stroke-width:3}.part text{fill:#d9e9e5;font:12px var(--mono);pointer-events:none}.pipe{stroke:#70a5aa;stroke-width:5;fill:none;stroke-linecap:round}.flowdot{fill:var(--cyan);animation:move 2s linear infinite}@keyframes move{to{transform:translateX(75px)}}
-.meter{height:9px;background:#0c171e;border-radius:10px;overflow:hidden;margin:6px 0 10px}.meter i{height:100%;display:block;background:var(--cyan);width:50%;transition:width .3s}.meter.hot i{background:var(--red)}
+.note.good{border-color:#3e805e;background:#1d342b;color:#c5f4d3}.note.bad{border-color:#8b4b48;background:#382422;color:#ffd0cb}
+.schematic{width:100%;background:#0c171e;border:1px solid #2e4652;border-radius:12px;padding:10px}.schematic svg{width:100%;height:auto;display:block}.part{cursor:pointer;outline:none}.part rect,.part circle{fill:#1d303a;stroke:#70a5aa;stroke-width:2}.part:hover rect,.part:hover circle,.part:focus rect,.part:focus circle,.part.selected rect,.part.selected circle{stroke:var(--amber);stroke-width:3}.part text{fill:#d9e9e5;font:12px var(--mono);pointer-events:none}.pipe{stroke:#70a5aa;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}.flowdot{fill:var(--cyan);animation:move 2s linear infinite}@keyframes move{to{transform:translateX(75px)}}
+.meter{height:9px;background:#0c171e;border-radius:10px;overflow:hidden;margin:6px 0 10px}.meter i{height:100%;display:block;background:var(--cyan);width:0;transition:width .3s}.meter.hot i{background:var(--red)}
 .case-list{display:grid;gap:8px}.case-item{padding:11px;border:1px solid var(--line);border-radius:10px;background:#14232c}.case-item b{display:block}.case-item small{color:var(--muted)}
 .hidden{display:none!important}.log{font:12px/1.6 var(--mono);color:#b7c9c8;max-height:170px;overflow:auto}.log div{border-bottom:1px dashed #2c414c;padding:5px 0}
 input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 3px}
 .footer{margin-top:18px;color:var(--muted);font-size:11px;text-align:center}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}header{padding:12px 14px}.panel{padding:14px}main{padding:17px 12px 36px}.tabs{margin-top:14px}.actions button{flex:1 1 145px}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.panel{padding:14px}main{padding:17px 12px calc(36px + env(safe-area-inset-bottom))}.tabs{margin-top:14px}.actions button{flex:1 1 145px}}
 </style>
 </head>
 <body>
@@ -39,7 +40,7 @@ input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-s
 <div class="stats">
  <div class="stat"><small>ENGINE TEMP</small><b id="temp">78.0°</b><span class="unit">°C coolant</span></div>
  <div class="stat"><small>COOLANT FLOW</small><b id="flow">—</b><span class="unit">L/min</span></div>
- <div class="stat"><small>ENGINE SPEED</small><b id="rpm">1500</b><span class="unit">RPM</span></div>
+ <div class="stat"><small>ENGINE SPEED</small><b id="rpm">0</b><span class="unit">RPM</span></div>
  <div class="stat"><small>LOAD</small><b id="loadVal">0%</b><span class="unit">rated output</span></div>
 </div>
 <div class="tabs">
@@ -67,12 +68,11 @@ input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-s
   <div class="topline"><h2>Cooling system schematic</h2><span class="pill">SELECT A COMPONENT</span></div>
   <div class="schematic">
   <svg viewBox="0 0 620 300" role="img" aria-label="Simplified generator cooling system diagram">
-   <path class="pipe" d="M120 145 H215 M315 145 H390 V75 H470 M470 175 H390 V205 H315 M215 205 H120 V145"/>
-   <path class="pipe" d="M470 75 V175"/>
-   <g class="part" onclick="inspectPart('engine')" id="p-engine"><rect x="20" y="105" width="100" height="80" rx="9"/><text x="70" y="139" text-anchor="middle">DIESEL</text><text x="70" y="156" text-anchor="middle">ENGINE</text></g>
-   <g class="part" onclick="inspectPart('pump')" id="p-pump"><circle cx="265" cy="145" r="48"/><text x="265" y="141" text-anchor="middle">WATER</text><text x="265" y="157" text-anchor="middle">PUMP</text></g>
-   <g class="part" onclick="inspectPart('radiator')" id="p-radiator"><rect x="470" y="65" width="115" height="120" rx="8"/><path d="M485 80 V170 M500 80 V170 M515 80 V170 M530 80 V170 M545 80 V170 M560 80 V170" stroke="#70a5aa" stroke-width="2"/><text x="527" y="205" text-anchor="middle">RADIATOR</text></g>
-   <g class="part" onclick="inspectPart('thermostat')" id="p-thermostat"><rect x="360" y="185" width="90" height="42" rx="7"/><text x="405" y="210" text-anchor="middle">THERMOSTAT</text></g>
+   <path class="pipe" d="M120 145 H217 M313 145 H390 V75 H470 M470 175 H390 V205 H70 V185"/>
+   <g class="part" tabindex="0" role="button" data-part="engine" id="p-engine"><rect x="20" y="105" width="100" height="80" rx="9"/><text x="70" y="139" text-anchor="middle">DIESEL</text><text x="70" y="156" text-anchor="middle">ENGINE</text></g>
+   <g class="part" tabindex="0" role="button" data-part="pump" id="p-pump"><circle cx="265" cy="145" r="48"/><text x="265" y="141" text-anchor="middle">WATER</text><text x="265" y="157" text-anchor="middle">PUMP</text></g>
+   <g class="part" tabindex="0" role="button" data-part="radiator" id="p-radiator"><rect x="470" y="65" width="115" height="120" rx="8"/><path d="M485 80 V170 M500 80 V170 M515 80 V170 M530 80 V170 M545 80 V170 M560 80 V170" stroke="#70a5aa" stroke-width="2"/><text x="527" y="205" text-anchor="middle">RADIATOR</text></g>
+   <g class="part" tabindex="0" role="button" data-part="thermostat" id="p-thermostat"><rect x="360" y="185" width="90" height="42" rx="7"/><text x="405" y="210" text-anchor="middle">THERMOSTAT</text></g>
    <circle class="flowdot" cx="155" cy="145" r="5"/><text x="18" y="275" fill="#91aaa9" font-size="11">COOLANT CIRCUIT · SIMPLIFIED FLOW PATH</text>
   </svg>
   </div>
@@ -81,17 +81,17 @@ input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-s
  </div>
  <div id="test" class="panel view hidden">
   <div class="topline"><h2>Live diagnostic bench</h2><span class="pill">SIMULATION</span></div>
-  <p class="sub">Set the generator load and run it. Time is compressed: each simulation second represents roughly one minute of operation.</p>
-  <label for="load">Generator load: <b id="loadRead">0%</b></label><input id="load" type="range" min="0" max="100" step="5" value="0" oninput="setLoad(this.value)">
+  <p class="sub">Set the generator load and run it. Time is compressed: each simulation second represents roughly one minute of operation. Flow and thermal tests need the generator running; high load gives the clearest evidence.</p>
+  <label for="load">Generator load: <b id="loadRead">0%</b></label><input id="load" type="range" min="0" max="100" step="5" value="0">
   <div class="actions"><button class="primary" id="runBtn" onclick="toggleRun()">Start generator</button><button onclick="runTest('flow')">Measure coolant flow</button><button onclick="runTest('pressure')">Pressure test</button><button onclick="runTest('surface')">Thermal scan</button></div>
-  <div class="reading"><span>Coolant inlet / outlet ΔT</span><b id="deltaT">—</b></div>
+  <div class="reading"><span>Engine coolant outlet − inlet ΔT</span><b id="deltaT">—</b></div>
   <div class="reading"><span>Coolant pressure</span><b id="pressure">—</b></div>
   <div class="reading"><span>Radiator outlet temperature</span><b id="radTemp">—</b></div>
   <div class="reading"><span>Measured circulation</span><b id="flowRead">Not measured</b></div>
   <div class="note" id="testHint">Run a test to collect evidence. A good diagnosis compares readings under known operating conditions.</div>
  </div>
  <div id="repair" class="panel view hidden">
-  <div class="topline"><h2>Repair bay</h2><span class="pill">PARTS & VALIDATION</span></div>
+  <div class="topline"><h2>Repair bay</h2><span class="pill">PARTS &amp; VALIDATION</span></div>
   <p class="sub">Choose a repair only when the evidence supports it. Then validate the generator under sustained load.</p>
   <div class="case-list">
    <div class="case-item"><b>Replace water-pump impeller</b><small>Restores coolant circulation if the impeller is damaged or slipping.</small><div class="actions"><button onclick="repair('pump')">Install replacement impeller</button></div></div>
@@ -99,27 +99,23 @@ input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-s
    <div class="case-item"><b>Replace thermostat</b><small>Controls coolant routing during warm-up and normal operation.</small><div class="actions"><button onclick="repair('thermostat')">Replace thermostat again</button></div></div>
   </div>
   <div id="repairResult" class="note">No repair performed yet.</div>
-  <div class="actions"><button class="primary" onclick="validateRepair()">Run 20-minute validation</button></div>
+  <div class="actions"><button class="primary" id="valBtn" onclick="validateRepair()">Run 20-minute validation</button></div>
  </div>
  <div id="archive" class="panel view hidden">
   <div class="topline"><h2>Inventor's archive</h2><span class="pill" id="archiveStatus">LOCKED</span></div>
-  <div id="archiveContent"><p class="sub">A fragment of the archive will be recovered when the generator case is solved and the repair is validated.</p></div>
+  <div id="archiveContent"></div>
  </div>
 </section>
 <aside>
  <div class="panel">
   <div class="topline"><h2>Investigation notebook</h2><span class="pill">LIVE</span></div>
-  <div id="evidence">
-   <div class="reading"><span>Thermostat history</span><b>Replaced</b></div>
-   <div class="reading"><span>Visible coolant leak</span><b>None</b></div>
-   <div class="reading"><span>Idle operation</span><b>Normal</b></div>
-  </div>
-  <h3 style="margin-top:17px">Evidence log</h3><div class="log" id="log"><div>23:08 // Case file received.</div><div>23:08 // Previous thermostat replacement recorded.</div></div>
+  <div id="evidence"></div>
+  <h3 style="margin-top:17px">Evidence log</h3><div class="log" id="log"></div>
  </div>
  <div class="panel">
   <div class="topline"><h2>System condition</h2><span class="pill" id="status">STABLE</span></div>
-  <div class="reading"><span>Cooling capacity</span><b id="capacity">—</b></div><div class="meter"><i id="capacityBar" style="width:50%"></i></div>
-  <div class="reading"><span>Thermal stress</span><b id="stress">LOW</b></div><div class="meter" id="stressMeter"><i id="stressBar" style="width:8%"></i></div>
+  <div class="reading"><span>Cooling capacity</span><b id="capacity">—</b></div><div class="meter"><i id="capacityBar"></i></div>
+  <div class="reading"><span>Thermal stress</span><b id="stress">LOW</b></div><div class="meter" id="stressMeter"><i id="stressBar"></i></div>
   <p class="sub" style="font-size:12px;margin:8px 0 0">Simulation values are simplified but causally linked: load creates heat; coolant circulation and radiator effectiveness remove it.</p>
  </div>
  <div class="panel">
@@ -127,83 +123,163 @@ input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-s
  </div>
 </aside>
 </div>
-<div class="footer">THE FAILURE FILES · Prototype build 0.1 · Progress is saved in this browser on this device.</div>
+<div class="footer">THE FAILURE FILES · Prototype build 0.2 · Progress is saved in this browser on this device.</div>
 </main>
 <script>
-const initial={temp:78,load:0,running:false,seconds:0,flowTest:false,pressureTest:false,scanTest:false,flowMeasured:false,repair:null,validated:false,solved:false,log:["23:08 // Case file received.","23:08 // Previous thermostat replacement recorded."],evidence:[]};
+const KEY='failureFiles001',$=id=>document.getElementById(id);
+const fresh=()=>({temp:78,load:0,running:false,shutdown:false,validating:false,flowTest:false,pressureTest:false,scanTest:false,flowMeasured:false,flowVal:0,dtShown:false,dt:0,radShown:false,radOut:0,repair:null,wrong:0,guess:0,validated:false,solved:false,msg:null,hint:null,log:[],evidence:[]});
+let saveOK=true,valIv=null;
+function loadSave(){try{return{...fresh(),...JSON.parse(localStorage.getItem(KEY)||'{}'),running:false,validating:false,shutdown:false}}catch(e){return fresh()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(s));saveOK=true}catch(e){saveOK=false}}
 let s=loadSave();
-const $=id=>document.getElementById(id);
-function loadSave(){try{return {...initial,...JSON.parse(localStorage.getItem('failureFiles001')||'{}')}}catch(e){return {...initial}}}
-function save(){localStorage.setItem('failureFiles001',JSON.stringify(s));$('saveState').textContent='● CASE FILE SAVED LOCALLY';}
-function log(msg){s.log.unshift(new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' // '+msg);s.log=s.log.slice(0,30);renderLog();save()}
-function renderLog(){$('log').innerHTML=s.log.map(x=>'<div>'+x.replaceAll('<','&lt;')+'</div>').join('')}
-function go(tab){document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));$(tab).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));}
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function log(m){s.log.unshift(new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' // '+m);s.log=s.log.slice(0,30)}
+function setMsg(t,c){s.msg={t,c:c||''}}
+function setHint(t){s.hint=t}
+function addEvidence(t){if(!s.evidence.includes(t))s.evidence.push(t)}
+
+/* Simulation: heat from load vs. cooling that scales with coolant flow */
+const flow=()=>s.repair==='pump'?112:43;
+const heat=()=>.3+1.25*s.load/100;
+const capacity=()=>Math.round(flow()/112*100);
+const engineDT=()=>Math.round(heat()*6/(flow()/112));
+function stepSim(){
+ s.temp+=heat()-Math.max(0,s.temp-78)*.083*(flow()/112);
+ if(s.temp>=112){s.temp=112;s.running=false;s.shutdown=true;log('Automatic shutdown: coolant temperature reached 112°C.')}
+}
+function tick(){
+ if(s.validating)return;
+ if(s.running)stepSim();else if(s.temp>78)s.temp=Math.max(78,s.temp-.8);
+ save();render();
+}
+
+function go(tab){document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));$(tab).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab))}
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab)));
-function setLoad(v){s.load=+v;$('loadRead').textContent=v+'%';$('loadVal').textContent=v+'%';save();render()}
-function inspectPart(part){
- document.querySelectorAll('.part').forEach(x=>x.classList.remove('selected'));$('p-'+part).classList.add('selected');
- const data={
+$('load').addEventListener('input',e=>{if(s.validating)return;s.load=+e.target.value;save();render()});
+
+const PARTS={
  engine:['Diesel engine','Combustion heat enters the coolant through water jackets. Higher electrical load means more fuel burned and more waste heat.'],
  pump:['Water pump','A belt-driven impeller circulates coolant. A damaged impeller can spin at normal speed while moving too little coolant.'],
  radiator:['Radiator','Transfers heat from coolant to ambient air. A restriction or blocked core reduces heat rejection.'],
  thermostat:['Thermostat','Regulates coolant flow during warm-up. It was replaced recently, but should still be verified rather than assumed perfect.']
- }[part];
- $('partInfo').innerHTML='<b>'+data[0]+'</b><small>'+data[1]+'</small>';
- log('Inspected '+data[0].toLowerCase()+'.');
+};
+function inspectPart(p){
+ document.querySelectorAll('.part').forEach(x=>x.classList.remove('selected'));$('p-'+p).classList.add('selected');
+ $('partInfo').innerHTML='<b>'+PARTS[p][0]+'</b><small>'+PARTS[p][1]+'</small>';
+ log('Inspected '+PARTS[p][0].toLowerCase()+'.');save();render();
 }
-function flow(){return s.repair==='pump'?112:s.repair==='radiator'?67:43}
-function capacity(){let f=flow()/112;let rad=s.repair==='radiator'?1:.95;return Math.round(Math.min(1,f*rad)*100)}
-function updateSim(){
- if(s.running){
-  const heat=s.load/100*1.65;
-  const cooling=Math.max(0,(s.temp-28))*((flow()/112)*.027);
-  s.temp+=heat-cooling;
-  s.seconds++;
-  if(s.temp>=112){s.temp=112;s.running=false;log('Automatic shutdown: coolant temperature reached 112°C.');}
- }
- render();save();
+document.querySelectorAll('.part').forEach(g=>{g.addEventListener('click',()=>inspectPart(g.dataset.part));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspectPart(g.dataset.part)}})});
+
+function toggleRun(){
+ if(s.validating)return;
+ if(!s.running&&s.temp>100){setHint('Engine is still too hot to restart. Wait for it to cool below 100°C.');render();return}
+ s.running=!s.running;s.shutdown=false;
+ log(s.running?'Generator started at '+s.load+'% load.':'Generator stopped.');
+ save();render();
 }
-let tick=null;
-function toggleRun(){s.running=!s.running;if(s.running){tick=setInterval(updateSim,1000);log('Generator started at '+s.load+'% load.')}else{clearInterval(tick);log('Generator stopped.')}render()}
+
 function runTest(kind){
- if(kind==='flow'){s.flowTest=true;s.flowMeasured=true;$('flowRead').textContent=flow()+' L/min';$('flow').textContent=flow();addEvidence('Coolant flow: '+flow()+' L/min (specification: 95–120 L/min).');$('testHint').textContent=flow()<70?'Flow is below specification. This points toward a circulation problem, but confirm the rest of the system.':'Flow is within the expected range.';log('Flow test: '+flow()+' L/min.');}
- if(kind==='pressure'){s.pressureTest=true;$('pressure').textContent='1.1 bar';addEvidence('Static pressure: 1.1 bar; no pressure loss observed.');$('testHint').textContent='Pressure holds steady. A major external leak is unlikely; pressure alone does not prove good circulation.';log('Pressure test completed: stable at 1.1 bar.');}
- if(kind==='surface'){s.scanTest=true;$('radTemp').textContent='Cool inlet / warm outlet';$('deltaT').textContent='4°C';addEvidence('Thermal scan: small radiator temperature drop under load; much of the core remains relatively cool.');$('testHint').textContent='A small temperature drop plus low circulation suggests coolant is not moving enough heat through the radiator.';log('Thermal scan completed.');}
- render();save();
+ if(s.validating)return;
+ if(kind==='pressure'){
+  s.pressureTest=true;addEvidence('Static pressure: 1.1 bar; no pressure loss observed.');
+  setHint('Pressure holds steady. A major external leak is unlikely; pressure alone does not prove good circulation.');log('Pressure test completed: stable at 1.1 bar.');
+ }else{
+  if(!s.running){setHint('Start the generator first: this test needs the engine running.');render();return}
+  if(kind==='flow'){
+   s.flowTest=true;s.flowMeasured=true;s.flowVal=flow();
+   addEvidence('Coolant flow: '+flow()+' L/min (specification: 95–120 L/min).');
+   setHint(flow()<70?'Flow is far below specification. This points toward a circulation problem, but confirm the rest of the system.':'Flow is within the expected range.');
+   log('Flow test: '+flow()+' L/min.');
+  }else{
+   s.scanTest=true;s.dtShown=true;s.dt=engineDT();s.radShown=true;s.radOut=Math.round(s.temp-s.dt);
+   addEvidence('Thermal scan at '+s.load+'% load: engine ΔT '+s.dt+'°C; radiator core evenly warm, no cold or blocked sections.');
+   setHint(s.dt>14?'Engine ΔT is large and the radiator core is evenly warm. The radiator is passing heat; the coolant is moving too slowly to carry it. Check circulation.':'Engine ΔT is in the normal range for this load (about 8–10°C at 85%).');
+   log('Thermal scan completed: ΔT '+s.dt+'°C.');
+  }
+ }
+ save();render();
 }
-function addEvidence(t){if(!s.evidence.includes(t))s.evidence.push(t);$('evidence').innerHTML='<div class="reading"><span>Thermostat history</span><b>Replaced</b></div><div class="reading"><span>Visible coolant leak</span><b>None</b></div>'+s.evidence.map(x=>'<div class="reading"><span>'+x+'</span><b>Logged</b></div>').join('');}
+
 function repair(part){
- if(s.running){$('repairResult').textContent='Stop the generator before servicing it.';return}
- s.repair=part;
- if(part==='pump'){$('repairResult').className='note good';$('repairResult').textContent='Impeller replaced. The damaged impeller had eroded vanes and was moving insufficient coolant.';log('Installed replacement water-pump impeller.')}
- else{$('repairResult').className='note bad';$('repairResult').textContent=part==='radiator'?'The radiator was not the primary fault. The flush does not restore adequate circulation through the damaged pump.':'The thermostat was already serviceable. Replacing it again does not address the low coolant flow.';log('Performed '+part+' repair. Root cause remains unresolved.')}
- render();save();
+ if(s.validating)return;
+ if(s.running){setMsg('Stop the generator before servicing it.');render();return}
+ if(!s.flowTest)s.guess++;
+ s.repair=part;s.validated=false;s.solved=false;
+ s.flowMeasured=false;s.dtShown=false;s.radShown=false;
+ if(part==='pump'){setMsg('Impeller replaced. The damaged impeller had eroded vanes and was moving insufficient coolant.','good');log('Installed replacement water-pump impeller.')}
+ else{
+  s.wrong++;
+  setMsg(part==='radiator'?'The radiator was not the primary fault. Flushing it does not restore circulation through the damaged pump.':'The thermostat was already serviceable. Replacing it again does not address the low coolant flow.','bad');
+  log('Performed '+part+' repair. Root cause remains unresolved.');
+ }
+ save();render();
 }
+
 function validateRepair(){
- if(s.running){$('repairResult').textContent='Stop the generator before validation.';return}
- if(s.repair!=='pump'){$('repairResult').className='note bad';$('repairResult').textContent='Validation failed: temperature still rises excessively under load. Revisit the circulation evidence.';log('Validation failed under sustained load.');return}
- s.temp=78;s.load=85;s.running=true;render();let n=0;const iv=setInterval(()=>{s.temp+=1.65-Math.max(0,s.temp-28)*.027*(flow()/112);n++;render();if(n>=20){clearInterval(iv);s.running=false;s.validated=s.temp<100;s.solved=s.validated;log(s.validated?'Validation passed: stable temperature at 85% load.':'Validation failed.');if(s.validated){$('repairResult').className='note good';$('repairResult').textContent='Validation passed. Coolant temperature stabilised at '+s.temp.toFixed(1)+'°C under 85% load. Root cause confirmed: eroded water-pump impeller.';unlockArchive()}save();render()}},300);
+ if(s.validating)return;
+ if(s.running){setMsg('Stop the generator before validation.');render();return}
+ if(s.repair!=='pump'){setMsg('Validation failed: temperature still rises excessively under load. Revisit the circulation evidence.','bad');log('Validation failed under sustained load.');save();render();return}
+ s.temp=78;s.load=85;s.validating=true;s.shutdown=false;let n=0;
  log('Started accelerated 20-minute validation at 85% load.');
+ valIv=setInterval(()=>{
+  stepSim();n++;
+  if(n>=20||s.shutdown){
+   clearInterval(valIv);s.validating=false;s.validated=s.temp<100&&!s.shutdown;s.solved=s.validated;
+   if(s.validated){setMsg('Validation passed. Coolant temperature stabilised at '+s.temp.toFixed(1)+'°C under 85% load. Root cause confirmed: eroded water-pump impeller.','good');log('Validation passed: stable temperature at 85% load.')}
+   else{setMsg('Validation failed.','bad');log('Validation failed.')}
+  }
+  save();render();
+ },300);
+ render();
 }
-function unlockArchive(){
- $('archiveStatus').textContent='FRAGMENT RECOVERED';
- $('archiveContent').innerHTML='<div class="case-item"><b>ARCHIVE FRAGMENT 01 // The impeller that should not exist</b><small>Recovered from a stamped service plate beneath the pump housing.</small></div><div class="note good">“Flow is not merely volume. It is the shape of the path, the angle of attack, and what the fluid remembers after every turn.”</div><p>A faded serial mark matches a set of drawings signed only with the initials <b>E.V.</b> The impeller geometry is unlike the manufacturer's standard design. Someone modified this generator decades ago — and deliberately left a trace.</p><div class="case-item"><b>New lead unlocked</b><small>Find the engineer behind the E.V. drawings. The next case file is sealed.</small></div>';
- log('Recovered Archive Fragment 01: E.V. impeller design.');
+
+function rating(){
+ if(!s.solved)return '—';
+ const tests=+s.flowTest+ +s.pressureTest+ +s.scanTest;
+ const sc=100-s.wrong*15-s.guess*10-(3-tests)*8;
+ return sc>=90?'A':sc>=75?'B':sc>=60?'C':'D';
 }
+
+function resetCase(){
+ clearInterval(valIv);s=fresh();
+ log('Case file received.');
+ document.querySelectorAll('.part').forEach(x=>x.classList.remove('selected'));
+ $('partInfo').innerHTML='<b>Choose a component</b><small>Select the engine, water pump, radiator or thermostat to inspect its role and available evidence.</small>';
+ setHint('Run a test to collect evidence. A good diagnosis compares readings under known operating conditions.');
+ save();render();go('brief');
+}
+
 function render(){
- $('temp').textContent=s.temp.toFixed(1)+'°';$('rpm').textContent='1500';$('loadVal').textContent=s.load+'%';$('load').value=s.load;$('loadRead').textContent=s.load+'%';
- $('flow').textContent=s.flowTest?flow():'—';$('flowRead').textContent=s.flowTest?flow()+' L/min':'Not measured';
- $('capacity').textContent=capacity()+'%';$('capacityBar').style.width=capacity()+'%';
- let stress=Math.max(0,Math.min(100,(s.temp-65)*2.1));$('stressBar').style.width=stress+'%';$('stressMeter').classList.toggle('hot',stress>55);$('stress').textContent=stress>65?'HIGH':stress>30?'RISING':'LOW';
- $('status').textContent=s.running?'RUNNING':s.temp>=110?'OVERHEAT':'STABLE';$('status').style.color=s.temp>=110?'var(--red)':s.running?'var(--amber)':'var(--green)';
- $('testsDone').textContent=[s.flowTest,s.pressureTest,s.scanTest].filter(Boolean).length+' / 3';
- $('rootCause').textContent=s.solved?'Pump impeller':s.flowTest&&flow()<70?'Likely low circulation':'Unconfirmed';
- $('rating').textContent=s.solved?(s.flowTest&&s.pressureTest&&s.scanTest?'A · Thorough':'B · Solved'):'—';
- $('runBtn').textContent=s.running?'Stop generator':'Start generator';
- if(s.solved)unlockArchive();
+ const hot=s.temp>=100;
+ $('temp').textContent=s.temp.toFixed(1)+'°';
+ $('flow').textContent=s.flowMeasured?s.flowVal:'—';
+ $('rpm').textContent=(s.running||s.validating)?1500:0;
+ $('loadVal').textContent=s.load+'%';$('loadRead').textContent=s.load+'%';$('load').value=s.load;$('load').disabled=s.validating;
+ $('runBtn').textContent=s.running?'Stop generator':'Start generator';$('runBtn').disabled=s.validating;$('valBtn').disabled=s.validating;
+ $('deltaT').textContent=s.dtShown?s.dt+'°C':'—';
+ $('pressure').textContent=s.pressureTest?'1.1 bar':'—';
+ $('radTemp').textContent=s.radShown?s.radOut+'°C':'—';
+ $('flowRead').textContent=s.flowMeasured?s.flowVal+' L/min':'Not measured';
+ $('testHint').textContent=s.hint||'Run a test to collect evidence. A good diagnosis compares readings under known operating conditions.';
+ const m=s.msg||{t:'No repair performed yet.',c:''};$('repairResult').className='note '+m.c;$('repairResult').textContent=m.t;
+ $('capacity').textContent=s.flowMeasured?capacity()+'%':'—';$('capacityBar').style.width=s.flowMeasured?capacity()+'%':'0';
+ $('stress').textContent=s.temp<90?'LOW':s.temp<102?'ELEVATED':'CRITICAL';
+ $('stressBar').style.width=Math.max(4,Math.min(100,(s.temp-70)/42*100))+'%';$('stressMeter').classList.toggle('hot',hot);
+ $('status').textContent=s.validating?'VALIDATING':s.shutdown?'SHUTDOWN':s.running?'RUNNING':'STABLE';
+ $('testsDone').textContent=(+s.flowTest+ +s.pressureTest+ +s.scanTest)+' / 3';
+ $('rootCause').textContent=s.solved?'Eroded pump impeller':'Unconfirmed';
+ $('rating').textContent=rating();
+ $('evidence').innerHTML='<div class="reading"><span>Thermostat history</span><b>Replaced</b></div><div class="reading"><span>Visible coolant leak</span><b>None</b></div><div class="reading"><span>Idle operation</span><b>Normal</b></div>'+s.evidence.map(x=>'<div class="reading"><span>'+esc(x)+'</span><b>Logged</b></div>').join('');
+ $('log').innerHTML=s.log.map(x=>'<div>'+esc(x)+'</div>').join('');
+ $('archiveStatus').textContent=s.solved?'FRAGMENT RECOVERED':'LOCKED';
+ $('archiveContent').innerHTML=s.solved
+  ?'<div class="case-item"><b>ARCHIVE FRAGMENT 01 // The impeller that should not exist</b><small>The recovered impeller carried no manufacturer mark, yet its vane geometry matched a pump design that was never put into production. Someone built it by hand, and then it failed quietly, one eroded vane at a time. More fragments will surface in the next case.</small></div>'
+  :'<p class="sub">A fragment of the archive will be recovered when the generator case is solved and the repair is validated.</p>';
+ const sv=$('saveState');sv.textContent=saveOK?'● CASE FILE SAVED LOCALLY':'● NOT SAVED (STORAGE BLOCKED)';sv.classList.toggle('err',!saveOK);
 }
-function resetCase(){if(!confirm('Reset this case and erase its local progress?'))return;localStorage.removeItem('failureFiles001');s={...initial,log:[...initial.log],evidence:[]};clearInterval(tick);$('evidence').innerHTML='<div class="reading"><span>Thermostat history</span><b>Replaced</b></div><div class="reading"><span>Visible coolant leak</span><b>None</b></div><div class="reading"><span>Idle operation</span><b>Normal</b></div>';$('repairResult').textContent='No repair performed yet.';$('archiveStatus').textContent='LOCKED';$('archiveContent').innerHTML='<p class="sub">A fragment of the archive will be recovered when the generator case is solved and the repair is validated.</p>';go('brief');render();renderLog();save()}
-renderLog();render();
-if(s.running){s.running=false;save()}
+
+if(!s.log.length){log('Previous thermostat replacement recorded.');log('Case file received.')}
+save();render();setInterval(tick,1000);
 </script>
-</body></html>
+</body>
+</html>
