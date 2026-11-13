@@ -381,5 +381,357 @@ ${isD(cur)?`<div class="note good">${c.arch}</div>`:''}</div>`}
 R();
 })();
 </script>
+
+<script src="machine-database.js"></script>
+<script src="fault-engine.js"></script>
+<script src="simulation-engine.js"></script>
+<script src="diagnostic-engine.js"></script>
+<script src="difficulty-engine.js"></script>
+<script src="acceptance-engine.js"></script>
+<script src="case-generator.js"></script>
+<script src="progression-engine.js"></script>
+<script>
+(()=>{
+  const EK = 'failureFilesEndless_v1';
+  let EState;
+  try {
+    EState = {
+      history: [],
+      fingerprints: [],
+      endlessXp: 0,
+      selectedDifficulty: 'adaptive',
+      activeCase: null,
+      session: null,
+      loreUnlocked: [],
+      ...JSON.parse(localStorage.getItem(EK) || '{}')
+    };
+  } catch (e) {
+    EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
+  }
+
+  const saveEndless = () => {
+    try { localStorage.setItem(EK, JSON.stringify(EState)); } catch (e) {}
+  };
+
+  const campaignDoneCount = () => {
+    let count = 0;
+    try {
+      if (JSON.parse(localStorage.getItem('failureFiles001') || '{}').solved) count++;
+      const c2 = JSON.parse(localStorage.getItem('failureFiles002') || '{}');
+      if (Array.isArray(c2.done)) count += c2.done.length;
+    } catch (e) {}
+    return count;
+  };
+
+  const getTotalXp = () => {
+    let baseXp = 0;
+    try {
+      if (JSON.parse(localStorage.getItem('failureFiles001') || '{}').solved) baseXp += 100;
+      const c2 = JSON.parse(localStorage.getItem('failureFiles002') || '{}');
+      if (Array.isArray(c2.done)) {
+        const xpMap = { 2: 150, 3: 150, 4: 150, 5: 300 };
+        baseXp += c2.done.reduce((a, id) => a + (xpMap[id] || 0), 0);
+      }
+    } catch (e) {}
+    return baseXp + (EState.endlessXp || 0);
+  };
+
+  // Inject Endless Mode tab into top bar & render panel
+  const bar = document.getElementById('bar');
+  const main = document.querySelector('main');
+  const endlessPanel = document.createElement('div');
+  endlessPanel.id = 'endlessView';
+  endlessPanel.className = 'hidden';
+  main.insertBefore(endlessPanel, document.querySelector('.footer'));
+
+  let endlessActive = false;
+
+  function renderEndless() {
+    if (!bar) return;
+    const unlocked = campaignDoneCount() >= 5;
+    let btn = document.getElementById('endlessTabBtn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'endlessTabBtn';
+      btn.className = 'tab';
+      btn.onclick = () => {
+        endlessActive = true;
+        document.querySelectorAll('#bar .tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.stats,.tabs,.grid,#camp').forEach(el => el.classList.add('hidden'));
+        endlessPanel.classList.remove('hidden');
+        renderEndlessContent();
+      };
+      bar.appendChild(btn);
+    }
+    btn.disabled = !unlocked;
+    btn.textContent = unlocked ? '∞ Endless Investigation Mode' : `∞ Endless Mode (${campaignDoneCount()}/5 Campaign)`;
+
+    // Hook existing bar buttons to exit endless mode cleanly
+    bar.querySelectorAll('button:not(#endlessTabBtn)').forEach(b => {
+      if (!b.dataset.hooked) {
+        b.dataset.hooked = '1';
+        b.addEventListener('click', () => {
+          endlessActive = false;
+          endlessPanel.classList.add('hidden');
+        });
+      }
+    });
+
+    if (endlessActive) renderEndlessContent();
+  }
+
+  function startNewEndlessCase(customSeed) {
+    const rank = window.FF_PROGRESSION.computePlayerRank(getTotalXp());
+    const diff = EState.selectedDifficulty === 'adaptive'
+      ? window.FF_DIFFICULTY.computeAdaptiveTier(EState.history)
+      : EState.selectedDifficulty;
+
+    const c = window.FF_GENERATOR.generateCase({
+      seed: customSeed || undefined,
+      difficulty: diff,
+      playerRank: rank.level,
+      recentFingerprints: EState.fingerprints.slice(-15)
+    });
+
+    EState.activeCase = c;
+    EState.session = {
+      load: c.operatingConditions.defaultLoad,
+      duration: c.operatingConditions.defaultDuration,
+      inspected: {},
+      testsRun: [],
+      repairsApplied: [],
+      wrongRepairs: 0,
+      acceptance: null,
+      debrief: null
+    };
+    EState.fingerprints.push(c.fingerprint);
+    saveEndless();
+    renderEndlessContent();
+  }
+
+  window.ffEndless = {
+    setDiff(d) { EState.selectedDifficulty = d; saveEndless(); renderEndlessContent(); },
+    newCase() { startNewEndlessCase(); },
+    replaySeed() {
+      const s = prompt('Enter case seed (e.g. FF-9A2B1C):');
+      if (s && s.trim()) startNewEndlessCase(s.trim().toUpperCase());
+    },
+    setLoad(v) { if (EState.session) { EState.session.load = +v; EState.session.acceptance = null; saveEndless(); renderEndlessContent(); } },
+    setDur(v) { if (EState.session) { EState.session.duration = +v; EState.session.acceptance = null; saveEndless(); renderEndlessContent(); } },
+    inspect(compKey) {
+      if (!EState.session) return;
+      EState.session.inspected[compKey] = true;
+      saveEndless();
+      renderEndlessContent();
+    },
+    runTool(toolId) {
+      const c = EState.activeCase, s = EState.session;
+      if (!c || !s || s.debrief) return;
+      if (s.testsRun.length >= c.diagnosticBudget) {
+        alert('Diagnostic budget exhausted for this case. Proceed to repair or review collected evidence.');
+        return;
+      }
+      const res = window.FF_DIAG.runDiagnosticTool(c, toolId, { load: s.load, duration: s.duration }, s.repairsApplied);
+      s.testsRun.push({ ...res, load: s.load, duration: s.duration });
+      saveEndless();
+      renderEndlessContent();
+    },
+    applyRepair(repId) {
+      const c = EState.activeCase, s = EState.session;
+      if (!c || !s || s.debrief) return;
+      if (!s.repairsApplied.includes(repId)) {
+        s.repairsApplied.push(repId);
+        const repObj = c.repairOptions.find(r => r.id === repId);
+        if (!repObj || (!repObj.fixes?.includes(c.primaryFaultId) && !repObj.fixesSecondary)) {
+          s.wrongRepairs++;
+        }
+      }
+      s.acceptance = null;
+      saveEndless();
+      renderEndlessContent();
+    },
+    runAcceptance() {
+      const c = EState.activeCase, s = EState.session;
+      if (!c || !s) return;
+      const acc = window.FF_ACCEPTANCE.runAcceptanceSuite(c, s.repairsApplied);
+      s.acceptance = acc;
+      if (acc.passed && !s.debrief) {
+        const debrief = window.FF_PROGRESSION.buildDebrief(c, s, acc);
+        s.debrief = debrief;
+        EState.endlessXp = (EState.endlessXp || 0) + debrief.earnedXp;
+        EState.history.push({
+          seed: c.seed,
+          title: c.title,
+          difficulty: c.difficulty,
+          solved: true,
+          efficiencyScore: debrief.efficiencyScore,
+          earnedXp: debrief.earnedXp,
+          date: new Date().toLocaleDateString()
+        });
+        const lorePool = window.FF_DB.ARCHIVE_LORE_POOL;
+        if (EState.loreUnlocked.length < lorePool.length) {
+          EState.loreUnlocked.push(lorePool[EState.loreUnlocked.length]);
+        }
+      }
+      saveEndless();
+      renderEndlessContent();
+    }
+  };
+
+  function renderEndlessContent() {
+    const totalXp = getTotalXp();
+    const rank = window.FF_PROGRESSION.computePlayerRank(totalXp);
+    const c = EState.activeCase;
+    const s = EState.session;
+
+    let html = `
+      <div class="panel">
+        <div class="topline">
+          <h2>Endless Investigation Command</h2>
+          <span class="pill">${rank.title} · ${totalXp} XP</span>
+        </div>
+        <p class="sub">Procedural investigations derived from physics-linked machine models. Every fault is generated first, and every symptom follows causally.</p>
+        <div class="actions">
+          <button class="${EState.selectedDifficulty==='adaptive'?'primary':''}" onclick="ffEndless.setDiff('adaptive')">Adaptive Difficulty</button>
+          <button class="${EState.selectedDifficulty==='apprentice'?'primary':''}" onclick="ffEndless.setDiff('apprentice')">Apprentice</button>
+          <button class="${EState.selectedDifficulty==='investigator'?'primary':''}" onclick="ffEndless.setDiff('investigator')">Investigator</button>
+          <button class="${EState.selectedDifficulty==='master'?'primary':''}" onclick="ffEndless.setDiff('master')">Master Engineer</button>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="ffEndless.newCase()">Generate New Investigation</button>
+          <button onclick="ffEndless.replaySeed()">Load Case Seed</button>
+        </div>
+      </div>
+    `;
+
+    if (c && s) {
+      const machine = window.FF_DB.MACHINE_DATABASE[c.machineId];
+      const tier = window.FF_DIFFICULTY.DIFFICULTY_TIERS[c.difficulty];
+      const unlockedTools = machine.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
+
+      html += `
+        <div class="panel">
+          <div class="topline">
+            <h2>${c.title}</h2>
+            <span class="pill">SEED: ${c.seed} · ${tier.badge}</span>
+          </div>
+          <div class="case-list">
+            <div class="case-item"><b>Client & Sector</b><small>${c.client} · ${c.industry}</small></div>
+            <div class="case-item"><b>Operating Environment</b><small>Ambient: ${c.operatingConditions.ambientTemp}°C · Logged Service Hours: ${c.operatingConditions.operatingHours} hrs · Diagnostic Budget: ${s.testsRun.length}/${c.diagnosticBudget} tests</small></div>
+            <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
+            ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>01 / Component Architecture Inspection</h2>
+          <div class="chips">
+            ${Object.entries(machine.components).map(([k, comp]) => `
+              <button class="${s.inspected[k]?'on':''}" onclick="ffEndless.inspect('${k}')">${comp.name}</button>
+            `).join('')}
+          </div>
+          ${Object.entries(machine.components).filter(([k]) => s.inspected[k]).map(([k, comp]) => `
+            <div class="case-item" style="margin-top:8px"><b>${comp.name}</b><small>${comp.role} <em>(Spec: ${comp.normalSpec})</em></small></div>
+          `).join('')}
+        </div>
+
+        <div class="panel">
+          <div class="topline"><h2>02 / Operating Conditions & Diagnostic Bench</h2><span class="pill">BUDGET: ${c.diagnosticBudget - s.testsRun.length} TESTS LEFT</span></div>
+          <label>Simulated Load: <b>${s.load}%</b></label>
+          <input type="range" min="10" max="100" step="5" value="${s.load}" onchange="ffEndless.setLoad(this.value)">
+          <label>Sustained Run Duration: <b>${s.duration} min</b></label>
+          <input type="range" min="5" max="30" step="5" value="${s.duration}" onchange="ffEndless.setDur(this.value)">
+          <div class="chips" style="margin-top:10px">
+            ${unlockedTools.map(tid => {
+              const t = window.FF_DB.TOOL_CATALOG[tid];
+              return `<button onclick="ffEndless.runTool('${tid}')">${t.name}</button>`;
+            }).join('')}
+          </div>
+          <div class="res">
+            ${s.testsRun.map(tr => `<div class="case-item" style="margin-top:8px"><b>${tr.label} @ ${tr.load}% load (${tr.duration}m)</b><small>${tr.summary}<br>${tr.detail}</small></div>`).join('') || '<p class="sub">Vary load/duration and run diagnostic instruments to isolate condition-dependent faults.</p>'}
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>03 / Repair & Calibration Bay</h2>
+          <div class="case-list">
+            ${c.repairOptions.map(r => `
+              <div class="case-item">
+                <b>${r.label}</b>
+                <small>Est. Downtime: ${r.time} hrs · Cost: $${r.cost}</small>
+                <div class="actions"><button onclick="ffEndless.applyRepair('${r.id}')" ${s.repairsApplied.includes(r.id)?'disabled':''}>${s.repairsApplied.includes(r.id)?'✓ Applied':'Execute Repair'}</button></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="topline"><h2>04 / Independent Acceptance Testing</h2><span class="pill">${s.acceptance ? (s.acceptance.passed ? 'ALL CRITERIA PASSED' : 'CRITERIA FAILED') : 'PENDING'}</span></div>
+          <div class="actions" style="margin-top:0">
+            <button class="primary" onclick="ffEndless.runAcceptance()">Run Simulated Acceptance Test</button>
+          </div>
+          ${s.acceptance ? `
+            <table class="acc" style="margin-top:12px">
+              <tr><th>Criterion</th><th>Actual Output</th><th>Specification</th><th>Status</th></tr>
+              ${s.acceptance.rows.map(r => `
+                <tr><td>${r.name}</td><td>${r.actual}</td><td>${r.target}</td><td class="${r.ok?'p':'fl'}">${r.ok?'PASS':'FAIL'}</td></tr>
+              `).join('')}
+            </table>
+            ${s.acceptance.rows.filter(r => !r.ok).map(r => `<div class="note bad"><b>${r.name}:</b> ${r.explanation}</div>`).join('')}
+          ` : ''}
+        </div>
+      `;
+
+      if (s.debrief) {
+        const d = s.debrief;
+        html += `
+          <div class="panel">
+            <div class="topline"><h2>05 / Post-Investigation Engineering Debrief</h2><span class="pill">+${d.earnedXp} XP · EFFICIENCY ${d.efficiencyScore}%</span></div>
+            <div class="note good"><b>Confirmed Root Cause:</b> ${d.rootCauseTitle} (${d.faultType})${d.compoundTitle ? ' + Secondary Interacting Fault: ' + d.compoundTitle : ''}</div>
+            <div class="case-list">
+              <div class="case-item"><b>Physical Mechanism</b><small>${d.whyItBehavedThatWay}</small></div>
+              ${d.interactionNote ? `<div class="case-item"><b>Fault Interaction Analysis</b><small>${d.interactionNote}</small></div>` : ''}
+              ${d.misleadingCluesExplained.map(mc => `<div class="case-item"><b>Misleading Clue Resolved (${mc.source})</b><small>Claim: ${mc.claim}<br>Reality: ${mc.reality}</small></div>`).join('')}
+              <div class="case-item"><b>Optimal Diagnostic Pathway</b><small>${d.optimalPathHint}</small></div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    if (EState.loreUnlocked.length) {
+      html += `
+        <div class="panel">
+          <h2>Recovered Inventor Archive Fragments</h2>
+          <div class="case-list">
+            ${EState.loreUnlocked.map(l => `<div class="case-item"><b>${l.title}</b><small>${l.text}</small></div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    if (EState.history.length) {
+      html += `
+        <div class="panel">
+          <h2>Completed Investigation Ledger (${EState.history.length} Cases)</h2>
+          <table class="acc">
+            <tr><th>Seed</th><th>Case</th><th>Tier</th><th>Efficiency</th><th>XP</th></tr>
+            ${EState.history.slice().reverse().slice(0, 10).map(h => `
+              <tr><td>${h.seed}</td><td>${h.title}</td><td>${h.difficulty.toUpperCase()}</td><td>${h.efficiencyScore}%</td><td>+${h.earnedXp}</td></tr>
+            `).join('')}
+          </table>
+        </div>
+      `;
+    }
+
+    endlessPanel.innerHTML = html;
+  }
+
+  setInterval(renderEndless, 1200);
+  renderEndless();
+})();
+</script>
+
 </body>
 </html>
