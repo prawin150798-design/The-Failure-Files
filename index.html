@@ -281,5 +281,105 @@ function render(){
 if(!s.log.length){log('Previous thermostat replacement recorded.');log('Case file received.')}
 save();render();setInterval(tick,1000);
 </script>
+<script>
+(()=>{
+const CK='failureFiles002',E=Math.exp,sq=Math.sqrt,f=(x,d=1)=>(+x).toFixed(d),C={};
+/* ---------- CASE 002: transmission ---------- */
+const mis=c=>c.drag+600*E(-18*c.sync*c.fork*.25),out2=c=>3000/c.pair*.996,tgt2=3000/1.36*.996;
+C[2]={t:'Case 002: The Missing Gear',ind:'Automotive · manual transmission',xp:150,
+sub:'Third gear grinds on engagement and sometimes refuses to engage. Other gears are fine and the clutch passed an initial inspection.',
+sym:['Third gear grinds during engagement','Other gears engage normally','Fast shifts make it worse','No external damage'],
+init:()=>({sync:.25,fork:1,drag:0,pair:1.36}),
+parts:{'Input shaft':'Carries engine speed (3000 RPM in the test) into the gearbox.','Gear pairs':'Third-gear pair is 34/25 teeth: ratio 1.36. Output RPM = input ÷ ratio.','Synchroniser assembly':'A friction cone matches idler-gear speed to hub speed before the dog teeth engage. Friction wears away over time.','Selector fork':'Slides the sleeve. Travel and straightness decide whether engagement completes.','Output shaft':'Delivers the geared-down speed to the final drive.','Clutch assembly':'Must fully disengage drive during a shift. Residual drag adds to the speed mismatch.'},
+tools:[['RPM measurement',c=>`Input 3000 RPM. Third-gear speed mismatch before engagement (0.25 s shift): ${f(mis(c),0)} RPM.`],['Gear ratio analyser',c=>`Third pair ratio ${f(c.pair,2)}:1. Output shaft ${f(out2(c),0)} RPM (target ${f(tgt2,0)} RPM).`],['Synchroniser inspection',c=>`Third-gear cone friction remaining: ${f(c.sync*100,0)}%.${c.sync<.6?' Cone is glazed and worn.':' Cone in good condition.'}`],['Clutch isolation test',c=>`Clutch released: residual drag ${f(c.drag,0)} RPM. ${c.drag>10?'Dragging.':'Releases fully.'}`],['Transmission inspection',c=>`Fork travel ${f(c.fork*100,0)}%. ${c.fork<.95?'Fork is bent.':'Fork straight, no case damage.'}`]],
+reps:[['Replace 3rd-gear synchroniser ring','Fits a new friction cone.',c=>c.sync=1],['Replace selector fork','Fits a new fork.',c=>c.fork=1],['Adjust clutch release','Resets release clearance.',c=>c.drag=0],['Fit 3rd gear set 32/25 (1.28)','Different tooth count.',c=>c.pair=1.28],['Fit 3rd gear set 34/25 (1.36)','Specified tooth count.',c=>c.pair=1.36]],
+acc:c=>{const m=mis(c),o=out2(c),e=Math.abs(o/tgt2-1)*100;return[
+{k:'Third-gear engagement',a:m<=50&&c.fork>=.95?'No grinding':'Grinding',r:'No grinding',ok:m<=50&&c.fork>=.95,w:m>50?'Speed mismatch is too high for the cone to match speeds in the shift time.':'Selector fork travel is incomplete.'},
+{k:'RPM difference before engagement',a:f(m,0)+' RPM',r:'≤ 50 RPM',ok:m<=50,w:'Worn friction cone or clutch drag leaves residual speed difference.'},
+{k:'Output speed vs target',a:`${f(o,0)} RPM (${f(e,1)}% off)`,r:`${f(tgt2,0)} RPM ±3%`,ok:e<=3,w:'The fitted gear ratio does not give the specified output speed.'}]},
+arch:'Fragment 02 — Beneath the worn cone, a bronze ring is stamped “H.V. · 3 / not for sale”. Its cone angle is tuned to no production gearbox.',note:'Gear ratio = driven teeth ÷ driving teeth; output RPM = input RPM ÷ ratio. A synchroniser cuts the speed mismatch roughly exponentially with friction × shift time.'};
+/* ---------- CASE 003: fuel injection ---------- */
+const eff3=c=>c.inj*sq(c.P/3),afr=(c,r)=>Math.max(13.8*(1+c.leak),13*(1+c.leak)*(r/4000)/eff3(c)),idle=c=>1500-900*(1-Math.min(1,eff3(c)))+1200*c.leak-600*(1-c.spark);
+C[3]={t:'Case 003: The Unstable Machine',ind:'Motorcycle · 250 cc fuel injection',xp:150,
+sub:'A 250 cc motorcycle idles unevenly and hesitates, worse at high RPM. Compression and ignition looked normal.',
+sym:['Uneven idle','Hesitation on acceleration','Lean readings at high RPM','No mechanical damage'],
+init:()=>({inj:.8,P:3,spark:1,leak:0}),
+parts:{'Cylinder and piston':'Compression is a measure of sealing, not of fuelling.','Air intake':'Unmetered air leaks make the mixture lean at every RPM.','Fuel injector':'Flow capacity limits fuel at high RPM when demand peaks.','Fuel pump':'Sets rail pressure; injector flow scales with √pressure.','Spark plug':'Weak spark causes misfires and a low idle.','Ignition coil':'Supplies the spark energy.','Throttle body':'Controls air flow; idle speed settles where fuel and air balance.'},
+tools:[['Compression tester',()=>'Compression 12.4 bar: within specification.'],['Spark tester',c=>`Spark strength ${f(c.spark*100,0)}%: ${c.spark<.9?'weak':'strong blue spark'}.`],['Fuel pressure gauge',c=>`Rail pressure ${f(c.P,2)} bar (spec 3.0 ± 0.2).`],['Injector flow analyser',c=>`Flow ${f(220*c.inj*sq(c.P/3),0)} cc/min (nominal 220).${c.inj<.9?' Spray pattern is narrow and uneven.':''}`],['Exhaust analyser @ idle',c=>`Idle ${f(idle(c),0)} RPM, AFR ${f(afr(c,idle(c)),1)}:1.`],['Exhaust analyser @ 4000 RPM',c=>`AFR at 4000 RPM: ${f(afr(c,4000),1)}:1.`]],
+reps:[['Replace fuel injector','New injector at full flow.',c=>c.inj=1],['Ultrasonic-clean injector','Restores most of the flow.',c=>c.inj=.97],['Replace fuel pump','Pump delivers 3.0 bar.',c=>c.P=3],['Replace plug and coil','Restores spark.',c=>c.spark=1],['Replace intake gasket','Seals the manifold.',c=>c.leak=0]],
+acc:c=>{const a=afr(c,4000),i=idle(c);return[
+{k:'Fuel pressure',a:f(c.P,2)+' bar',r:'3.0 ± 0.2 bar',ok:Math.abs(c.P-3)<=.2,w:'Pump output is outside tolerance.'},
+{k:'AFR at 4000 RPM',a:f(a,1)+':1',r:'13.2–14.7 : 1',ok:a>=13.2&&a<=14.7,w:a>14.7?'Mixture is lean: the injector cannot supply enough fuel, or air is leaking in.':'Mixture too rich.'},
+{k:'Idle speed',a:f(i,0)+' RPM',r:'1,400–1,600 RPM',ok:i>=1400&&i<=1600,w:'Idle is unstable: poor spray, misfire or an air leak shifts it out of range.'}]},
+arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, machined with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
+/* ---------- CASE 004: hydraulic press ---------- */
+const ct=c=>c.r+c.s+c.d,P4=c=>Math.min(200,20/(ct(c)+20*c.ps)),dec=c=>180*(1-E(-(500*ct(c)/60)*10));
+C[4]={t:'Case 004: Pressure Drop',ind:'Industrial · hydraulic press',xp:150,
+sub:'The press reaches pressure, but while holding a load the pressure sinks and force is lost. The pump sounds normal and nothing leaks outside.',
+sym:['Pressure reaches target initially','Pressure drops while holding','No external leakage','Pump sounds normal'],
+init:()=>({r:.003,s:.00008,d:.00008,ps:.0008}),
+parts:{'Hydraulic pump':'Volumetric efficiency falls with pressure (internal slip). Normal here.','Pressure relief valve':'Should stay shut below its 200 bar setting. A partly open valve bypasses oil back to tank.','Hydraulic cylinder':'Force = pressure × piston area (0.0314 m²).','Piston seals':'Wear lets oil pass from one side of the piston to the other.','Directional control valve':'Spool clearance leaks a little oil even when closed.','Hydraulic lines':'No external leakage found: the oil is going somewhere inside.'},
+tools:[['Pressure gauge',c=>`Reaches ${f(P4(c),0)} bar. Force ${f(P4(c)*1e5*.0314/1000,0)} kN.`],['Flow meter',c=>`Pump delivers ${f(20*(1-c.ps*P4(c)),1)} L/min at pressure. Pump is healthy.`],['Hydraulic leak tester',c=>`External leakage 0.00 L/min. Hold test: ${f(dec(c),1)} bar lost in 10 s. Directional valve leakage ${f(c.d*180,3)} L/min.`],['Cylinder inspection',c=>`Seal bypass at 180 bar: ${f(c.s*180,3)} L/min.`],['Relief valve test',c=>`Relief bypass at 180 bar: ${f(c.r*180,3)} L/min.${c.r*180>.02?' Valve is not seating.':''}`]],
+reps:[['Replace relief valve','Fits a new valve.',c=>c.r=.0001],['Clean and reseat relief valve','Partial improvement.',c=>c.r=Math.min(c.r,.0008)],['Replace piston seals','New seal set.',c=>c.s=.00003],['Replace directional valve spool','Tighter clearance.',c=>c.d=.00003],['Overhaul pump','Reduces slip.',c=>c.ps=.0005],['Tighten hydraulic fittings','External joints only.',c=>c]],
+acc:c=>{const p=P4(c),d=dec(c),b=c.r*180;return[
+{k:'System pressure',a:f(p,0)+' bar',r:'≥ 180 bar',ok:p>=180,w:'Pump flow is being lost before pressure builds.'},
+{k:'Pressure loss in 10 s',a:f(d,1)+' bar',r:'≤ 5 bar',ok:d<=5,w:'Internal bypass (relief, seals or valve) is bleeding oil from the held load.'},
+{k:'Relief valve bypass',a:f(b,3)+' L/min',r:'≤ 0.020 L/min',ok:b<=.02,w:'The relief valve is passing flow while it should be shut.'}]},
+arch:'Fragment 04 — The relief spring is wound with a progressive, double pitch and carries a tiny preload ring, engraved “set by ear”.',note:'Force = pressure × area. Without external leaks, falling pressure means internal bypass. Decay ≈ P₀(1 − e^(−K·Q/V)): bypass flow is the problem.'};
+/* ---------- CASE 005: compound drivetrain ---------- */
+const cal=g=>{const R=g.r1*g.r2*g.rb,Tb=48*g.r1*g.r2*.9409,F=Tb/.05,u=F/(.8*g.ten),sl=Math.min(40,.4+(u>.6?25*(u-.6)**2:0)),eb=.97*(1-sl/100)*(1-g.ten/60000);return{R,Tb,F,sl,eb,w:1750/R*(1-sl/100),T:Tb*g.rb*eb,u}};
+C[5]={t:'Case 005: The Inventor\u2019s Prototype',ind:'Experimental · compound transmission',xp:300,
+sub:'An abandoned laboratory holds an unfinished drivetrain: motor, two gear stages and a belt-driven output. The documentation is incomplete. Configure it to meet the specification.',
+sym:['Motor: 1750 RPM, 48 Nm','Target 580–620 RPM at ≥110 Nm','Belt slip must stay ≤2%','Documentation incomplete'],
+init:()=>({}),ctl:{r1:2,r2:1.5,rb:1.5,ten:1000},
+ctls:[['r1','First-stage ratio',1,4,.05,''],['r2','Second-stage ratio',1,4,.05,''],['rb','Belt ratio',.5,3,.05,''],['ten','Belt tension (N)',500,5000,100,' N']],
+parts:{'Input motor':'1750 RPM, 48 Nm.','First gear stage':'Each gear mesh is about 97% efficient.','Second gear stage':'Total gear ratio is the product of all stages.','Output shaft':'Speed = 1750 ÷ total ratio, less belt slip.','Belt drive':'Slip rises sharply when belt force exceeds what the tension can grip.','Bearings':'Higher belt tension raises bearing load and friction loss.','Tension adjustment mechanism':'Too loose: slip. Too tight: friction loss and wear.'},
+tools:[['RPM analyser',(c,g)=>{const k=cal(g);return`Motor 1750 → stage 1 ${f(1750/g.r1,0)} → stage 2 ${f(1750/g.r1/g.r2,0)} → output ${f(k.w,0)} RPM.`},[2]],['Torque meter',(c,g)=>{const k=cal(g);return`Torque into belt ${f(k.Tb,0)} Nm; output ${f(k.T,0)} Nm.`},[4]],['Gear ratio calculator',(c,g)=>`Total ratio ${f(cal(g).R,2)}:1 = ${g.r1} × ${g.r2} × ${g.rb}.`,[2]],['Vibration analyser',(c,g)=>`Vibration ${f(1+g.ten/1200+(cal(g).sl>2?2:0),1)} mm/s${cal(g).sl>2?' (belt stick-slip)':''}.`,[3]],['Belt tension tester',(c,g)=>{const k=cal(g);return`Belt force ${f(k.F,0)} N; grip margin ${f(1/k.u,2)}×; slip ${f(k.sl,1)}%.`},[4]]],
+reps:[],
+acc:(c,g)=>{const k=cal(g);return[
+{k:'Output speed',a:f(k.w,0)+' RPM',r:'580–620 RPM',ok:k.w>=580&&k.w<=620,w:'Total ratio is wrong: change stage or belt ratios.'},
+{k:'Output torque',a:f(k.T,0)+' Nm',r:'≥ 110 Nm',ok:k.T>=110,w:'Not enough torque: ratio too low, or losses (slip, over-tension) are too high.'},
+{k:'Belt slip',a:f(k.sl,1)+'%',r:'≤ 2%',ok:k.sl<=2,w:'Belt tension is too low for the load carried.'}]},
+arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this machine, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The campaign ends here, and the notes ask: “Who will build the next one?”',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
+const mod=typeof module!=='undefined'&&module.exports;
+if(mod){module.exports={C,cal};return}
+/* ---------- UI / progression / save ---------- */
+const $=id=>document.getElementById(id);let cur=1,S;
+try{S={done:[],c:{},...JSON.parse(localStorage.getItem(CK)||'{}')}}catch(e){S={done:[],c:{}}}
+const save=()=>{try{localStorage.setItem(CK,JSON.stringify(S))}catch(e){}};
+const d1=()=>{try{return JSON.parse(localStorage.getItem('failureFiles001')).solved===true}catch(e){return false}};
+const isD=i=>i==1?d1():S.done.includes(i),avail=i=>i==1||(i<5?isD(i-1):[2,3,4].every(isD));
+const cs=i=>S.c[i]||(S.c[i]={cond:C[i].init(),insp:{},tests:{},reps:[],ctl:C[i].ctl?{...C[i].ctl}:{},res:null});
+const xp=()=>(d1()?100:0)+S.done.reduce((a,i)=>a+C[i].xp,0)+Object.keys(S.c).reduce((a,i)=>a+5*(Object.keys(S.c[i].insp).length+Object.keys(S.c[i].tests).length),0);
+const main=document.querySelector('main'),old=[...document.querySelectorAll('.stats,.tabs,.grid')],h1=document.querySelector('h1'),sub=document.querySelector('.sub'),H=[h1.textContent,sub.textContent];
+const st=document.createElement('style');st.textContent='table.acc{width:100%;border-collapse:collapse;font-size:13px}.acc td,.acc th{padding:7px 6px;border-bottom:1px solid #2c414c;text-align:left}.p{color:#8bd5a4;font-weight:700}.fl{color:#ef7770;font-weight:700}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips button.on{border-color:#f2b75b}#bar{display:flex;gap:7px;overflow:auto;margin:14px 0}#camp .panel{margin-bottom:14px}.res{font:13px var(--mono);margin-top:8px}';document.head.appendChild(st);
+const bar=document.createElement('div');bar.id='bar';main.insertBefore(bar,old[0]);const camp=document.createElement('div');camp.id='camp';camp.className='hidden';main.insertBefore(camp,old[0]);
+window.cp={
+sel(i){cur=i;R()},
+insp(k){cs(cur).insp[k]=1;save();R(k)},
+tool(i){const o=cs(cur),t=C[cur].tools[i];o.tests[t[0]]=t[1](o.cond,o.ctl);save();R()},
+rep(i){const o=cs(cur);C[cur].reps[i][2](o.cond);o.reps.push(C[cur].reps[i][0]);o.res=null;save();R()},
+ctl(k,v){cs(cur).ctl[k]=+v;cs(cur).res=null;save();R()},
+acc(){const o=cs(cur),rows=C[cur].acc(o.cond,o.ctl);o.res={rows};if(rows.every(r=>r.ok)&&!S.done.includes(cur))S.done.push(cur);save();R()},
+rst(){delete S.c[cur];save();R()}};
+function R(sk){
+ bar.innerHTML=[1,2,3,4,5].map(i=>`<button class="tab ${cur==i?'active':''}" ${avail(i)?'':'disabled'} onclick="cp.sel(${i})">${isD(i)?'✓ ':''}Case 00${i}${avail(i)?'':' 🔒'}</button>`).join('')+`<button class="tab ${cur==0?'active':''}" onclick="cp.sel(0)">Campaign · ${xp()} XP</button>`;
+ old.forEach(e=>e.classList.toggle('hidden',cur!=1));camp.classList.toggle('hidden',cur==1);
+ if(cur==1){h1.textContent=H[0];sub.textContent=H[1];return}
+ if(cur==0){h1.textContent='Campaign progress';sub.textContent='Level '+(1+Math.floor(xp()/100))+' investigator. XP comes from completing cases and from each new inspection or test.';camp.innerHTML='<div class="panel"><h2>Engineering notebook</h2>'+(d1()?'<div class="case-item"><b>Case 001</b><small>Flow carries heat: low circulation overheats an engine even when the radiator is fine.</small></div>':'')+S.done.map(i=>`<div class="case-item"><b>Case 00${i}</b><small>${C[i].note}</small></div>`).join('')+'</div><div class="panel"><h2>Inventor\u2019s archive</h2>'+(S.done.length?S.done.map(i=>`<div class="case-item"><small>${C[i].arch}</small></div>`).join(''):'<p class="sub">Solve cases to recover fragments.</p>')+'</div>';return}
+ const c=C[cur],o=cs(cur),res=o.res,pass=res&&res.rows.every(r=>r.ok),pct=res?Math.round(res.rows.filter(r=>r.ok).length/res.rows.length*100):0;
+ h1.textContent=c.t;sub.textContent=c.sub;
+ const pk=sk||Object.keys(o.insp).pop();
+ let live='';if(cur==5){const k=cal(o.ctl);live=`<div class="panel"><div class="topline"><h2>Configuration</h2><span class="pill">LIVE: ${f(k.w,0)} RPM · ${f(k.T,0)} Nm · slip ${f(k.sl,1)}%</span></div>`+c.ctls.map(x=>`<label>${x[1]}: <b id="v${x[0]}">${o.ctl[x[0]]}${x[5]}</b></label><input type="range" min="${x[2]}" max="${x[3]}" step="${x[4]}" value="${o.ctl[x[0]]}" oninput="document.getElementById('v${x[0]}').textContent=this.value" onchange="cp.ctl('${x[0]}',this.value)">`).join('')+'</div>'}
+ camp.innerHTML=`<div class="panel"><div class="topline"><h2>${c.t}</h2><span class="pill">${c.ind}</span></div><div class="case-list">${c.sym.map(s=>`<div class="case-item"><small>${s}</small></div>`).join('')}</div><div class="note">Values here are game specifications for learning, not real-world service data.</div></div>
+<div class="panel"><h2>Inspect components</h2><div class="chips">${Object.keys(c.parts).map(k=>`<button class="${o.insp[k]?'on':''}" onclick="cp.insp('${k}')">${k}</button>`).join('')}</div>${pk&&c.parts[pk]?`<div class="case-item" style="margin-top:10px"><b>${pk}</b><small>${c.parts[pk]}</small></div>`:''}</div>
+<div class="panel"><h2>Diagnostic tools</h2><div class="chips">${c.tools.map((t,i)=>{const lk=t[2]&&!t[2].every(isD);return`<button ${lk?'disabled':''} onclick="cp.tool(${i})">${lk?'🔒 ':''}${t[0]}</button>`}).join('')}</div><div class="res">${Object.entries(o.tests).map(([k,v])=>`<div><b>${k}:</b> ${v}</div>`).join('')||'Run a tool to record a reading.'}</div></div>
+${live}${c.reps.length?`<div class="panel"><h2>Repair bay</h2><div class="case-list">${c.reps.map((r,i)=>`<div class="case-item"><b>${r[0]}</b><small>${r[1]}</small><div class="actions"><button onclick="cp.rep(${i})">Apply</button></div></div>`).join('')}</div><p class="sub">Applied: ${o.reps.join(' → ')||'none'}. Readings taken earlier may be out of date: retest.</p></div>`:''}
+<div class="panel"><div class="topline"><h2>Acceptance test</h2><span class="pill">${res?pct+'% ACHIEVED':'NOT RUN'}</span></div><div class="actions" style="margin-top:0"><button class="primary" onclick="cp.acc()">Run acceptance test</button><button onclick="cp.rst()">Reset case</button></div>
+${res?`<table class="acc"><tr><th>Criterion</th><th>Actual</th><th>Required</th><th>Result</th></tr>${res.rows.map(r=>`<tr><td>${r.k}</td><td>${r.a}</td><td>${r.r}</td><td class="${r.ok?'p':'fl'}">${r.ok?'PASS':'FAIL'}</td></tr>`).join('')}</table>${res.rows.filter(r=>!r.ok).map(r=>`<div class="note bad"><b>${r.k}:</b> ${r.w}</div>`).join('')}<div class="note ${pass?'good':'bad'}"><b>${pass?'CASE COMPLETED — ALL REQUIRED OUTPUTS ACHIEVED':'ACCEPTANCE TEST FAILED — REQUIRED OUTPUT NOT ACHIEVED'}</b></div>`:''}
+${isD(cur)?`<div class="note good">${c.arch}</div>`:''}</div>`}
+R();
+})();
+</script>
 </body>
 </html>
