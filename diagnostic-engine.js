@@ -130,6 +130,44 @@
           detail: 'Confirms whether thermal breakdown is compromising film thickness and internal sealing.'
         };
 
+      case 'oil_spectroscopy': {
+        const vibHigh = sim.vibration > machine.baseParams.nominalVibration * 1.4;
+        const fe = Math.round(6 + Math.max(0, sim.temperature - 70) * 1.1 + (vibHigh ? 18 : 0) + (machine.id === 'manual_transmission' && sim.syncMismatch > 50 ? 22 : 0));
+        return {
+          toolId,
+          label: 'Wear-Metal Oil Spectrometer',
+          summary: `Fe ${fe} ppm · Cu ${Math.round(fe * 0.35)} ppm · Si 6 ppm.`,
+          detail: fe > 35 ? 'Elevated wear metals: abnormal rubbing contact or sustained overheating.' : 'Wear-metal levels normal for this service interval.'
+        };
+      }
+
+      case 'endoscope_camera': {
+        const glazed = sim.syncMismatch > 50 && sim.inputDragRpm <= 45;
+        const spalled = sim.vibration > machine.baseParams.nominalVibration * 1.45;
+        return {
+          toolId,
+          label: 'Articulated Fibre-Optic Borescope',
+          summary: machine.id === 'manual_transmission'
+            ? (glazed ? 'Third-gear synchroniser cone is glazed: polished, shiny friction surface.'
+              : spalled ? 'Input-shaft bearing race shows pitting and discolouration.'
+              : 'Cones, hubs and bearing races show a normal wear pattern.')
+            : 'Internal surfaces visible; no abnormal wear pattern.',
+          detail: 'Visual access without gearbox teardown.'
+        };
+      }
+
+      case 'oscilloscope_ignition': {
+        const misfires = sim.afr > 15.5 ? Math.round((sim.afr - 15.5) * 6) : 0;
+        return {
+          toolId,
+          label: '4-Channel Lab Oscilloscope',
+          summary: `Coil dwell 3.1 ms · spark burn 1.4 ms · ${misfires} misfire events/min.`,
+          detail: misfires
+            ? 'Misfires appear only when the mixture is lean: the ignition system itself is healthy; look upstream of the spark.'
+            : 'Ignition waveform is clean: coil and plug are not the cause.'
+        };
+      }
+
       default:
         return {
           toolId,

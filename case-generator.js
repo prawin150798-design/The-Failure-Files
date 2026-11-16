@@ -43,42 +43,63 @@
     return items[items.length - 1];
   }
 
+  const TIER_CODE = { apprentice: 'a', investigator: 'i', master: 'm' };
+  const CODE_TIER = { a: 'apprentice', i: 'investigator', m: 'master' };
+
+  // Replay codes look like FF-AB12CD~i1~3 (base seed ~ tier + rank ~ attempt index).
+  // They carry everything needed to rebuild the identical case, independent of play history.
+  function parseSeed(raw) {
+    const s = String(raw || '').trim();
+    const full = /^(FF-[A-Za-z0-9]{3,12})~([aimAIM])(\d)~(\d{1,2})$/.exec(s);
+    if (full) return { base: full[1].toUpperCase(), difficulty: CODE_TIER[full[2].toLowerCase()], rank: +full[3], attempt: +full[4] };
+    const bare = s.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 15);
+    return bare ? { base: bare } : {};
+  }
+
+  function shuffle(rng, arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   function generateCase(options = {}) {
-    const seed = options.seed || ('FF-' + Math.random().toString(36).substring(2, 8).toUpperCase());
-    const difficulty = options.difficulty || 'investigator';
-    const playerRank = options.playerRank ?? 1;
-    const recentFingerprints = options.recentFingerprints || [];
+    const parsed = parseSeed(options.seed);
+    const base = parsed.base || ('FF-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+    const difficulty = parsed.difficulty || options.difficulty || 'investigator';
+    const playerRank = parsed.rank ?? options.playerRank ?? 0;
+    const fixedAttempt = parsed.attempt ?? null;
+    const recentFingerprints = fixedAttempt === null ? (options.recentFingerprints || []) : [];
 
     const tier = global.FF_DIFFICULTY.DIFFICULTY_TIERS[difficulty];
-    const rng = createSeededRng(seed);
+    if (!tier) throw new Error('Unknown difficulty: ' + difficulty);
 
-    // Filter unlocked machines
-    const allMachines = Object.values(global.FF_DB.MACHINE_DATABASE);
-    const eligibleMachines = allMachines.filter(m => m.unlockRank <= playerRank);
+    const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE).filter(m => m.unlockRank <= playerRank);
+    const first = fixedAttempt ?? 0;
+    const last = fixedAttempt === null ? 40 : fixedAttempt + 1;
 
-    for (let attempt = 0; attempt < 25; attempt++) {
+    // Each attempt has its own RNG stream, so attempt N always yields the same case.
+    for (let attempt = first; attempt < last; attempt++) {
+      const rng = createSeededRng(base + '#' + attempt);
       const format = pickWeighted(rng, INVESTIGATION_FORMATS);
       let machine = eligibleMachines[Math.floor(rng() * eligibleMachines.length)];
       if (format.id === 'experimental_archive') {
-        const exp = eligibleMachines.find(m => m.isExperimental);
-        if (exp) machine = exp;
+        machine = eligibleMachines.find(m => m.isExperimental);
+        if (!machine) continue; // prototype anomalies only exist on the prototype machine
       }
 
       const matchingFaults = global.FF_FAULTS.FAULT_CATALOG.filter(f => f.machineId === machine.id);
       if (!matchingFaults.length) continue;
-
       const primaryFault = matchingFaults[Math.floor(rng() * matchingFaults.length)];
 
-      // Optional compound fault based on difficulty
       let compound = null;
       if (tier.allowCompound && (format.id === 'multiple_interacting' || rng() < tier.compoundChance)) {
-        const possibleCompounds = global.FF_FAULTS.COMPOUND_INTERACTIONS.filter(
-          c => c.primaryFaultId === primaryFault.id
-        );
-        if (possibleCompounds.length) {
-          compound = possibleCompounds[Math.floor(rng() * possibleCompounds.length)];
-        }
+        const options2 = global.FF_FAULTS.COMPOUND_INTERACTIONS.filter(c => c.primaryFaultId === primaryFault.id);
+        if (options2.length) compound = options2[Math.floor(rng() * options2.length)];
       }
+      if (format.id === 'multiple_interacting' && !compound) continue; // format promises two faults
 
       const ambientTemp = Math.round(18 + rng() * 20);
       const operatingHours = Math.round(1200 + rng() * 14000);
@@ -87,22 +108,19 @@
         : CLIENT_PROFILES[Math.floor(rng() * (CLIENT_PROFILES.length - 1))];
 
       const fingerprint = `${machine.id}:${primaryFault.id}:${compound ? compound.id : 'single'}:${format.id}`;
-      if (recentFingerprints.includes(fingerprint) && attempt < 20) {
-        continue;
-      }
+      if (recentFingerprints.includes(fingerprint) && attempt < first + 30) continue;
 
-      // Build combined repair options
-      const repairOptions = [...primaryFault.repairs];
-      if (compound && !repairOptions.some(r => r.id === compound.extraRepair.id)) {
-        repairOptions.push(compound.extraRepair);
-      }
-
-      // Select misleading clues according to difficulty
-      const misleadingClues = primaryFault.misleadingClues.slice(0, tier.misleadingClueCount);
+      // The compound's repair replaces any same-id decoy so it is never mislabelled as a wrong repair.
+      const repairs = primaryFault.repairs
+        .filter(r => !compound || r.id !== compound.extraRepair.id)
+        .map(r => ({ ...r }));
+      if (compound) repairs.push({ ...compound.extraRepair });
+      const repairOptions = shuffle(rng, repairs);
 
       const caseObj = {
-        id: 'PROC-' + seed,
-        seed,
+        id: 'PROC-' + base,
+        seed: `${base}~${TIER_CODE[difficulty]}${playerRank}~${attempt}`,
+        baseSeed: base,
         fingerprint,
         difficulty,
         formatId: format.id,
@@ -122,49 +140,47 @@
           defaultDuration: 15
         },
         symptoms: [...primaryFault.symptoms],
-        misleadingClues,
+        misleadingClues: primaryFault.misleadingClues.slice(0, tier.misleadingClueCount),
         repairOptions,
-        diagnosticBudget: tier.diagnosticBudget,
-        createdAt: Date.now()
+        diagnosticBudget: tier.diagnosticBudget
       };
 
-      // Validate solvability & consistency before returning
       const validation = validateGeneratedCase(caseObj);
-      if (validation.valid) {
-        return caseObj;
-      }
+      if (validation.valid) return caseObj;
+      if (fixedAttempt !== null) throw new Error('Replay code no longer produces a valid case: ' + validation.reason);
     }
-
-    throw new Error('Failed to generate valid procedural case after 25 attempts.');
+    throw new Error('Failed to generate a valid procedural case.');
   }
 
   function validateGeneratedCase(caseObj) {
     const primaryFault = global.FF_FAULTS.FAULT_CATALOG.find(f => f.id === caseObj.primaryFaultId);
     if (!primaryFault) return { valid: false, reason: 'Missing primary fault definition.' };
+    const acc = global.FF_ACCEPTANCE;
 
-    // 1. Verify broken state fails acceptance criteria
-    const brokenResult = global.FF_ACCEPTANCE.runAcceptanceSuite(caseObj, []);
-    if (brokenResult.passed) {
+    if (acc.runAcceptanceSuite(caseObj, []).passed) {
       return { valid: false, reason: 'Case already passes acceptance without any repair.' };
     }
 
-    // 2. Verify valid repair passes acceptance criteria
-    const correctPrimaryRepair = primaryFault.repairs.find(r => r.fixes && r.fixes.includes(primaryFault.id));
-    if (!correctPrimaryRepair) return { valid: false, reason: 'No valid primary repair defined.' };
-
-    const solutionRepairs = [correctPrimaryRepair.id];
+    const primaryRepair = primaryFault.repairs.find(r => r.fixes && r.fixes.includes(primaryFault.id));
+    if (!primaryRepair) return { valid: false, reason: 'No valid primary repair defined.' };
+    const solution = [primaryRepair.id];
     if (caseObj.compoundId) {
       const comp = global.FF_FAULTS.COMPOUND_INTERACTIONS.find(c => c.id === caseObj.compoundId);
-      if (comp) solutionRepairs.push(comp.extraRepair.id);
+      if (!comp) return { valid: false, reason: 'Missing compound definition.' };
+      solution.push(comp.extraRepair.id);
+      // A compound case must genuinely need both repairs.
+      if (acc.runAcceptanceSuite(caseObj, [primaryRepair.id]).passed) return { valid: false, reason: 'Primary repair alone passes the compound case.' };
+      if (acc.runAcceptanceSuite(caseObj, [comp.extraRepair.id]).passed) return { valid: false, reason: 'Secondary repair alone passes the compound case.' };
     }
+    if (!acc.runAcceptanceSuite(caseObj, solution).passed) return { valid: false, reason: 'Solution repairs fail acceptance criteria.' };
 
-    const fixedResult = global.FF_ACCEPTANCE.runAcceptanceSuite(caseObj, solutionRepairs);
-    if (!fixedResult.passed) {
-      return { valid: false, reason: 'Solution repairs fail acceptance criteria.' };
+    // Every offered repair outside the solution must fail on its own, and every solution repair must be offered.
+    for (const id of solution) if (!caseObj.repairOptions.some(r => r.id === id)) return { valid: false, reason: 'Solution repair is not offered.' };
+    for (const r of caseObj.repairOptions) {
+      if (!solution.includes(r.id) && acc.runAcceptanceSuite(caseObj, [r.id]).passed) return { valid: false, reason: 'Decoy repair passes acceptance.' };
     }
-
     return { valid: true };
   }
 
-  global.FF_GENERATOR = { generateCase, validateGeneratedCase, createSeededRng };
+  global.FF_GENERATOR = { generateCase, validateGeneratedCase, createSeededRng, parseSeed };
 })(typeof window !== 'undefined' ? window : globalThis);

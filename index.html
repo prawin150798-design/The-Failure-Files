@@ -350,12 +350,13 @@ const save=()=>{try{localStorage.setItem(CK,JSON.stringify(S))}catch(e){}};
 const d1=()=>{try{return JSON.parse(localStorage.getItem('failureFiles001')).solved===true}catch(e){return false}};
 const isD=i=>i==1?d1():S.done.includes(i),avail=i=>i==1||(i<5?isD(i-1):[2,3,4].every(isD));
 const cs=i=>S.c[i]||(S.c[i]={cond:C[i].init(),insp:{},tests:{},reps:[],ctl:C[i].ctl?{...C[i].ctl}:{},res:null});
-const xp=()=>(d1()?100:0)+S.done.reduce((a,i)=>a+C[i].xp,0)+Object.keys(S.c).reduce((a,i)=>a+5*(Object.keys(S.c[i].insp).length+Object.keys(S.c[i].tests).length),0);
+const exX=()=>{try{return JSON.parse(localStorage.getItem('failureFilesEndless_v1')||'{}').endlessXp||0}catch(e){return 0}};
+const xp=()=>exX()+(d1()?100:0)+S.done.reduce((a,i)=>a+C[i].xp,0)+Object.keys(S.c).reduce((a,i)=>a+5*(Object.keys(S.c[i].insp).length+Object.keys(S.c[i].tests).length),0);
 const main=document.querySelector('main'),old=[...document.querySelectorAll('.stats,.tabs,.grid')],h1=document.querySelector('h1'),sub=document.querySelector('.sub'),H=[h1.textContent,sub.textContent];
 const st=document.createElement('style');st.textContent='table.acc{width:100%;border-collapse:collapse;font-size:13px}.acc td,.acc th{padding:7px 6px;border-bottom:1px solid #2c414c;text-align:left}.p{color:#8bd5a4;font-weight:700}.fl{color:#ef7770;font-weight:700}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips button.on{border-color:#f2b75b}#bar{display:flex;gap:7px;overflow:auto;margin:14px 0}#camp .panel{margin-bottom:14px}.res{font:13px var(--mono);margin-top:8px}';document.head.appendChild(st);
 const bar=document.createElement('div');bar.id='bar';main.insertBefore(bar,old[0]);const camp=document.createElement('div');camp.id='camp';camp.className='hidden';main.insertBefore(camp,old[0]);
 window.cp={
-sel(i){cur=i;R()},
+sel(i){if(i==9&&![1,2,3,4,5].every(isD))return;cur=i;R()},
 insp(k){cs(cur).insp[k]=1;save();R(k)},
 tool(i){const o=cs(cur),t=C[cur].tools[i];o.tests[t[0]]=t[1](o.cond,o.ctl);save();R()},
 rep(i){const o=cs(cur);C[cur].reps[i][2](o.cond);o.reps.push(C[cur].reps[i][0]);o.res=null;save();R()},
@@ -363,9 +364,10 @@ ctl(k,v){cs(cur).ctl[k]=+v;cs(cur).res=null;save();R()},
 acc(){const o=cs(cur),rows=C[cur].acc(o.cond,o.ctl);o.res={rows};if(rows.every(r=>r.ok)&&!S.done.includes(cur))S.done.push(cur);save();R()},
 rst(){delete S.c[cur];save();R()}};
 function R(sk){
- bar.innerHTML=[1,2,3,4,5].map(i=>`<button class="tab ${cur==i?'active':''}" ${avail(i)?'':'disabled'} onclick="cp.sel(${i})">${isD(i)?'✓ ':''}Case 00${i}${avail(i)?'':' 🔒'}</button>`).join('')+`<button class="tab ${cur==0?'active':''}" onclick="cp.sel(0)">Campaign · ${xp()} XP</button>`;
+ bar.innerHTML=[1,2,3,4,5].map(i=>`<button class="tab ${cur==i?'active':''}" ${avail(i)?'':'disabled'} onclick="cp.sel(${i})">${isD(i)?'✓ ':''}Case 00${i}${avail(i)?'':' 🔒'}</button>`).join('')+`<button class="tab ${cur==0?'active':''}" onclick="cp.sel(0)">Campaign · ${xp()} XP</button>`+`<button class="tab ${cur==9?'active':''}" ${[1,2,3,4,5].every(isD)?'':'disabled'} onclick="cp.sel(9)">∞ Endless${[1,2,3,4,5].every(isD)?'':' ('+[1,2,3,4,5].filter(isD).length+'/5)'}</button>`;
  old.forEach(e=>e.classList.toggle('hidden',cur!=1));camp.classList.toggle('hidden',cur==1);
  if(cur==1){h1.textContent=H[0];sub.textContent=H[1];return}
+ if(cur==9){h1.textContent='Endless Investigation';sub.textContent='Procedurally generated cases: every fault is generated first and every symptom follows from it.';window.FF_ENDLESS.render(camp);return}
  if(cur==0){h1.textContent='Campaign progress';sub.textContent='Level '+(1+Math.floor(xp()/100))+' investigator. XP comes from completing cases and from each new inspection or test.';camp.innerHTML='<div class="panel"><h2>Engineering notebook</h2>'+(d1()?'<div class="case-item"><b>Case 001</b><small>Flow carries heat: low circulation overheats an engine even when the radiator is fine.</small></div>':'')+S.done.map(i=>`<div class="case-item"><b>Case 00${i}</b><small>${C[i].note}</small></div>`).join('')+'</div><div class="panel"><h2>Inventor\u2019s archive</h2>'+(S.done.length?S.done.map(i=>`<div class="case-item"><small>${C[i].arch}</small></div>`).join(''):'<p class="sub">Solve cases to recover fragments.</p>')+'</div>';return}
  const c=C[cur],o=cs(cur),res=o.res,pass=res&&res.rows.every(r=>r.ok),pct=res?Math.round(res.rows.filter(r=>r.ok).length/res.rows.length*100):0;
  h1.textContent=c.t;sub.textContent=c.sub;
@@ -378,6 +380,7 @@ ${live}${c.reps.length?`<div class="panel"><h2>Repair bay</h2><div class="case-l
 <div class="panel"><div class="topline"><h2>Acceptance test</h2><span class="pill">${res?pct+'% ACHIEVED':'NOT RUN'}</span></div><div class="actions" style="margin-top:0"><button class="primary" onclick="cp.acc()">Run acceptance test</button><button onclick="cp.rst()">Reset case</button></div>
 ${res?`<table class="acc"><tr><th>Criterion</th><th>Actual</th><th>Required</th><th>Result</th></tr>${res.rows.map(r=>`<tr><td>${r.k}</td><td>${r.a}</td><td>${r.r}</td><td class="${r.ok?'p':'fl'}">${r.ok?'PASS':'FAIL'}</td></tr>`).join('')}</table>${res.rows.filter(r=>!r.ok).map(r=>`<div class="note bad"><b>${r.k}:</b> ${r.w}</div>`).join('')}<div class="note ${pass?'good':'bad'}"><b>${pass?'CASE COMPLETED — ALL REQUIRED OUTPUTS ACHIEVED':'ACCEPTANCE TEST FAILED — REQUIRED OUTPUT NOT ACHIEVED'}</b></div>`:''}
 ${isD(cur)?`<div class="note good">${c.arch}</div>`:''}</div>`}
+window.FF={R:()=>R(),isD};
 R();
 })();
 </script>
@@ -403,10 +406,18 @@ R();
       activeCase: null,
       session: null,
       loreUnlocked: [],
+      solvedSeeds: [],
+      msg: null,
+      replayOpen: false,
       ...JSON.parse(localStorage.getItem(EK) || '{}')
     };
   } catch (e) {
     EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
+  }
+
+  if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId] ||
+      !window.FF_FAULTS.FAULT_CATALOG.some(f => f.id === EState.activeCase.primaryFaultId))) {
+    EState.activeCase = null; EState.session = null; // discard saves from incompatible versions
   }
 
   const saveEndless = () => {
@@ -436,50 +447,9 @@ R();
     return baseXp + (EState.endlessXp || 0);
   };
 
-  // Inject Endless Mode tab into top bar & render panel
-  const bar = document.getElementById('bar');
-  const main = document.querySelector('main');
-  const endlessPanel = document.createElement('div');
-  endlessPanel.id = 'endlessView';
-  endlessPanel.className = 'hidden';
-  main.insertBefore(endlessPanel, document.querySelector('.footer'));
-
-  let endlessActive = false;
-
-  function renderEndless() {
-    if (!bar) return;
-    const unlocked = campaignDoneCount() >= 5;
-    let btn = document.getElementById('endlessTabBtn');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.id = 'endlessTabBtn';
-      btn.className = 'tab';
-      btn.onclick = () => {
-        endlessActive = true;
-        document.querySelectorAll('#bar .tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.stats,.tabs,.grid,#camp').forEach(el => el.classList.add('hidden'));
-        endlessPanel.classList.remove('hidden');
-        renderEndlessContent();
-      };
-      bar.appendChild(btn);
-    }
-    btn.disabled = !unlocked;
-    btn.textContent = unlocked ? '∞ Endless Investigation Mode' : `∞ Endless Mode (${campaignDoneCount()}/5 Campaign)`;
-
-    // Hook existing bar buttons to exit endless mode cleanly
-    bar.querySelectorAll('button:not(#endlessTabBtn)').forEach(b => {
-      if (!b.dataset.hooked) {
-        b.dataset.hooked = '1';
-        b.addEventListener('click', () => {
-          endlessActive = false;
-          endlessPanel.classList.add('hidden');
-        });
-      }
-    });
-
-    if (endlessActive) renderEndlessContent();
-  }
+  let endlessEl = null;
+  const rerender = () => { const y = window.scrollY; renderEndlessContent(); window.scrollTo(0, y); };
+  const say = m => { EState.msg = m; };
 
   function startNewEndlessCase(customSeed) {
     const rank = window.FF_PROGRESSION.computePlayerRank(getTotalXp());
@@ -487,12 +457,26 @@ R();
       ? window.FF_DIFFICULTY.computeAdaptiveTier(EState.history)
       : EState.selectedDifficulty;
 
-    const c = window.FF_GENERATOR.generateCase({
-      seed: customSeed || undefined,
-      difficulty: diff,
-      playerRank: rank.level,
-      recentFingerprints: EState.fingerprints.slice(-15)
-    });
+    let c;
+    try {
+      c = window.FF_GENERATOR.generateCase({
+        seed: customSeed || undefined,
+        difficulty: diff,
+        playerRank: rank.level,
+        recentFingerprints: EState.fingerprints.slice(-15)
+      });
+    } catch (err) {
+      say('Could not build that case: ' + err.message);
+      rerender();
+      return;
+    }
+    const old = EState.session;
+    if (EState.activeCase && old && !old.debrief && (old.testsRun.length || old.repairsApplied.length)) {
+      // An abandoned investigation counts as unsolved so adaptive difficulty can react.
+      EState.history.push({ seed: EState.activeCase.seed, title: EState.activeCase.title, difficulty: EState.activeCase.difficulty,
+        solved: false, efficiencyScore: 35, earnedXp: 0, date: new Date().toLocaleDateString() });
+    }
+    EState.msg = null; EState.replayOpen = false;
 
     EState.activeCase = c;
     EState.session = {
@@ -507,35 +491,34 @@ R();
     };
     EState.fingerprints.push(c.fingerprint);
     saveEndless();
-    renderEndlessContent();
+    rerender();
   }
 
   window.ffEndless = {
-    setDiff(d) { EState.selectedDifficulty = d; saveEndless(); renderEndlessContent(); },
+    setDiff(d) { EState.selectedDifficulty = d; saveEndless(); rerender(); },
     newCase() { startNewEndlessCase(); },
-    replaySeed() {
-      const s = prompt('Enter case seed (e.g. FF-9A2B1C):');
-      if (s && s.trim()) startNewEndlessCase(s.trim().toUpperCase());
-    },
-    setLoad(v) { if (EState.session) { EState.session.load = +v; EState.session.acceptance = null; saveEndless(); renderEndlessContent(); } },
-    setDur(v) { if (EState.session) { EState.session.duration = +v; EState.session.acceptance = null; saveEndless(); renderEndlessContent(); } },
+    replaySeed() { EState.replayOpen = !EState.replayOpen; saveEndless(); rerender(); },
+    loadSeed() { const el = document.getElementById('replayIn'); if (el && el.value.trim()) startNewEndlessCase(el.value); },
+    setLoad(v) { if (EState.session) { EState.session.load = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
+    setDur(v) { if (EState.session) { EState.session.duration = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
     inspect(compKey) {
       if (!EState.session) return;
       EState.session.inspected[compKey] = true;
       saveEndless();
-      renderEndlessContent();
+      rerender();
     },
     runTool(toolId) {
       const c = EState.activeCase, s = EState.session;
       if (!c || !s || s.debrief) return;
       if (s.testsRun.length >= c.diagnosticBudget) {
-        alert('Diagnostic budget exhausted for this case. Proceed to repair or review collected evidence.');
+        say('Diagnostic budget exhausted. Review your evidence or proceed to repair.');
+        rerender();
         return;
       }
       const res = window.FF_DIAG.runDiagnosticTool(c, toolId, { load: s.load, duration: s.duration }, s.repairsApplied);
       s.testsRun.push({ ...res, load: s.load, duration: s.duration });
       saveEndless();
-      renderEndlessContent();
+      rerender();
     },
     applyRepair(repId) {
       const c = EState.activeCase, s = EState.session;
@@ -549,7 +532,7 @@ R();
       }
       s.acceptance = null;
       saveEndless();
-      renderEndlessContent();
+      rerender();
     },
     runAcceptance() {
       const c = EState.activeCase, s = EState.session;
@@ -558,6 +541,9 @@ R();
       s.acceptance = acc;
       if (acc.passed && !s.debrief) {
         const debrief = window.FF_PROGRESSION.buildDebrief(c, s, acc);
+        const firstTime = !EState.solvedSeeds.includes(c.seed);
+        if (!firstTime) { debrief.earnedXp = 0; debrief.replay = true; } // replays teach but do not farm XP
+        else EState.solvedSeeds.push(c.seed);
         s.debrief = debrief;
         EState.endlessXp = (EState.endlessXp || 0) + debrief.earnedXp;
         EState.history.push({
@@ -570,12 +556,12 @@ R();
           date: new Date().toLocaleDateString()
         });
         const lorePool = window.FF_DB.ARCHIVE_LORE_POOL;
-        if (EState.loreUnlocked.length < lorePool.length) {
+        if (firstTime && EState.loreUnlocked.length < lorePool.length) {
           EState.loreUnlocked.push(lorePool[EState.loreUnlocked.length]);
         }
       }
       saveEndless();
-      renderEndlessContent();
+      rerender();
     }
   };
 
@@ -602,6 +588,8 @@ R();
           <button class="primary" onclick="ffEndless.newCase()">Generate New Investigation</button>
           <button onclick="ffEndless.replaySeed()">Load Case Seed</button>
         </div>
+        ${EState.replayOpen ? '<div class="actions"><input id="replayIn" placeholder="FF-AB12CD~i1~0" style="flex:1 1 200px;padding:9px;border-radius:9px;border:1px solid var(--line);background:#0f1b23;color:var(--ink)"><button class="primary" onclick="ffEndless.loadSeed()">Load</button></div>' : ''}
+        ${EState.msg ? '<div class="note bad">' + EState.msg + '</div>' : ''}
       </div>
     `;
 
@@ -693,6 +681,7 @@ R();
               <div class="case-item"><b>Physical Mechanism</b><small>${d.whyItBehavedThatWay}</small></div>
               ${d.interactionNote ? `<div class="case-item"><b>Fault Interaction Analysis</b><small>${d.interactionNote}</small></div>` : ''}
               ${d.misleadingCluesExplained.map(mc => `<div class="case-item"><b>Misleading Clue Resolved (${mc.source})</b><small>Claim: ${mc.claim}<br>Reality: ${mc.reality}</small></div>`).join('')}
+              <div class="case-item"><b>Cost &amp; Efficiency</b><small>Repairs: $${d.totalCost} over ${d.downtime} h downtime ($${d.wastedCost} on unnecessary work). Tests: ${d.testsUsed} run, ${d.repeatedTests} repeated.${d.replay ? ' Replay: no XP awarded.' : ''}</small></div>
               <div class="case-item"><b>Optimal Diagnostic Pathway</b><small>${d.optimalPathHint}</small></div>
             </div>
           </div>
@@ -725,11 +714,10 @@ R();
       `;
     }
 
-    endlessPanel.innerHTML = html;
+    if (endlessEl) endlessEl.innerHTML = html;
   }
 
-  setInterval(renderEndless, 1200);
-  renderEndless();
+  window.FF_ENDLESS = { render(el) { endlessEl = el; renderEndlessContent(); } };
 })();
 </script>
 

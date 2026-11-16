@@ -24,14 +24,25 @@
       ? global.FF_FAULTS.COMPOUND_INTERACTIONS.find(c => c.id === caseObj.compoundId)
       : null;
 
-    const testsUsed = sessionState.testsRun.length;
-    const wrongRepairs = sessionState.wrongRepairs || 0;
-    const efficiencyScore = Math.max(
-      20,
-      Math.min(100, Math.round(100 - wrongRepairs * 18 - Math.max(0, testsUsed - 3) * 7))
-    );
-
     const tier = global.FF_DIFFICULTY.DIFFICULTY_TIERS[caseObj.difficulty];
+    const runs = sessionState.testsRun;
+    // A repeated run of the same tool under identical conditions adds no information.
+    const repeatedTests = runs.filter((t, i) =>
+      runs.findIndex(u => u.toolId === t.toolId && u.load === t.load && u.duration === t.duration) < i).length;
+    const uniqueTests = runs.length - repeatedTests;
+
+    const applied = sessionState.repairsApplied.map(id => caseObj.repairOptions.find(r => r.id === id)).filter(Boolean);
+    const isNeeded = r => (r.fixes && r.fixes.includes(caseObj.primaryFaultId)) || r.fixesSecondary;
+    const wasted = applied.filter(r => !isNeeded(r));
+    const wrongRepairs = wasted.length;
+    const wastedCost = wasted.reduce((s, r) => s + r.cost, 0);
+    const totalCost = applied.reduce((s, r) => s + r.cost, 0);
+    const downtime = applied.reduce((s, r) => s + r.time, 0);
+    const testsUsed = runs.length;
+
+    const efficiencyScore = Math.max(20, Math.min(100, Math.round(
+      100 - wrongRepairs * 12 * tier.repairBudgetPenalty - repeatedTests * 6 - Math.max(0, uniqueTests - 4) * 4
+    )));
     const earnedXp = acceptanceResult.passed
       ? Math.round((180 + efficiencyScore * 1.2) * tier.xpMultiplier)
       : 25;
@@ -49,7 +60,11 @@
         reality: c.explanation
       })),
       testsUsed,
+      repeatedTests,
       wrongRepairs,
+      wastedCost,
+      totalCost,
+      downtime,
       efficiencyScore,
       earnedXp,
       optimalPathHint: `Inspect ${primaryFault.primaryComponent.replace(/_/g, ' ')}, verify readings under ${primaryFault.conditionDependent.replace(/_/g, ' ')} conditions, and apply targeted repair.`

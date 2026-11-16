@@ -1,15 +1,25 @@
-# The Failure Files — Case 001
+# The Failure Files
 
-A self-contained, responsive browser game prototype.
+A browser mechanical-investigation game. Open `index.html` (modules load from the same folder) or the single-file `the-failure-files-standalone.html`.
 
-## Play
-Open `index.html` in a modern browser on desktop or mobile.
+## Modes
+**Campaign (Cases 001–005)** — inspect, test, repair or configure, then run the acceptance test. A case completes only when every criterion passes.
+1. The Silent Generator: coolant flow, temperature, no shutdown
+2. The Missing Gear: grinding-free engagement, ≤50 RPM mismatch, output within ±3%
+3. The Unstable Machine: fuel pressure 3.0 ± 0.2 bar, AFR 13.2–14.7 at 4000 RPM, idle 1400–1600 RPM
+4. Pressure Drop: 180 bar, ≤5 bar loss in 10 s, no relief bypass
+5. The Inventor's Prototype: 580–620 RPM, ≥110 Nm, ≤2% belt slip (many valid configurations)
 
-## Progress
-The game saves investigation progress in the browser's localStorage on that device. It does not sync between devices.
+**Endless Investigation** (unlocks after all five) — procedurally generated cases with a hidden fault, a difficulty tier (Apprentice / Investigator / Master, or adaptive), misleading clues, compound faults, a diagnostic budget and an independent acceptance simulation plus debrief.
 
-## Case loop
-Inspect components → run diagnostic tests → compare readings → choose a repair → validate under load → recover the archive clue.
+## Replay codes
+Every generated case has a code such as `FF-AB12CD~i1~3` (base seed ~ tier+rank ~ attempt). Loading it rebuilds the identical case, whatever your play history. Replays award no XP.
 
-## Notes
-This is a first vertical-slice prototype. The thermal/coolant model is intentionally simplified, but the main causal relationships are simulated: load adds heat; coolant circulation and radiator effectiveness remove heat; a damaged impeller reduces flow and causes overheating under load.
+## Files
+`machine-database.js`, `fault-engine.js`, `simulation-engine.js`, `diagnostic-engine.js`, `difficulty-engine.js`, `acceptance-engine.js`, `case-generator.js`, `progression-engine.js`; the campaign and Endless UI live in `index.html`.
+
+## Development
+- `node tests/run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring).
+- `node build-standalone.js` — rebuilds the single-file version after editing any module or `index.html`.
+
+Saves use localStorage keys `failureFiles001`, `failureFiles002`, `failureFilesEndless_v1`. All values are game specifications, not real service data.
