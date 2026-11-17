@@ -194,6 +194,13 @@
         client,
         machineId: machine.id,
         machineName: machine.name,
+        vehicleId: machine.vehicleId || null,
+        vehicleName: machine.vehicleId && global.FF_AUTO
+          ? (global.FF_AUTO.getVehicle(machine.vehicleId) || {}).name || machine.name
+          : machine.name,
+        vehicleConfiguration: machine.vehicleId && global.FF_AUTO
+          ? (global.FF_AUTO.getVehicle(machine.vehicleId) || {}).configuration || null
+          : null,
         industry: machine.industry,
         isExperimental: !!machine.isExperimental,
         title: `${machine.name}: ${scenario.title}`,
