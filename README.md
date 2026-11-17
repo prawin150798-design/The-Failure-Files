@@ -1,37 +1,27 @@
 # The Failure Files
 
-A browser mechanical-investigation game. Open `index.html` (modules load from the same folder) or the single-file `the-failure-files-standalone.html`.
+A browser-based automotive engineering investigation game. Open `index.html` or build the standalone HTML file.
 
-## Modes
-**Campaign (Cases 001–005)** — inspect, test, repair or configure, then run the acceptance test. A case completes only when every criterion passes.
-1. The Silent Generator: coolant flow, temperature, no shutdown
-2. The Missing Gear: grinding-free engagement, ≤50 RPM mismatch, output within ±3%
-3. The Unstable Machine: fuel pressure 3.0 ± 0.2 bar, AFR 13.2–14.7 at 4000 RPM, idle 1400–1600 RPM
-4. Pressure Drop: 180 bar, ≤5 bar loss in 10 s, no relief bypass
-5. The Inventor's Prototype: 580–620 RPM, ≥110 Nm, ≤2% belt slip (many valid configurations)
+## Campaign
+**Cases 001–005** — investigate vehicles and automotive systems through inspection, diagnostic tests, repair or configuration, and independent validation.
 
-**Endless Investigation** (unlocks after all five) — procedurally generated cases with a hidden fault, a difficulty tier (Apprentice / Investigator / Master, or adaptive), misleading clues, compound faults, a diagnostic budget and an independent acceptance simulation plus debrief.
+1. **The Cooling Crisis** — petrol hatchback cooling system: coolant flow, heat transfer and engine temperature.
+2. **The Missing Gear** — manual transmission: synchroniser wear, clutch drag and gear engagement.
+3. **The Unstable Engine** — motorcycle fuel injection: fuel pressure, air-fuel ratio and engine response.
+4. **The Long Stop** — automotive braking: hydraulic pressure retention, master-cylinder bypass and brake performance.
+5. **The Inventor’s Prototype** — experimental automotive drivetrain: ratio, torque, clamping pressure and slip.
 
-## Investigation upgrades (v0.3)
-- Field Lab visual theme: graphite panels, signal-orange actions and instrument-lime highlights.
-- Endless Mode now includes a hypothesis board, a customer interview, and a maintenance/operating timeline.
-- Expanded procedural scenario engine with 20 authored investigation archetypes: shift-change failures, heat-soak, cold-start, load thresholds, repeated cycles, weather triggers, comeback repairs, wrong-part installs, deferred maintenance, sensor disputes, paperwork audits, hidden workarounds, failure cascades, prototype drift, duty-cycle mismatch, progressive degradation, restart resets, boundary-condition tests and speed/load-linked noise.
-- Each archetype supplies its own briefing, incident history, operating profile and investigation method; case identity now includes the scenario archetype so changing numeric readings alone is not treated as a new scenario.
-- Diagnostic bench controls include load, duration, ambient temperature and machine RPM; readings use the selected conditions.
-- The hypothesis board records the player's working diagnosis without revealing whether it is correct until the debrief.
-- The original campaign, replay codes, acceptance criteria and local saves are preserved.
+## Endless Investigation
+After the campaign, generate repeatable automotive investigations with hidden faults, difficulty tiers, misleading clues, compound faults, diagnostic budgets, replay codes and independent acceptance tests. The procedural pool contains automotive engine/cooling, manual transmission, EFI and experimental drivetrain platforms only.
 
-## Friendly layer
-`plain-language.js` adds a **Simple words** toggle (header) that rewrites technical terms on screen and keeps the real term in brackets, plus customer stories, plain tool descriptions, a green/orange verdict on every reading, a customer-trust meter and three-step hints from Mia. New players start at Apprentice.
-
-## Replay codes
-Every generated case has a code such as `FF-AB12CD~i1~3` (base seed ~ tier+rank ~ attempt). Loading it rebuilds the identical case, whatever your play history. Replays award no XP.
-
-## Files
-`machine-database.js`, `fault-engine.js`, `simulation-engine.js`, `diagnostic-engine.js`, `difficulty-engine.js`, `acceptance-engine.js`, `case-generator.js`, `progression-engine.js`; the campaign and Endless UI live in `index.html`.
+## Engineering and progression
+- Inspect components, compare readings at different loads and operating conditions, form hypotheses, choose repairs and validate the result.
+- The simulation links fault effects to measurable values rather than simply marking a chosen answer correct.
+- Campaign progress, replay codes and local saves are retained in the browser.
+- The inventor mystery is uncovered through campaign archive fragments and experimental drivetrain investigations.
 
 ## Development
-- `node run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring and 600-seed scenario diversity coverage).
-- `node build-standalone.js` — rebuilds the single-file version after editing any module or `index.html`.
+- `node run-tests.js` — engine regression tests, including replay, acceptance, diagnostic coverage and automotive-only case generation.
+- `node build-standalone.js` — rebuild the standalone HTML after editing a module or `index.html`.
 
-Saves use localStorage keys `failureFiles001`, `failureFiles002`, `failureFilesEndless_v1`. All values are game specifications, not real service data.
+The game stores progress locally in this browser.
