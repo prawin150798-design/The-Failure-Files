@@ -42,17 +42,17 @@
           },
           {
             id: 'crit_rpm',
-            name: 'Governor Frequency Stability',
+            name: 'Engine Speed Stability',
             testLoad: 85,
             testDuration: 20,
             metric: 'rpm',
-            targetText: '1485–1515 RPM',
+            targetText: '3300–3700 RPM',
             evaluate: sim => ({
               actual: `${sim.rpm} RPM`,
-              ok: sim.rpm >= 1485 && sim.rpm <= 1515,
+              ok: sim.rpm >= 3300 && sim.rpm <= 3700,
               explanation: sim.rpm >= 1485 && sim.rpm <= 1515
-                ? 'Synchronous 50 Hz speed held under rated electrical load.'
-                : 'Engine speed drooped outside acceptable generator frequency band.'
+                ? 'Engine speed remains stable under the specified road-load test.'
+                : 'Engine speed moved outside the expected operating range.'
             })
           }
         ];
