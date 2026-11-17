@@ -419,8 +419,8 @@ R();
 
 (function(global) {
   const MACHINE_DATABASE = {
-    diesel_generator: {
-      id: 'diesel_generator',
+    automotive_cooling_system: {
+      id: 'automotive_cooling_system',
       name: 'Compact Petrol Hatchback — Cooling System',
       vehicleId: 'compact_hatchback_01',
       industry: 'Automotive · Passenger Car',
@@ -868,7 +868,7 @@ R();
     // --- AUTOMOTIVE ENGINE & COOLING FAULTS ---
     {
       id: 'gen_pump_slip',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'cooling_pump',
       faultType: 'Internal Wear / Impeller Slip',
       title: 'Sheared Impeller Key / Eroded Vanes',
@@ -901,7 +901,7 @@ R();
     },
     {
       id: 'gen_radiator_fouling',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'radiator_core',
       faultType: 'Partial Internal Blockage',
       title: 'Silicate Scale Fouling in Radiator Tubes',
@@ -928,7 +928,7 @@ R();
     },
     {
       id: 'gen_injector_overfuel',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'fuel_injector_bank',
       faultType: 'Incorrect Adjustment / Nozzle Wear',
       title: 'Leaking Injector Nozzle Causing Thermal Overload',
@@ -955,7 +955,7 @@ R();
     },
     {
       id: 'gen_turbo_boost_leak',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'turbocharger',
       faultType: 'Internal Leakage / Wastegate Creep',
       title: 'Stuck-Open Turbocharger Wastegate Actuator',
@@ -1154,7 +1154,7 @@ R();
   const COMPOUND_INTERACTIONS = [
     {
       id: 'compound_gen_scale_and_thermostat',
-      machineId: 'diesel_generator',
+      machineId: 'automotive_cooling_system',
       primaryFaultId: 'gen_radiator_fouling',
       secondaryComponent: 'thermostat',
       secondaryTitle: 'Partially Sticking Thermostat (72% Lift)',
@@ -1258,10 +1258,10 @@ R();
     const actualPressure = +(base.nominalPressure * pressureFactor * ((0.85 + 0.15 * rpmRatio))).toFixed(2);
 
     const thermalLoad = (0.35 + 0.65 * loadRatio) * (0.6 + 0.4 * Math.min(1.5, durationMin / 15));
-    const baseTempRise = machine.id === 'diesel_generator' ? 54 : 36;
+    const baseTempRise = machine.id === 'automotive_cooling_system' ? 54 : 36;
     const actualTemp = +(ambient + baseTempRise * thermalLoad * tempRiseFactor).toFixed(1);
 
-    const engineDeltaT = machine.id === 'diesel_generator'
+    const engineDeltaT = machine.id === 'automotive_cooling_system'
       ? +((8.5 * (0.4 + 0.6 * loadRatio)) / Math.max(0.35, flowFactor)).toFixed(1)
       : +(6.2 * thermalLoad * tempRiseFactor).toFixed(1);
 
@@ -1541,7 +1541,7 @@ R();
     const tol = global.FF_DIFFICULTY.DIFFICULTY_TIERS[caseObj.difficulty].toleranceMultiplier;
 
     switch (machine.id) {
-      case 'diesel_generator':
+      case 'automotive_cooling_system':
         return [
           {
             id: 'crit_temp',
@@ -2147,7 +2147,7 @@ R();
   };
 
   const STORIES = {
-    diesel_generator: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
+    automotive_cooling_system: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
     manual_transmission: [['A taxi driver called Joe', 'the gearbox crunches and fights him on certain shifts', 'he cannot earn a living while it is in the garage'], ['A rally-team mechanic', 'the car will not slot into gear cleanly', 'race day is in two days']],
     petrol_efi_engine: [['A courier on a delivery bike', 'the engine stumbles, then hesitates when she twists the throttle', 'she loses pay for every late parcel'], ['A weekend rider', 'it idles roughly and runs out of breath at speed', 'the group tour leaves on Saturday']],
     experimental_cvt_drive: [['A mysterious letter, unsigned', 'this strange drive keeps slipping and nobody can say why', 'it belongs to the inventor you have been following']]
@@ -2231,6 +2231,14 @@ R();
     };
   } catch (e) {
     EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
+  }
+
+  // Migrate the former cooling-platform ID without discarding an existing investigation.
+  if (EState.activeCase && EState.activeCase.machineId === 'diesel_generator') {
+    EState.activeCase.machineId = 'automotive_cooling_system';
+    EState.activeCase.machineName = 'Compact Petrol Hatchback — Cooling System';
+    EState.activeCase.vehicleId = 'compact_hatchback_01';
+    EState.activeCase.vehicleName = 'Compact Petrol Hatchback';
   }
 
   if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId] ||
