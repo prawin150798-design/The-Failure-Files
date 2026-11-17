@@ -78,10 +78,10 @@
     const actualPressure = +(base.nominalPressure * pressureFactor * ((0.85 + 0.15 * rpmRatio))).toFixed(2);
 
     const thermalLoad = (0.35 + 0.65 * loadRatio) * (0.6 + 0.4 * Math.min(1.5, durationMin / 15));
-    const baseTempRise = machine.id === 'diesel_generator' ? 54 : 36;
+    const baseTempRise = machine.id === 'automotive_cooling_system' ? 54 : 36;
     const actualTemp = +(ambient + baseTempRise * thermalLoad * tempRiseFactor).toFixed(1);
 
-    const engineDeltaT = machine.id === 'diesel_generator'
+    const engineDeltaT = machine.id === 'automotive_cooling_system'
       ? +((8.5 * (0.4 + 0.6 * loadRatio)) / Math.max(0.35, flowFactor)).toFixed(1)
       : +(6.2 * thermalLoad * tempRiseFactor).toFixed(1);
 
