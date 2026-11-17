@@ -74,11 +74,11 @@
       symptoms: [
         'Engine overheats under heavy load despite healthy coolant flow',
         'Dark exhaust haze and elevated exhaust gas temperature (EGT)',
-        'Slight low-frequency vibration increase under load'
+        'Slight low-engine speed vibration increase under load'
       ],
       misleadingClues: [
         {
-          source: 'Operator Report',
+          source: 'Driver Report',
           text: '“It’s definitely a cooling system failure—the temperature gauge hits the red zone every afternoon.”',
           explanation: 'Overheating is a thermal balance problem: after-burning from poor atomisation dumps excessive combustion heat into the water jacket, overwhelming a healthy cooling system.'
         }
@@ -105,7 +105,7 @@
       ],
       misleadingClues: [
         {
-          source: 'Maintenance Record',
+          source: 'Service Record',
           text: 'Electronic governor recalibrated last month; fuel filter replaced 50 hours ago.',
           explanation: 'The governor adds more fuel to hold 3500 RPM, but without sufficient boost air mass, combustion turns rich and hot while losing peak torque.'
         }
