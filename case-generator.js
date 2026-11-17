@@ -135,8 +135,8 @@
     const tier = global.FF_DIFFICULTY.DIFFICULTY_TIERS[difficulty];
     if (!tier) throw new Error('Unknown difficulty: ' + difficulty);
 
-    // Endless investigations are automotive-only. Legacy industrial definitions remain in
-    // the database temporarily for save compatibility, but are never offered as new cases.
+    // Endless investigations are automotive-only. Historical platform IDs are retained
+    // where needed so existing local case records can still be read.
     const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE)
       .filter(m => m.unlockRank <= playerRank && /^Automotive\b/i.test(m.industry || ''));
     const first = fixedAttempt ?? 0;
