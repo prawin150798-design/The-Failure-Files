@@ -6,7 +6,7 @@
     // --- AUTOMOTIVE ENGINE & COOLING FAULTS ---
     {
       id: 'gen_pump_slip',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'cooling_pump',
       faultType: 'Internal Wear / Impeller Slip',
       title: 'Sheared Impeller Key / Eroded Vanes',
@@ -39,7 +39,7 @@
     },
     {
       id: 'gen_radiator_fouling',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'radiator_core',
       faultType: 'Partial Internal Blockage',
       title: 'Silicate Scale Fouling in Radiator Tubes',
@@ -66,7 +66,7 @@
     },
     {
       id: 'gen_injector_overfuel',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'fuel_injector_bank',
       faultType: 'Incorrect Adjustment / Nozzle Wear',
       title: 'Leaking Injector Nozzle Causing Thermal Overload',
@@ -93,7 +93,7 @@
     },
     {
       id: 'gen_turbo_boost_leak',
-      machineId: 'petrol_engine',
+      machineId: 'automotive_cooling_system',
       primaryComponent: 'turbocharger',
       faultType: 'Internal Leakage / Wastegate Creep',
       title: 'Stuck-Open Turbocharger Wastegate Actuator',
