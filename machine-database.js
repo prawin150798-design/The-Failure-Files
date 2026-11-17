@@ -32,7 +32,7 @@
           name: 'Electronic Fuel Injection Rail & Injectors',
           role: 'Meters petrol into the intake ports for clean combustion.',
           normalSpec: 'Fuel rail pressure 3.5 ± 0.2 bar; balanced cylinder fuelling',
-          dependencies: ['fuel_filter', 'turbocharger']
+          dependencies: ['fuel_filter', 'intake_manifold']
         },
         turbocharger: {
           name: 'Naturally Aspirated Intake Manifold',
@@ -47,7 +47,7 @@
           dependencies: ['fuel_injector_bank']
         }
       },
-      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'vibration_analyser', 'exhaust_gas_analyser', 'oscilloscope_ignition']
+      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'tachometer_sync', 'exhaust_gas_analyser', 'oscilloscope_ignition', 'smoke_leak_tester']
     },
 
     hydraulic_press: {
