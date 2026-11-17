@@ -1,7 +1,7 @@
 // Engine regression tests. Run: node tests/run-tests.js   (no dependencies)
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const root = path.join(__dirname, '..'), ctx = { console }; ctx.globalThis = ctx; vm.createContext(ctx);
-for (const f of ['machine-database','fault-engine','simulation-engine','diagnostic-engine','difficulty-engine','acceptance-engine','case-generator','progression-engine','plain-language'])
+for (const f of ['machine-database','automotive-vehicle-database','fault-engine','simulation-engine','diagnostic-engine','difficulty-engine','acceptance-engine','case-generator','progression-engine','plain-language'])
   vm.runInContext(fs.readFileSync(path.join(root, f + '.js'), 'utf8'), ctx, { filename: f });
 const { FF_PLAIN: PL, FF_GENERATOR: G, FF_DB: DB, FF_FAULTS: F, FF_ACCEPTANCE: A, FF_DIAG: D, FF_PROGRESSION: P } = ctx;
 let pass = 0, fail = 0;
@@ -62,4 +62,34 @@ ok(PL.trust(c0, sess) === 100, 'fresh trust is 100');
 ok(PL.trust(c0, { ...sess, hints: 2 }) === 92 && PL.trust(c0, { ...sess, repairsApplied: [wrong.id] }) === 88, 'trust drops with hints and wrong repairs');
 ok([1, 2, 3].every(n => /^Mia:/.test(PL.hint(c0, { hints: n }))) && PL.hint(c0, { hints: 1 }) !== PL.hint(c0, { hints: 3 }), 'hints escalate');
 ok(/Looks healthy/.test(PL.verdict({ detail: 'Vibration spectrum clean; rotating assembly balanced.', summary: 'RMS 2.0' })) && /off/.test(PL.verdict({ detail: 'Significant flow deficit recorded.', summary: 'x' })), 'verdict separates healthy from faulty readings');
+// Automotive vehicle database tests
+const AUTO = ctx.FF_AUTO;
+
+ok(!!AUTO, 'Automotive database should load');
+
+const hatchback = AUTO.getVehicle('compact_hatchback_01');
+
+ok(!!hatchback, 'Compact hatchback should exist');
+
+ok(
+  hatchback.configuration.drivetrain === 'Front-Wheel Drive',
+  'Hatchback should have front-wheel drive'
+);
+
+ok(
+  !!hatchback.systems.engine &&
+  !!hatchback.systems.transmission &&
+  !!hatchback.systems.cooling,
+  'Essential automotive systems should exist'
+);
+
+ok(
+  AUTO.getVehicleComponents('compact_hatchback_01').includes('radiator'),
+  'Radiator should exist in the vehicle component list'
+);
+
+ok(
+  AUTO.validateVehicleDatabase().valid,
+  'Automotive vehicle database should pass validation'
+);
 console.log(`${pass} checks passed, ${fail} failed`); process.exit(fail ? 1 : 0);
