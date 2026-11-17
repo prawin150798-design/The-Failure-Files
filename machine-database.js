@@ -8,46 +8,46 @@
       name: 'Compact Petrol Hatchback — Cooling System',
       industry: 'Automotive · Passenger Car',
       unlockRank: 0,
-      baseParams: { ratedRpm: 1500, ratedLoad: 85, ambientTemp: 28, nominalPressure: 1.2, nominalFlow: 115, nominalVibration: 2.1 },
+      baseParams: { ratedRpm: 3500, ratedLoad: 70, ambientTemp: 28, nominalPressure: 1.1, nominalFlow: 105, nominalVibration: 1.8 },
       components: {
         cooling_pump: {
-          name: 'Centrifugal Coolant Pump',
+          name: 'Engine-Driven Water Pump',
           role: 'Circulates coolant through engine water jackets and radiator core.',
-          normalSpec: '105–125 L/min at 1500 RPM',
+          normalSpec: '90–120 L/min at 3500 RPM',
           dependencies: ['drive_belt', 'thermostat']
         },
         radiator_core: {
-          name: 'Cross-Flow Radiator Core',
+          name: 'Aluminium Cross-Flow Radiator',
           role: 'Rejects thermal energy from coolant to ambient air stream.',
           normalSpec: 'ΔT drop of 10–14°C across core at 85% load',
           dependencies: ['cooling_pump', 'cooling_fan']
         },
         thermostat: {
-          name: 'Wax-Element Thermostat',
+          name: 'Wax-Pellet Engine Thermostat',
           role: 'Regulates coolant bypass during warm-up, opening fully at 82°C.',
           normalSpec: 'Full open at 82–85°C',
           dependencies: ['cooling_pump']
         },
         fuel_injector_bank: {
-          name: 'High-Pressure Fuel Rail & Injectors',
-          role: 'Atomises diesel fuel cleanly into combustion chambers.',
-          normalSpec: 'Rail pressure 1400–1600 bar; balanced cylinder exhaust temps',
+          name: 'Electronic Fuel Injection Rail & Injectors',
+          role: 'Meters petrol into the intake ports for clean combustion.',
+          normalSpec: 'Fuel rail pressure 3.5 ± 0.2 bar; balanced cylinder fuelling',
           dependencies: ['fuel_filter', 'turbocharger']
         },
         turbocharger: {
-          name: 'Exhaust-Driven Turbocharger',
-          role: 'Compresses intake air to sustain combustion stoichiometry under high load.',
-          normalSpec: 'Boost 1.6–1.9 bar at 85% load',
-          dependencies: ['air_intake', 'lubrication_system']
+          name: 'Naturally Aspirated Intake Manifold',
+          role: 'Distributes filtered intake air evenly to the engine cylinders.',
+          normalSpec: 'Intake vacuum stable at warm idle',
+          dependencies: ['air_filter', 'throttle_body']
         },
         avr_governor: {
-          name: 'Electronic Speed Governor & AVR',
-          role: 'Maintains 1500 RPM (50 Hz) and stable voltage across load steps.',
-          normalSpec: '1500 ± 8 RPM; frequency droop < 0.5%',
+          name: 'Engine ECU & Electronic Throttle Control',
+          role: 'Maintains target idle speed and adjusts fuel injection to engine load.',
+          normalSpec: 'Warm idle 800–900 RPM; stable commanded engine speed',
           dependencies: ['fuel_injector_bank']
         }
       },
-      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'vibration_analyser', 'exhaust_gas_analyser', 'oil_spectroscopy']
+      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'vibration_analyser', 'exhaust_gas_analyser', 'oscilloscope_ignition']
     },
 
     hydraulic_press: {
