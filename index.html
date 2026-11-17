@@ -80,7 +80,7 @@ button.primary{background:var(--amber);border-color:var(--amber);color:#21170d}
  <div id="brief" class="panel view">
   <div class="topline"><h2>Incident report</h2><span class="pill">OPEN INVESTIGATION</span></div>
   <div class="case-list">
-   <div class="case-item"><b>Machine</b><small>Compact petrol hatchback · naturally aspirated inline-four · front-wheel drive · 5-speed manual</small></div>
+   <div class="case-item"><b>Vehicle</b><small>Compact petrol hatchback · naturally aspirated inline-four · front-wheel drive · 5-speed manual</small></div>
    <div class="case-item"><b>Reported symptom</b><small>Coolant temperature climbs in slow traffic and with the air conditioning on. The ECU warning appears near 112°C.</small></div>
    <div class="case-item"><b>Known history</b><small>Thermostat replaced yesterday. Coolant level is stable. No visible leak. Radiator fins look clean. Engine runs normally at idle.</small></div>
   </div>
@@ -280,7 +280,7 @@ function render(){
  $('flow').textContent=s.flowMeasured?s.flowVal:'—';
  $('rpm').textContent=(s.running||s.validating)?1500:0;
  $('loadVal').textContent=s.load+'%';$('loadRead').textContent=s.load+'%';$('load').value=s.load;$('load').disabled=s.validating;
- $('runBtn').textContent=s.running?'Stop generator':'Start engine';$('runBtn').disabled=s.validating;$('valBtn').disabled=s.validating;
+ $('runBtn').textContent=s.running?'Stop engine':'Start engine';$('runBtn').disabled=s.validating;$('valBtn').disabled=s.validating;
  $('deltaT').textContent=s.dtShown?s.dt+'°C':'—';
  $('pressure').textContent=s.pressureTest?'1.1 bar':'—';
  $('radTemp').textContent=s.radShown?s.radOut+'°C':'—';
@@ -299,7 +299,7 @@ function render(){
  $('archiveStatus').textContent=s.solved?'FRAGMENT RECOVERED':'LOCKED';
  $('archiveContent').innerHTML=s.solved
   ?'<div class="case-item"><b>ARCHIVE FRAGMENT 01 // The impeller that should not exist</b><small>The recovered impeller carried no manufacturer mark, yet its vane geometry matched a pump design that was never put into production. Someone built it by hand, and then it failed quietly, one eroded vane at a time. More fragments will surface in the next case.</small></div>'
-  :'<p class="sub">A fragment of the archive will be recovered when the generator case is solved and the repair is validated.</p>';
+  :'<p class="sub">A fragment of the archive will be recovered when the vehicle case is solved and the repair is validated.</p>';
  const sv=$('saveState');sv.textContent=saveOK?'● CASE FILE SAVED LOCALLY':'● NOT SAVED (STORAGE BLOCKED)';sv.classList.toggle('err',!saveOK);
 }
 
@@ -325,7 +325,7 @@ acc:c=>{const m=mis(c),o=out2(c),e=Math.abs(o/tgt2-1)*100;return[
 arch:'Fragment 02 — Beneath the worn cone, a bronze ring is stamped “H.V. · 3 / not for sale”. Its cone angle is tuned to no production gearbox.',note:'Gear ratio = driven teeth ÷ driving teeth; output RPM = input RPM ÷ ratio. A synchroniser cuts the speed mismatch roughly exponentially with friction × shift time.'};
 /* ---------- CASE 003: fuel injection ---------- */
 const eff3=c=>c.inj*sq(c.P/3),afr=(c,r)=>Math.max(13.8*(1+c.leak),13*(1+c.leak)*(r/4000)/eff3(c)),idle=c=>1500-900*(1-Math.min(1,eff3(c)))+1200*c.leak-600*(1-c.spark);
-C[3]={t:'Case 003: The Unstable Machine',ind:'Motorcycle · 250 cc fuel injection',xp:150,
+C[3]={t:'Case 003: The Unstable Vehicle',ind:'Motorcycle · 250 cc fuel injection',xp:150,
 sub:'A 250 cc motorcycle idles unevenly and hesitates, worse at high RPM. Compression and ignition looked normal.',
 sym:['Uneven idle','Hesitation on acceleration','Lean readings at high RPM','No mechanical damage'],
 init:()=>({inj:.8,P:3,spark:1,leak:0}),
@@ -336,7 +336,7 @@ acc:c=>{const a=afr(c,4000),i=idle(c);return[
 {k:'Fuel pressure',a:f(c.P,2)+' bar',r:'3.0 ± 0.2 bar',ok:Math.abs(c.P-3)<=.2,w:'Pump output is outside tolerance.'},
 {k:'AFR at 4000 RPM',a:f(a,1)+':1',r:'13.2–14.7 : 1',ok:a>=13.2&&a<=14.7,w:a>14.7?'Mixture is lean: the injector cannot supply enough fuel, or air is leaking in.':'Mixture too rich.'},
 {k:'Idle speed',a:f(i,0)+' RPM',r:'1,400–1,600 RPM',ok:i>=1400&&i<=1600,w:'Idle is unstable: poor spray, misfire or an air leak shifts it out of range.'}]},
-arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, machined with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
+arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, vehicled with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
 /* ---------- CASE 004: The Long Stop — automotive braking system ---------- */
 const brakePressure=c=>Math.max(0,100*(1-c.mcBypass)*(1-c.hoseExpand));
 const brakeDecay=c=>Math.max(0,100-brakePressure(c));
@@ -346,7 +346,7 @@ sym:['Pedal slowly sinks while held','Brake pressure falls during a sustained ap
 init:()=>({mcBypass:.28,hoseExpand:.02,booster:1,pads:1}),
 parts:{'Brake pedal and booster':'The pedal multiplies driver input; the vacuum booster reduces the effort required.','Master cylinder':'Converts pedal force into hydraulic pressure. Internal seal bypass can let pressure fall without an external leak.','Brake fluid':'Transmits pressure through the hydraulic circuit. Water contamination lowers its boiling point.','Flexible brake hose':'Carries pressurised fluid to the caliper. An internally damaged hose can expand under pressure.','Front caliper':'Clamps the pads against the disc when hydraulic pressure is applied.','Brake pads and discs':'Friction converts vehicle kinetic energy into heat. Worn or overheated parts reduce braking performance.'},
 tools:[['Pedal hold / pressure test',c=>`Initial line pressure ${f(brakePressure(c),1)} bar; pressure loss while held ${f(brakeDecay(c),1)} bar.`],['Hydraulic leak inspection',c=>`External fluid loss: 0.00 mL/min. Master-cylinder internal bypass estimate: ${f(c.mcBypass*100,0)}%.`],['Brake hose expansion test',c=>`Hose volumetric expansion: ${f(c.hoseExpand*100,1)}%. ${c.hoseExpand>.08?'Hose expands excessively under pressure.':'Hose expansion is within the test limit.'}`],['Pad and disc inspection',c=>`Pad thickness reserve: ${f(c.pads*100,0)}%. Disc surface: ${c.pads<.3?'scored / near limit':'serviceable'}.`],['Boiling-point tester',c=>`Brake-fluid boiling point estimate: ${f(260-90*(1-c.booster),0)}°C. Replace fluid if below the vehicle specification.`]],
-reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and machine discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
+reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and vehicle discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
 acc:c=>{const p=brakePressure(c),d=brakeDecay(c);return[
 {k:'Held brake line pressure',a:f(p,1)+' bar',r:'≥ 90 bar',ok:p>=90,w:'Hydraulic pressure is not being retained while the pedal is held.'},
 {k:'Pressure loss during hold',a:f(d,1)+' bar',r:'≤ 10 bar',ok:d<=10,w:'Internal bypass or hose expansion is allowing pressure to fall.'},
@@ -368,7 +368,7 @@ acc:(c,g)=>{const k=cal(g);return[
 {k:'Output speed',a:f(k.w,0)+' RPM',r:'580–620 RPM',ok:k.w>=580&&k.w<=620,w:'Total ratio is wrong: change stage or belt ratios.'},
 {k:'Output torque',a:f(k.T,0)+' Nm',r:'≥ 110 Nm',ok:k.T>=110,w:'Not enough torque: ratio too low, or losses (slip, over-tension) are too high.'},
 {k:'Belt slip',a:f(k.sl,1)+'%',r:'≤ 2%',ok:k.sl<=2,w:'Belt tension is too low for the load carried.'}]},
-arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this machine, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The next prototype awaits a road test.',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
+arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this vehicle, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The next prototype awaits a road test.',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
 const mod=typeof module!=='undefined'&&module.exports;
 if(mod){module.exports={C,cal};return}
 /* ---------- UI / progression / save ---------- */
@@ -413,14 +413,14 @@ R();
 })();
 </script>
 
-<script src="machine-database.js"></script>
+<script src="vehicle-database.js"></script>
 <script src="automotive-vehicle-database.js"></script>
 <script src="fault-engine.js"></script>
 <script src="simulation-engine.js"></script>
 <script src="diagnostic-engine.js"></script>
 <script src="difficulty-engine.js"></script>
 <script src="acceptance-engine.js"></script>
-<script src="case-generator.js"></script>
+<script src="case-vehicle.js"></script>
 <script src="progression-engine.js"></script>
 <script src="plain-language.js"></script>
 <script>
@@ -446,7 +446,7 @@ R();
     EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
   }
 
-  if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId] ||
+  if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.vehicleId] ||
       !window.FF_FAULTS.FAULT_CATALOG.some(f => f.id === EState.activeCase.primaryFaultId))) {
     EState.activeCase = null; EState.session = null; // discard saves from incompatible versions
   }
@@ -455,7 +455,7 @@ R();
     const ss = EState.session;
     ss.inspected = ss.inspected || {}; ss.testsRun = ss.testsRun || []; ss.repairsApplied = ss.repairsApplied || [];
     ss.hints = ss.hints || 0; ss.hintLog = ss.hintLog || []; ss.wrongRepairs = ss.wrongRepairs || 0;
-    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15; ss.ambientTemp = ss.ambientTemp ?? EState.activeCase.operatingConditions.ambientTemp; ss.rpm = ss.rpm ?? window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId].baseParams.ratedRpm; ss.hypotheses = ss.hypotheses || []; ss.diagnosis = ss.diagnosis || null; ss.interview = ss.interview || {}; 
+    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15; ss.ambientTemp = ss.ambientTemp ?? EState.activeCase.operatingConditions.ambientTemp; ss.rpm = ss.rpm ?? window.FF_DB.MACHINE_DATABASE[EState.activeCase.vehicleId].baseParams.ratedRpm; ss.hypotheses = ss.hypotheses || []; ss.diagnosis = ss.diagnosis || null; ss.interview = ss.interview || {}; 
   }
   EState.history = EState.history || []; EState.fingerprints = EState.fingerprints || [];
   EState.loreUnlocked = EState.loreUnlocked || []; EState.solvedSeeds = EState.solvedSeeds || [];
@@ -523,7 +523,7 @@ R();
       load: c.operatingConditions.defaultLoad,
       duration: c.operatingConditions.defaultDuration,
       ambientTemp: c.operatingConditions.ambientTemp,
-      rpm: c.operatingConditions.defaultRpm || window.FF_DB.MACHINE_DATABASE[c.machineId].baseParams.ratedRpm,
+      rpm: c.operatingConditions.defaultRpm || window.FF_DB.MACHINE_DATABASE[c.vehicleId].baseParams.ratedRpm,
       hypotheses: [], diagnosis: null, interview: {},
       inspected: {},
       testsRun: [],
@@ -629,16 +629,16 @@ R();
     const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
     const cond = fault.conditionDependent;
     const answers = {
-      timing: cond === 'sustained_run' || cond === 'hot_run' ? 'It usually appears after the machine has been working for a while. A short test often looks normal.' : cond === 'high_load' || cond === 'high_pressure' ? 'It is much more noticeable when the machine is working hard. Light-duty operation can look normal.' : 'We have noticed it during ordinary operation too; it is not limited to one short event.',
+      timing: cond === 'sustained_run' || cond === 'hot_run' ? 'It usually appears after the vehicle has been working for a while. A short test often looks normal.' : cond === 'high_load' || cond === 'high_pressure' ? 'It is much more noticeable when the vehicle is working hard. Light-duty operation can look normal.' : 'We have noticed it during ordinary operation too; it is not limited to one short event.',
       recent: c.formatId === 'incorrect_previous_repair' ? 'A repair was carried out recently. The symptom changed briefly, but the underlying problem returned.' : 'No major component replacement is recorded recently. The routine service log may still contain useful clues.',
       repeat: c.formatId === 'intermittent_failure' ? 'It does not happen on every run. Stopping and restarting sometimes makes it disappear for a while.' : 'It is reasonably repeatable when we recreate the same operating conditions.',
       conditions: cond === 'high_load' ? 'The problem is most obvious under heavy load; it becomes less noticeable when the load is reduced.' : cond === 'high_rpm' ? 'It becomes more obvious as rotational speed rises.' : cond === 'high_pressure' ? 'It appears during the high-pressure part of the cycle.' : 'Longer operating time seems to make the behaviour more pronounced.'
     };
     return answers[q] || 'The operator is unsure. The observation should be verified with a controlled test.';
   }
-  function candidateHypotheses(c, machine) {
+  function candidateHypotheses(c, vehicle) {
     const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
-    const entries = Object.entries(machine.components);
+    const entries = Object.entries(vehicle.components);
     const actual = fault.primaryComponent;
     let seed = 0; for (const ch of c.seed) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const others = entries.filter(([k]) => k !== actual).sort((a,b) => ((a[0].length*17 + seed) % 97) - ((b[0].length*17 + seed) % 97)).slice(0,3);
@@ -650,9 +650,9 @@ R();
     const h = c.operatingConditions.operatingHours;
     const f = c.formatId;
     const events = [
-      [`${Math.max(1,Math.round(h/1000)-2)} weeks ago`, 'Routine service entry recorded; machine returned to operation.'],
-      [`${Math.max(1,Math.round(h/1500))} days ago`, f === 'incorrect_previous_repair' ? 'A corrective repair was signed off. No controlled post-repair test was attached.' : 'Operator first noticed a change in machine behaviour.'],
-      ['Last shift', f === 'intermittent_failure' ? 'The symptom appeared, disappeared after a restart, then returned.' : 'The machine completed a partial shift with the reported symptom.'],
+      [`${Math.max(1,Math.round(h/1000)-2)} weeks ago`, 'Routine service entry recorded; vehicle returned to operation.'],
+      [`${Math.max(1,Math.round(h/1500))} days ago`, f === 'incorrect_previous_repair' ? 'A corrective repair was signed off. No controlled post-repair test was attached.' : 'Operator first noticed a change in vehicle behaviour.'],
+      ['Last shift', f === 'intermittent_failure' ? 'The symptom appeared, disappeared after a restart, then returned.' : 'The vehicle completed a partial shift with the reported symptom.'],
       ['Current shift', 'The issue was escalated for an independent investigation.']
     ];
     if (f === 'conflicting_evidence') events[1][1] = 'Two records disagree about the operating condition when the fault occurred.';
@@ -689,7 +689,7 @@ R();
           <h2>Endless Investigation Command</h2>
           <span class="pill">${rank.title} · ${totalXp} XP</span>
         </div>
-        <p class="sub">Procedural investigations derived from physics-linked machine models. Every fault is generated first, and every symptom follows causally.</p>
+        <p class="sub">Procedural investigations derived from physics-linked vehicle models. Every fault is generated first, and every symptom follows causally.</p>
         <div class="actions">
           <button class="${EState.selectedDifficulty==='adaptive'?'primary':''}" onclick="ffEndless.setDiff('adaptive')">Adaptive Difficulty</button>
           <button class="${EState.selectedDifficulty==='apprentice'?'primary':''}" onclick="ffEndless.setDiff('apprentice')">Apprentice</button>
@@ -706,9 +706,9 @@ R();
     `;
 
     if (c && s) {
-      const machine = window.FF_DB.MACHINE_DATABASE[c.machineId];
+      const vehicle = window.FF_DB.MACHINE_DATABASE[c.vehicleId];
       const tier = window.FF_DIFFICULTY.DIFFICULTY_TIERS[c.difficulty];
-      const unlockedTools = machine.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
+      const unlockedTools = vehicle.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
 
       html += `
         <div class="panel">
@@ -723,7 +723,7 @@ R();
             <div class="case-item"><b>📞 ${st.who} calls</b><small>“Please help: ${st.line}.” <em>Why it matters: ${st.stake}.</em></small></div>
             <div class="case-item"><b>❤ Customer trust: ${tr}%</b><div class="meter ${tr < 60 ? 'hot' : ''}"><i style="width:${tr}%"></i></div><small>Wasted tests, needless repairs and hints lower it. Aim to stay high.</small></div>
             ${s.testsRun.length === 0 && !s.repairsApplied.length ? '<div class="note"><b>How to play:</b> 1) Listen to the customer. 2) Use tools to look for what is off. 3) Fix the real cause. 4) Run the acceptance test to prove it works.</div>' : ''}`; })()}
-            <div class="case-item"><b>Scenario: ${c.scenarioTitle || c.formatLabel}</b><small>${c.scenarioBriefing || 'Investigate the reported machine failure using controlled tests and evidence.'}</small></div>
+            <div class="case-item"><b>Scenario: ${c.scenarioTitle || c.formatLabel}</b><small>${c.scenarioBriefing || 'Investigate the reported vehicle failure using controlled tests and evidence.'}</small></div>
             <div class="case-item"><b>Investigation Challenge: ${c.scenarioMethod ? c.scenarioMethod[0] : 'Establish the fault conditions'}</b><small>${c.scenarioMethod ? c.scenarioMethod[1] : 'Compare baseline and fault conditions before selecting a repair.'}</small></div>
             <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
             ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
@@ -735,11 +735,11 @@ R();
         <div class="panel">
           <h2>01 / Component Architecture Inspection</h2>
           <div class="chips">
-            ${Object.entries(machine.components).map(([k, comp]) => `
+            ${Object.entries(vehicle.components).map(([k, comp]) => `
               <button class="${s.inspected[k]?'on':''}" onclick="ffEndless.inspect('${k}')">${comp.name}</button>
             `).join('')}
           </div>
-          ${Object.entries(machine.components).filter(([k]) => s.inspected[k]).map(([k, comp]) => `
+          ${Object.entries(vehicle.components).filter(([k]) => s.inspected[k]).map(([k, comp]) => `
             <div class="case-item" style="margin-top:8px"><b>${comp.name}</b><small>${comp.role} <em>(Spec: ${comp.normalSpec})</em></small></div>
           `).join('')}
         </div>
@@ -747,9 +747,9 @@ R();
         <div class="panel">
           <div class="topline"><h2>02 / Diagnostic Hypothesis Board</h2><span class="pill">YOUR WORKING THEORY</span></div>
           <p class="sub">Select the components you currently suspect. Use evidence to narrow the list, then record your leading diagnosis. You can revise it as new information arrives.</p>
-          <div class="hypothesis-grid">${candidateHypotheses(c,machine).map(([k,comp])=>`<button class="hypothesis ${s.hypotheses.includes(k)?'selected':''}" onclick="ffEndless.toggleHypothesis('${k}')">${s.hypotheses.includes(k)?'✓ ':''}${comp.name}</button>`).join('')}</div>
+          <div class="hypothesis-grid">${candidateHypotheses(c,vehicle).map(([k,comp])=>`<button class="hypothesis ${s.hypotheses.includes(k)?'selected':''}" onclick="ffEndless.toggleHypothesis('${k}')">${s.hypotheses.includes(k)?'✓ ':''}${comp.name}</button>`).join('')}</div>
           <div class="actions"><button class="primary" onclick="ffEndless.submitDiagnosis('${s.hypotheses[0]||''}')" ${s.hypotheses.length!==1?'disabled':''}>Record selected diagnosis</button><span class="pill">${s.hypotheses.length} selected</span></div>
-          ${s.diagnosis?`<div class="note ${s.diagnosisCorrect?'good':''}">Recorded working diagnosis: ${machine.components[s.diagnosis]?.name || s.diagnosis}. Your hypothesis is recorded. Continue testing before committing to a repair.</div>`:''}
+          ${s.diagnosis?`<div class="note ${s.diagnosisCorrect?'good':''}">Recorded working diagnosis: ${vehicle.components[s.diagnosis]?.name || s.diagnosis}. Your hypothesis is recorded. Continue testing before committing to a repair.</div>`:''}
         </div>
 
         <div class="panel">
@@ -759,7 +759,7 @@ R();
             <div><label>Run duration: <b>${s.duration} min</b></label><input type="range" min="5" max="30" step="5" value="${s.duration}" onchange="ffEndless.setDur(this.value)"></div>
             <div><label>Ambient temperature: <b>${s.ambientTemp}°C</b></label><input type="range" min="10" max="45" step="1" value="${s.ambientTemp}" onchange="ffEndless.setAmbient(this.value)"></div>
           </div>
-          <label>Machine speed: <b>${s.rpm} RPM</b></label><input type="range" min="${Math.round(machine.baseParams.ratedRpm*.65)}" max="${Math.round(machine.baseParams.ratedRpm*1.1)}" step="25" value="${s.rpm}" onchange="ffEndless.setRPM(this.value)">
+          <label>Vehicle speed: <b>${s.rpm} RPM</b></label><input type="range" min="${Math.round(vehicle.baseParams.ratedRpm*.65)}" max="${Math.round(vehicle.baseParams.ratedRpm*1.1)}" step="25" value="${s.rpm}" onchange="ffEndless.setRPM(this.value)">
           <p class="sub" style="font-size:12px;margin:6px 0 0">Experiment with one variable at a time. Compare readings under controlled conditions instead of changing every setting at once.</p>
           <div class="chips" style="margin-top:10px">
             ${unlockedTools.map(tid => {
