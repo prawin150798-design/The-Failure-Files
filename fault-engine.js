@@ -292,7 +292,7 @@
   const COMPOUND_INTERACTIONS = [
     {
       id: 'compound_gen_scale_and_thermostat',
-      machineId: 'diesel_generator',
+      machineId: 'automotive_cooling_system',
       primaryFaultId: 'gen_radiator_fouling',
       secondaryComponent: 'thermostat',
       secondaryTitle: 'Partially Sticking Thermostat (72% Lift)',
