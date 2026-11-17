@@ -119,89 +119,6 @@
       concept: 'Turbocharged petrols require air mass proportional to fuel delivery. Low boost starves combustion of oxygen, causing rich EGT spikes and torque droop.'
     },
 
-    // --- HYDRAULIC PRESS FAULTS ---
-    {
-      id: 'hyd_relief_chatter',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'proportional_relief_valve',
-      faultType: 'Internal Leakage / Seat Erosion',
-      title: 'Scored Proportional Relief Valve Pilot Seat',
-      conditionDependent: 'high_pressure',
-      symptoms: [
-        'Ram approaches target pressure slowly, then bleeds down during hold phase',
-        'Localized high temperature at relief valve return line to tank',
-        'Zero external oil drips on floor or cylinder gland'
-      ],
-      misleadingClues: [
-        {
-          source: 'Operator Statement',
-          text: '“The main cylinder seals must be blown—the ram creeps upward whenever we hold a 200-ton squeeze.”',
-          explanation: 'Internal bypass across the relief valve dumps pressurised oil straight to the tank, mimicking cylinder seal bypass.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.76, decayRate: 14.5, tempRiseFactor: 1.35, flowLoss: 11.5 },
-      repairs: [
-        { id: 'rep_relief_valve', label: 'Replace & calibrate proportional relief cartridge', fixes: ['hyd_relief_chatter'], cost: 340, time: 1.5 },
-        { id: 'rep_cylinder_seals', label: 'Strip main ram & replace piston seals', fixes: [], cost: 780, time: 5 },
-        { id: 'rep_main_pump', label: 'Overhaul axial piston pump', fixes: [], cost: 920, time: 4 }
-      ],
-      concept: 'Pressure drop across a partially open relief valve converts hydraulic power (P × Q) directly into localised heat in the tank return line.'
-    },
-    {
-      id: 'hyd_piston_seal_bypass',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'main_cylinder_seals',
-      faultType: 'Component Wear',
-      title: 'Extruded PTFE Piston Ring in Main Press Cylinder',
-      conditionDependent: 'high_pressure',
-      symptoms: [
-        'Holding pressure decays rapidly under load',
-        'Warm oil flow detected in cylinder rod-end return line during deadhead hold',
-        'Relief valve return line remains cool and silent'
-      ],
-      misleadingClues: [
-        {
-          source: 'Previous Work Order',
-          text: 'Directional control valve replaced 3 weeks ago after pressure complaints.',
-          explanation: 'Replacing the directional valve could not stop internal cross-port leakage past the worn piston seal inside the barrel.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.79, decayRate: 16.0, tempRiseFactor: 1.25, cylinderBypass: 10.8 },
-      repairs: [
-        { id: 'rep_cylinder_seals', label: 'Hone barrel & install heavy-duty piston seals', fixes: ['hyd_piston_seal_bypass'], cost: 780, time: 5 },
-        { id: 'rep_relief_valve', label: 'Replace proportional relief valve', fixes: [], cost: 340, time: 1.5 },
-        { id: 'rep_dir_valve', label: 'Replace 4/3 directional spool valve', fixes: [], cost: 490, time: 2 }
-      ],
-      concept: 'Isolating internal hydraulic bypass requires comparing return flow from the relief valve versus the cylinder annulus line under static hold.'
-    },
-    {
-      id: 'hyd_oil_viscosity_breakdown',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'oil_cooler',
-      faultType: 'Temperature / Viscosity Degradation',
-      title: 'Clogged Oil Cooler Core Causing Hot-Run Slip',
-      conditionDependent: 'hot_run',
-      symptoms: [
-        'Press achieves full 210 bar when cold at start of shift',
-        'After 25 minutes of cycling, pressure drops and cycle time slows',
-        'Reservoir fluid temperature exceeds 68°C'
-      ],
-      misleadingClues: [
-        {
-          source: 'Operator Report',
-          text: '“The pump is wearing out—it works fine at 7 AM and loses power by coffee break.”',
-          explanation: 'Thermal thinning of ISO 46 hydraulic oil above 65°C increases internal clearances leakage across every valve and pump slipper.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.82, decayRate: 9.5, tempRiseFactor: 1.65, viscosityFactor: 0.54 },
-      repairs: [
-        { id: 'rep_cooler_service', label: 'Clean oil cooler core & flush degraded fluid', fixes: ['hyd_oil_viscosity_breakdown'], cost: 310, time: 2 },
-        { id: 'rep_main_pump', label: 'Replace axial piston pump', fixes: [], cost: 920, time: 4 },
-        { id: 'rep_relief_valve', label: 'Increase relief valve preload', fixes: [], cost: 120, time: 1 }
-      ],
-      concept: 'Internal laminar leakage in hydraulic clearances scales inversely with fluid viscosity (Q_leak ∝ 1/μ). Overheated oil loses viscosity and pressure.'
-    },
-
     // --- MANUAL TRANSMISSION FAULTS ---
     {
       id: 'tx_synchro_glaze',
@@ -341,35 +258,6 @@
       concept: 'Volumetric flow through a fixed injector orifice obeys Q ∝ √(P_rail − P_manifold). Insufficient rail pressure starves the engine at high RPM.'
     },
 
-    // --- ROTARY SCREW COMPRESSOR FAULTS ---
-    {
-      id: 'comp_separator_clog',
-      machineId: 'rotary_screw_compressor',
-      primaryComponent: 'oil_separator',
-      faultType: 'Partial Blockage',
-      title: 'Saturated Air/Oil Separator Element',
-      conditionDependent: 'high_load',
-      symptoms: [
-        'Internal sump pressure reads 10.2 bar while plant discharge is only 8.1 bar',
-        'High motor amperage draw and elevated discharge temperature',
-        'Oil carryover visible in downstream pneumatic filter bowl'
-      ],
-      misleadingClues: [
-        {
-          source: 'Plant Operator',
-          text: '“The pressure transducer must be drifting—the controller shows 10.2 bar even though our shop line is low.”',
-          explanation: 'Both gauges are accurate: a 2.1 bar pressure drop across a clogged separator element forces the air-end to over-compress against internal restriction.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.94, internalDeltaP: 2.1, tempRiseFactor: 1.38, vibFactor: 1.22 },
-      repairs: [
-        { id: 'rep_separator', label: 'Replace coalescing separator element & scavenge orifice', fixes: ['comp_separator_clog'], cost: 290, time: 1.5 },
-        { id: 'rep_unloader', label: 'Rebuild intake unloader valve', fixes: [], cost: 350, time: 2 },
-        { id: 'rep_thermal_valve', label: 'Replace oil thermostatic bypass valve', fixes: [], cost: 195, time: 1 }
-      ],
-      concept: 'Every 1 bar of differential pressure across a clogged separator adds ~7% shaft power draw and drives discharge temperature upward.'
-    },
-
     // --- EXPERIMENTAL PROTOTYPE H-09 FAULT ---
     {
       id: 'exp_clamp_servo_lag',
@@ -411,16 +299,6 @@
       extraEffects: { flowFactor: 0.85, tempRiseFactor: 1.18 },
       extraRepair: { id: 'rep_thermostat', label: 'Replace partially sticking thermostat', fixesSecondary: true, cost: 95, time: 1 },
       interactionNote: 'Fixing only the radiator leaves a 15% flow restriction at peak ambient heat; fixing only the thermostat leaves the fouled core unable to reject rated load.'
-    },
-    {
-      id: 'compound_hyd_relief_and_cooler',
-      machineId: 'hydraulic_press',
-      primaryFaultId: 'hyd_relief_chatter',
-      secondaryComponent: 'oil_cooler',
-      secondaryTitle: 'Fouled Oil Cooler Fins from Continuous Relief Bypass Heat',
-      extraEffects: { tempRiseFactor: 1.25, pressureFactor: 0.94 },
-      extraRepair: { id: 'rep_cooler_service', label: 'Clean oil cooler core & refresh heat-stressed oil', fixesSecondary: true, cost: 310, time: 2 },
-      interactionNote: 'Prolonged bypass through the scored relief valve cooked the hydraulic oil and fouled the cooler; both the valve and cooling capacity must be restored.'
     },
     {
       id: 'compound_tx_synchro_and_clutch',
