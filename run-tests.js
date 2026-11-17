@@ -1,6 +1,6 @@
-// Engine regression tests. Run: node tests/run-tests.js   (no dependencies)
+// Engine regression tests. Run: node run-tests.js   (no dependencies)
 const fs = require('fs'), vm = require('vm'), path = require('path');
-const root = path.join(__dirname, '..'), ctx = { console }; ctx.globalThis = ctx; vm.createContext(ctx);
+const root = __dirname, ctx = { console }; ctx.globalThis = ctx; vm.createContext(ctx);
 for (const f of ['machine-database','automotive-vehicle-database','fault-engine','simulation-engine','diagnostic-engine','difficulty-engine','acceptance-engine','case-generator','progression-engine','plain-language'])
   vm.runInContext(fs.readFileSync(path.join(root, f + '.js'), 'utf8'), ctx, { filename: f });
 const { FF_PLAIN: PL, FF_GENERATOR: G, FF_DB: DB, FF_FAULTS: F, FF_ACCEPTANCE: A, FF_DIAG: D, FF_PROGRESSION: P } = ctx;
