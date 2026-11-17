@@ -29,7 +29,7 @@
   };
 
   const STORIES = {
-    diesel_generator: [['The night manager at St. Aldric Hospital', 'our backup generator keeps overheating when the wards need it most', 'a power cut tonight would be dangerous'], ['A festival organiser', 'the stage generator shuts itself off an hour into every show', 'the headline act goes on at nine']],
+    diesel_generator: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
     hydraulic_press: [['Marta, who runs a small metal-stamping shop', 'the press feels weaker the longer it holds', 'a rush order of car brackets ships Friday'], ['The foreman at a bicycle-frame factory', 'the press slowly loses squeeze and ruins parts', 'every ruined part costs real money']],
     manual_transmission: [['A taxi driver called Joe', 'the gearbox crunches and fights him on certain shifts', 'he cannot earn a living while it is in the garage'], ['A rally-team mechanic', 'the car will not slot into gear cleanly', 'race day is in two days']],
     petrol_efi_engine: [['A courier on a delivery bike', 'the engine stumbles, then hesitates when she twists the throttle', 'she loses pay for every late parcel'], ['A weekend rider', 'it idles roughly and runs out of breath at speed', 'the group tour leaves on Saturday']],
@@ -38,7 +38,7 @@
   };
   const hash = s => { let h = 7; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
   function story(c) {
-    const list = STORIES[c.machineId] || STORIES.diesel_generator, [who, line, stake] = list[hash(c.seed) % list.length];
+    const list = STORIES[c.machineId] || STORIES.manual_transmission, [who, line, stake] = list[hash(c.seed) % list.length];
     return { who, line, stake };
   }
 
