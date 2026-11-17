@@ -353,10 +353,10 @@ const cs=i=>S.c[i]||(S.c[i]={cond:C[i].init(),insp:{},tests:{},reps:[],ctl:C[i].
 const exX=()=>{try{return JSON.parse(localStorage.getItem('failureFilesEndless_v1')||'{}').endlessXp||0}catch(e){return 0}};
 const xp=()=>exX()+(d1()?100:0)+S.done.reduce((a,i)=>a+C[i].xp,0)+Object.keys(S.c).reduce((a,i)=>a+5*(Object.keys(S.c[i].insp).length+Object.keys(S.c[i].tests).length),0);
 const main=document.querySelector('main'),old=[...document.querySelectorAll('.stats,.tabs,.grid')],h1=document.querySelector('h1'),sub=document.querySelector('.sub'),H=[h1.textContent,sub.textContent];
-const st=document.createElement('style');st.textContent='table.acc{width:100%;border-collapse:collapse;font-size:13px}.acc td,.acc th{padding:7px 6px;border-bottom:1px solid #2c414c;text-align:left}.p{color:#8bd5a4;font-weight:700}.fl{color:#ef7770;font-weight:700}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips button.on{border-color:#f2b75b}#bar{display:flex;gap:7px;overflow:auto;margin:14px 0}#camp .panel{margin-bottom:14px}.res{font:13px var(--mono);margin-top:8px}';document.head.appendChild(st);
+const st=document.createElement('style');st.textContent='table.acc{width:100%;border-collapse:collapse;font-size:13px}.acc td,.acc th{padding:7px 6px;border-bottom:1px solid #2c414c;text-align:left}.p{color:#8bd5a4;font-weight:700}.fl{color:#ef7770;font-weight:700}.chips{display:flex;gap:7px;flex-wrap:wrap}.chips button.on{border-color:#f2b75b}#bar{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}#camp .panel{margin-bottom:14px}.res{font:13px var(--mono);margin-top:8px}';document.head.appendChild(st);
 const bar=document.createElement('div');bar.id='bar';main.insertBefore(bar,old[0]);const camp=document.createElement('div');camp.id='camp';camp.className='hidden';main.insertBefore(camp,old[0]);
 window.cp={
-sel(i){if(i==9&&![1,2,3,4,5].every(isD))return;cur=i;R()},
+sel(i){cur=i;R()},
 insp(k){cs(cur).insp[k]=1;save();R(k)},
 tool(i){const o=cs(cur),t=C[cur].tools[i];o.tests[t[0]]=t[1](o.cond,o.ctl);save();R()},
 rep(i){const o=cs(cur);C[cur].reps[i][2](o.cond);o.reps.push(C[cur].reps[i][0]);o.res=null;save();R()},
@@ -364,7 +364,7 @@ ctl(k,v){cs(cur).ctl[k]=+v;cs(cur).res=null;save();R()},
 acc(){const o=cs(cur),rows=C[cur].acc(o.cond,o.ctl);o.res={rows};if(rows.every(r=>r.ok)&&!S.done.includes(cur))S.done.push(cur);save();R()},
 rst(){delete S.c[cur];save();R()}};
 function R(sk){
- bar.innerHTML=[1,2,3,4,5].map(i=>`<button class="tab ${cur==i?'active':''}" ${avail(i)?'':'disabled'} onclick="cp.sel(${i})">${isD(i)?'✓ ':''}Case 00${i}${avail(i)?'':' 🔒'}</button>`).join('')+`<button class="tab ${cur==0?'active':''}" onclick="cp.sel(0)">Campaign · ${xp()} XP</button>`+`<button class="tab ${cur==9?'active':''}" ${[1,2,3,4,5].every(isD)?'':'disabled'} onclick="cp.sel(9)">∞ Endless${[1,2,3,4,5].every(isD)?'':' ('+[1,2,3,4,5].filter(isD).length+'/5)'}</button>`;
+ bar.innerHTML=[1,2,3,4,5].map(i=>`<button class="tab ${cur==i?'active':''}" ${avail(i)?'':'disabled'} onclick="cp.sel(${i})">${isD(i)?'✓ ':''}Case 00${i}${avail(i)?'':' 🔒'}</button>`).join('')+`<button class="tab ${cur==0?'active':''}" onclick="cp.sel(0)">Campaign · ${xp()} XP</button>`+`<button class="tab ${cur==9?'active':''}" onclick="cp.sel(9)">∞ Endless${[1,2,3,4,5].every(isD)||(window.FF_ENDLESS&&FF_ENDLESS.early())?'':' 🔒'}</button>`;
  old.forEach(e=>e.classList.toggle('hidden',cur!=1));camp.classList.toggle('hidden',cur==1);
  if(cur==1){h1.textContent=H[0];sub.textContent=H[1];return}
  if(cur==9){h1.textContent='Endless Investigation';sub.textContent='Procedurally generated cases: every fault is generated first and every symptom follows from it.';window.FF_ENDLESS.render(camp);return}
@@ -408,6 +408,7 @@ R();
       session: null,
       loreUnlocked: [],
       solvedSeeds: [],
+      early: false,
       msg: null,
       replayOpen: false,
       ...JSON.parse(localStorage.getItem(EK) || '{}')
@@ -510,6 +511,7 @@ R();
       saveEndless();
       rerender();
     },
+    unlockEarly() { EState.early = true; saveEndless(); window.FF && window.FF.R(); },
     hint() {
       const c = EState.activeCase, s = EState.session;
       if (!c || !s || s.debrief) return;
@@ -577,6 +579,15 @@ R();
   };
 
   function renderEndlessContent() {
+    const FFx = window.FF, doneN = FFx ? [1, 2, 3, 4, 5].filter(FFx.isD).length : 0;
+    if (doneN < 5 && !EState.early) {
+      if (endlessEl) endlessEl.innerHTML = `<div class="panel"><div class="topline"><h2>🔒 Endless mode is locked</h2><span class="pill">${doneN}/5 CAMPAIGN CASES</span></div>
+        <p class="sub">Finish the five campaign cases to unlock endless, randomly generated investigations. Each one has a hidden fault, a customer story and an acceptance test.</p>
+        <div class="case-list">${[1, 2, 3, 4, 5].map(i => `<div class="case-item"><b>${FFx && FFx.isD(i) ? '✅' : '⬜'} Case 00${i}</b></div>`).join('')}</div>
+        <p class="sub" style="margin-top:12px">Want to try it now? You can open it early. Your campaign progress is not affected.</p>
+        <div class="actions"><button class="primary" onclick="ffEndless.unlockEarly()">Open Endless early</button></div></div>`;
+      return;
+    }
     const totalXp = getTotalXp();
     const rank = window.FF_PROGRESSION.computePlayerRank(totalXp);
     const c = EState.activeCase;
@@ -735,7 +746,7 @@ R();
     if (endlessEl) endlessEl.innerHTML = html;
   }
 
-  window.FF_ENDLESS = { render(el) { endlessEl = el; renderEndlessContent(); } };
+  window.FF_ENDLESS = { early: () => !!EState.early, render(el) { endlessEl = el; renderEndlessContent(); } };
 })();
 </script>
 
