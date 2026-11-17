@@ -5,8 +5,8 @@
   const MACHINE_DATABASE = {
     diesel_generator: {
       id: 'diesel_generator',
-      name: 'Industrial Diesel Generator',
-      industry: 'Power Generation · Heavy Duty',
+      name: 'Compact Petrol Hatchback — Cooling System',
+      industry: 'Automotive · Passenger Car',
       unlockRank: 0,
       baseParams: { ratedRpm: 1500, ratedLoad: 85, ambientTemp: 28, nominalPressure: 1.2, nominalFlow: 115, nominalVibration: 2.1 },
       components: {
@@ -216,8 +216,8 @@
 
     experimental_cvt_drive: {
       id: 'experimental_cvt_drive',
-      name: 'Inventor’s Hydro-Mechanical Variable Drive (Prototype H-09)',
-      industry: 'Experimental Archive · Clandestine Lab',
+      name: 'Inventor’s Experimental Automotive Variable Drive (Prototype H-09)',
+      industry: 'Automotive · Experimental Drivetrain',
       unlockRank: 3,
       isExperimental: true,
       baseParams: { ratedRpm: 2400, ratedLoad: 85, ambientTemp: 24, nominalPressure: 45, nominalFlow: 28, nominalVibration: 1.5 },
