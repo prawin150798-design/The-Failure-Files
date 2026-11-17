@@ -74,7 +74,7 @@ ok(!!AUTO, 'Automotive database should load');
 const hatchback = AUTO.getVehicle('compact_hatchback_01');
 
 ok(!!hatchback, 'Compact hatchback should exist');
-ok(DB.MACHINE_DATABASE.diesel_generator.vehicleId === hatchback.id, 'Cooling investigation must link to the automotive vehicle database');
+ok(DB.MACHINE_DATABASE.automotive_cooling_system.vehicleId === hatchback.id, 'Cooling investigation must link to the automotive vehicle database');
 
 ok(
   hatchback.configuration.drivetrain === 'Front-Wheel Drive',
