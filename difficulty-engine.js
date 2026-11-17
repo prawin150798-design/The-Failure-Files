@@ -45,7 +45,7 @@
 
   function computeAdaptiveTier(performanceHistory) {
     if (!performanceHistory || performanceHistory.length < 2) {
-      return 'investigator';
+      return 'apprentice'; // new players start with the guided tier
     }
     const recent = performanceHistory.slice(-5);
     const avgScore = recent.reduce((acc, item) => acc + (item.efficiencyScore || 70), 0) / recent.length;

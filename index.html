@@ -393,6 +393,7 @@ R();
 <script src="acceptance-engine.js"></script>
 <script src="case-generator.js"></script>
 <script src="progression-engine.js"></script>
+<script src="plain-language.js"></script>
 <script>
 (()=>{
   const EK = 'failureFilesEndless_v1';
@@ -486,6 +487,8 @@ R();
       testsRun: [],
       repairsApplied: [],
       wrongRepairs: 0,
+      hints: 0,
+      hintLog: [],
       acceptance: null,
       debrief: null
     };
@@ -506,6 +509,14 @@ R();
       EState.session.inspected[compKey] = true;
       saveEndless();
       rerender();
+    },
+    hint() {
+      const c = EState.activeCase, s = EState.session;
+      if (!c || !s || s.debrief) return;
+      s.hints = (s.hints || 0) + 1;
+      const t = window.FF_PLAIN.hint(c, s);
+      if (!s.hintLog.includes(t)) s.hintLog.push(t);
+      saveEndless(); rerender();
     },
     runTool(toolId) {
       const c = EState.activeCase, s = EState.session;
@@ -607,6 +618,10 @@ R();
           <div class="case-list">
             <div class="case-item"><b>Client & Sector</b><small>${c.client} · ${c.industry}</small></div>
             <div class="case-item"><b>Operating Environment</b><small>Ambient: ${c.operatingConditions.ambientTemp}°C · Logged Service Hours: ${c.operatingConditions.operatingHours} hrs · Diagnostic Budget: ${s.testsRun.length}/${c.diagnosticBudget} tests</small></div>
+            ${(() => { const st = window.FF_PLAIN.story(c), tr = window.FF_PLAIN.trust(c, s); return `
+            <div class="case-item"><b>📞 ${st.who} calls</b><small>“Please help: ${st.line}.” <em>Why it matters: ${st.stake}.</em></small></div>
+            <div class="case-item"><b>❤ Customer trust: ${tr}%</b><div class="meter ${tr < 60 ? 'hot' : ''}"><i style="width:${tr}%"></i></div><small>Wasted tests, needless repairs and hints lower it. Aim to stay high.</small></div>
+            ${s.testsRun.length === 0 && !s.repairsApplied.length ? '<div class="note"><b>How to play:</b> 1) Listen to the customer. 2) Use tools to look for what is off. 3) Fix the real cause. 4) Run the acceptance test to prove it works.</div>' : ''}`; })()}
             <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
             ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
           </div>
@@ -633,11 +648,14 @@ R();
           <div class="chips" style="margin-top:10px">
             ${unlockedTools.map(tid => {
               const t = window.FF_DB.TOOL_CATALOG[tid];
-              return `<button onclick="ffEndless.runTool('${tid}')">${t.name}</button>`;
+              const help = window.FF_PLAIN.TOOL_HELP[tid] || '';
+              return `<button style="white-space:normal;text-align:left" onclick="ffEndless.runTool('${tid}')">${t.name}<br><small style="opacity:.75;font-weight:400">${help}</small></button>`;
             }).join('')}
           </div>
+          <div class="actions"><button onclick="ffEndless.hint()">💡 Ask Mia for a hint (−4 trust)</button></div>
+          ${s.hintLog.map(t => `<div class="note">${t}</div>`).join('')}
           <div class="res">
-            ${s.testsRun.map(tr => `<div class="case-item" style="margin-top:8px"><b>${tr.label} @ ${tr.load}% load (${tr.duration}m)</b><small>${tr.summary}<br>${tr.detail}</small></div>`).join('') || '<p class="sub">Vary load/duration and run diagnostic instruments to isolate condition-dependent faults.</p>'}
+            ${s.testsRun.map(tr => `<div class="case-item" style="margin-top:8px"><b>${tr.label} @ ${tr.load}% load (${tr.duration}m)</b><small>${window.FF_PLAIN.verdict(tr)}<br>${tr.summary}<br>${tr.detail}</small></div>`).join('') || '<p class="sub">Vary load/duration and run diagnostic instruments to isolate condition-dependent faults.</p>'}
           </div>
         </div>
 
@@ -675,7 +693,7 @@ R();
         const d = s.debrief;
         html += `
           <div class="panel">
-            <div class="topline"><h2>05 / Post-Investigation Engineering Debrief</h2><span class="pill">+${d.earnedXp} XP · EFFICIENCY ${d.efficiencyScore}%</span></div>
+            <div class="topline"><h2>🎉 Case closed: here is what really happened</h2><span class="pill">+${d.earnedXp} XP · EFFICIENCY ${d.efficiencyScore}%</span></div>
             <div class="note good"><b>Confirmed Root Cause:</b> ${d.rootCauseTitle} (${d.faultType})${d.compoundTitle ? ' + Secondary Interacting Fault: ' + d.compoundTitle : ''}</div>
             <div class="case-list">
               <div class="case-item"><b>Physical Mechanism</b><small>${d.whyItBehavedThatWay}</small></div>

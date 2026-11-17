@@ -41,7 +41,7 @@
     const testsUsed = runs.length;
 
     const efficiencyScore = Math.max(20, Math.min(100, Math.round(
-      100 - wrongRepairs * 12 * tier.repairBudgetPenalty - repeatedTests * 6 - Math.max(0, uniqueTests - 4) * 4
+      100 - wrongRepairs * 12 * tier.repairBudgetPenalty - repeatedTests * 6 - Math.max(0, uniqueTests - 4) * 4 - (sessionState.hints || 0) * 4
     )));
     const earnedXp = acceptanceResult.passed
       ? Math.round((180 + efficiencyScore * 1.2) * tier.xpMultiplier)

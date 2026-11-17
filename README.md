@@ -12,6 +12,9 @@ A browser mechanical-investigation game. Open `index.html` (modules load from th
 
 **Endless Investigation** (unlocks after all five) — procedurally generated cases with a hidden fault, a difficulty tier (Apprentice / Investigator / Master, or adaptive), misleading clues, compound faults, a diagnostic budget and an independent acceptance simulation plus debrief.
 
+## Friendly layer
+`plain-language.js` adds a **Simple words** toggle (header) that rewrites technical terms on screen and keeps the real term in brackets, plus customer stories, plain tool descriptions, a green/orange verdict on every reading, a customer-trust meter and three-step hints from Mia. New players start at Apprentice.
+
 ## Replay codes
 Every generated case has a code such as `FF-AB12CD~i1~3` (base seed ~ tier+rank ~ attempt). Loading it rebuilds the identical case, whatever your play history. Replays award no XP.
 
