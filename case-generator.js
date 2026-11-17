@@ -84,12 +84,12 @@
   }
 
   const CLIENT_PROFILES = [
-    'Northport Marine & Power Ltd.',
-    'Apex Stamping & Forging Works',
-    'Meridian Logistics Fleet Depot',
-    'Vanguard Precision Machining',
-    'Kestrel Cold-Storage Plant',
-    'Clandestine Vault Archive — Sector 7'
+    'Northstar Motors — Customer Care',
+    'Meridian City Taxi Fleet',
+    'Apex Performance Garage',
+    'Coastal Delivery Fleet',
+    'Vanguard Rally Engineering',
+    'The Inventor’s Private Motor Works'
   ];
 
   function pickWeighted(rng, items) {
@@ -135,7 +135,10 @@
     const tier = global.FF_DIFFICULTY.DIFFICULTY_TIERS[difficulty];
     if (!tier) throw new Error('Unknown difficulty: ' + difficulty);
 
-    const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE).filter(m => m.unlockRank <= playerRank);
+    // Endless investigations are automotive-only. Legacy industrial definitions remain in
+    // the database temporarily for save compatibility, but are never offered as new cases.
+    const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE)
+      .filter(m => m.unlockRank <= playerRank && /^Automotive\\b/i.test(m.industry || ''));
     const first = fixedAttempt ?? 0;
     const last = fixedAttempt === null ? 40 : fixedAttempt + 1;
 
@@ -146,7 +149,7 @@
       const scenario = makeScenario(rng, format.id);
       let machine = eligibleMachines[Math.floor(rng() * eligibleMachines.length)];
       if (format.id === 'experimental_archive') {
-        machine = eligibleMachines.find(m => m.isExperimental);
+        machine = eligibleMachines.find(m => m.isExperimental && /drive|transmission/i.test(m.id));
         if (!machine) continue; // prototype anomalies only exist on the prototype machine
       }
 
