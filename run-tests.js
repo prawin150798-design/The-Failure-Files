@@ -44,6 +44,7 @@ ok(G.SCENARIO_ARCHETYPES.length >= 20, 'expected at least 20 authored scenario a
 ok(scenarioIds.size >= 18, 'scenario selection lacks variety: ' + scenarioIds.size + ' archetypes');
 ok(scenarioMachines.size >= 3, 'automotive scenario generation lacks platform variety');
 ok([...scenarioMachines].every(id => /^Automotive\b/i.test(DB.MACHINE_DATABASE[id].industry || '')), 'procedural pool contains a non-automotive platform');
+ok(Object.values(DB.MACHINE_DATABASE).every(m => /^Automotive\b/i.test(m.industry || '')), 'machine database must contain automotive platforms only');
 ok(scenarioFingerprints.size >= 150, 'scenario fingerprints lack meaningful variety');
 // every tool of every machine must react to a fault (no silent always-nominal fallbacks)
 for (const m of Object.values(DB.MACHINE_DATABASE)) for (const t of m.tools) {
