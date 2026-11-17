@@ -20,6 +20,11 @@ After the campaign, generate repeatable automotive investigations with hidden fa
 - Campaign progress, replay codes and local saves are retained in the browser.
 - The inventor mystery is uncovered through campaign archive fragments and experimental drivetrain investigations.
 
+## Core files
+- `automotive-vehicle-database.js` — vehicle specifications and connected systems.
+- `machine-database.js` — automotive investigation platforms and diagnostic tools.
+- `fault-engine.js`, `simulation-engine.js`, `diagnostic-engine.js` and `acceptance-engine.js` — faults, measurements and independent repair validation.
+
 ## Development
 - `node run-tests.js` — engine regression tests, including replay, acceptance, diagnostic coverage and automotive-only case generation.
 - `node build-standalone.js` — rebuild the standalone HTML after editing a module or `index.html`.
