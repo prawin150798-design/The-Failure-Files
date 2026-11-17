@@ -57,55 +57,6 @@
           }
         ];
 
-      case 'hydraulic_press':
-        return [
-          {
-            id: 'crit_press',
-            name: 'Peak Forming Pressure (80% demand)',
-            testLoad: 80,
-            testDuration: 15,
-            metric: 'pressure',
-            targetText: `≥ ${(175 / tol).toFixed(0)} bar`,
-            evaluate: sim => ({
-              actual: `${sim.pressure} bar`,
-              ok: sim.pressure >= 175 / tol,
-              explanation: sim.pressure >= 175 / tol
-                ? 'System achieves full forming tonnage.'
-                : 'System failed to build required forming pressure.'
-            })
-          },
-          {
-            id: 'crit_decay',
-            name: '10-Second Static Hold Decay',
-            testLoad: 80,
-            testDuration: 15,
-            metric: 'decayRate',
-            targetText: `≤ ${(4.5 * tol).toFixed(1)} bar`,
-            evaluate: sim => ({
-              actual: `${sim.decayRate} bar`,
-              ok: sim.decayRate <= 4.5 * tol,
-              explanation: sim.decayRate <= 4.5 * tol
-                ? 'Internal leakage sealed; ram holds force without creep.'
-                : 'Internal bypass continues to bleed holding pressure.'
-            })
-          },
-          {
-            id: 'crit_oil_temp',
-            name: 'Reservoir Fluid Thermal Stability',
-            testLoad: 80,
-            testDuration: 20,
-            metric: 'temperature',
-            targetText: `≤ ${(58 * tol).toFixed(1)}°C`,
-            evaluate: sim => ({
-              actual: `${sim.temperature}°C`,
-              ok: sim.temperature <= 58 * tol,
-              explanation: sim.temperature <= 58 * tol
-                ? 'Fluid viscosity preserved within optimal operating band.'
-                : 'Excessive fluid heating indicates unresolved throttling or cooler fouling.'
-            })
-          }
-        ];
-
       case 'manual_transmission':
         return [
           {
@@ -200,55 +151,6 @@
               explanation: sim.idleRpm >= 800 && sim.idleRpm <= 920
                 ? 'Idle speed settles cleanly with zero unmetered air leak.'
                 : 'Idle speed remains elevated or unstable.'
-            })
-          }
-        ];
-
-      case 'rotary_screw_compressor':
-        return [
-          {
-            id: 'crit_discharge_p',
-            name: 'Plant Line Discharge Pressure',
-            testLoad: 90,
-            testDuration: 15,
-            metric: 'pressure',
-            targetText: '8.2–8.8 bar',
-            evaluate: sim => ({
-              actual: `${sim.pressure} bar`,
-              ok: sim.pressure >= 8.2 && sim.pressure <= 8.8,
-              explanation: sim.pressure >= 8.2 && sim.pressure <= 8.8
-                ? 'Full pneumatic plant pressure delivered efficiently.'
-                : 'Discharge pressure falls below plant demand.'
-            })
-          },
-          {
-            id: 'crit_comp_temp',
-            name: 'Air-End Discharge Temperature',
-            testLoad: 90,
-            testDuration: 20,
-            metric: 'temperature',
-            targetText: `≤ ${(94 * tol).toFixed(1)}°C`,
-            evaluate: sim => ({
-              actual: `${sim.temperature}°C`,
-              ok: sim.temperature <= 94 * tol,
-              explanation: sim.temperature <= 94 * tol
-                ? 'Oil flooding and cooling keep discharge within safe thermal limit.'
-                : 'Discharge temperature elevated due to internal restriction.'
-            })
-          },
-          {
-            id: 'crit_comp_vib',
-            name: 'Rotor Housing Vibration',
-            testLoad: 90,
-            testDuration: 15,
-            metric: 'vibration',
-            targetText: `≤ ${(3.4 * tol).toFixed(1)} mm/s`,
-            evaluate: sim => ({
-              actual: `${sim.vibration} mm/s`,
-              ok: sim.vibration <= 3.4 * tol,
-              explanation: sim.vibration <= 3.4 * tol
-                ? 'Helical rotors run smoothly.'
-                : 'Excessive rotor vibration detected.'
             })
           }
         ];
