@@ -1,5 +1,5 @@
 // machine-database.js
-// Reusable databases for machines, components, operating condition templates, and lore fragments
+// Automotive platform, component, operating-condition, tool and lore databases
 
 (function(global) {
   const MACHINE_DATABASE = {
