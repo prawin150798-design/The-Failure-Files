@@ -2210,6 +2210,15 @@ R();
     EState.activeCase = null; EState.session = null; // discard saves from incompatible versions
   }
 
+  if (EState.session) { // upgrade sessions saved by older versions
+    const ss = EState.session;
+    ss.inspected = ss.inspected || {}; ss.testsRun = ss.testsRun || []; ss.repairsApplied = ss.repairsApplied || [];
+    ss.hints = ss.hints || 0; ss.hintLog = ss.hintLog || []; ss.wrongRepairs = ss.wrongRepairs || 0;
+    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15;
+  }
+  EState.history = EState.history || []; EState.fingerprints = EState.fingerprints || [];
+  EState.loreUnlocked = EState.loreUnlocked || []; EState.solvedSeeds = EState.solvedSeeds || [];
+
   const saveEndless = () => {
     try { localStorage.setItem(EK, JSON.stringify(EState)); } catch (e) {}
   };
@@ -2299,6 +2308,7 @@ R();
       saveEndless();
       rerender();
     },
+    resetCase() { EState.activeCase = null; EState.session = null; EState.msg = null; saveEndless(); rerender(); },
     unlockEarly() { EState.early = true; saveEndless(); window.FF && window.FF.R(); },
     hint() {
       const c = EState.activeCase, s = EState.session;
@@ -2367,6 +2377,14 @@ R();
   };
 
   function renderEndlessContent() {
+    try { renderEndlessInner(); }
+    catch (err) {
+      console.error(err);
+      if (endlessEl) endlessEl.innerHTML = `<div class="panel"><h2>Something went wrong</h2><p class="sub">The saved investigation could not be displayed (${String(err.message).replace(/</g, '&lt;')}). Your campaign progress is safe.</p><div class="actions"><button class="primary" onclick="ffEndless.resetCase()">Clear this investigation and continue</button></div></div>`;
+    }
+  }
+
+  function renderEndlessInner() {
     const FFx = window.FF, doneN = FFx ? [1, 2, 3, 4, 5].filter(FFx.isD).length : 0;
     if (doneN < 5 && !EState.early) {
       if (endlessEl) endlessEl.innerHTML = `<div class="panel"><div class="topline"><h2>🔒 Endless mode is locked</h2><span class="pill">${doneN}/5 CAMPAIGN CASES</span></div>
