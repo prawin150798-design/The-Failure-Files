@@ -3,8 +3,8 @@
 
 (function(global) {
   const MACHINE_DATABASE = {
-    diesel_generator: {
-      id: 'diesel_generator',
+    automotive_cooling_system: {
+      id: 'automotive_cooling_system',
       name: 'Compact Petrol Hatchback — Cooling System',
       vehicleId: 'compact_hatchback_01',
       industry: 'Automotive · Passenger Car',
