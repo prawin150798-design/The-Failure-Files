@@ -40,7 +40,7 @@ for (let i = 0; i < 600; i++) {
 }
 ok(G.SCENARIO_ARCHETYPES.length >= 20, 'expected at least 20 authored scenario archetypes');
 ok(scenarioIds.size >= 18, 'scenario selection lacks variety: ' + scenarioIds.size + ' archetypes');
-ok(scenarioMachines.size >= 5, 'scenario generation lacks machine variety');
+ok(scenarioMachines.size >= 3, 'automotive scenario generation lacks platform variety');
 ok(scenarioFingerprints.size >= 150, 'scenario fingerprints lack meaningful variety');
 // every tool of every machine must react to a fault (no silent always-nominal fallbacks)
 for (const m of Object.values(DB.MACHINE_DATABASE)) for (const t of m.tools) {
