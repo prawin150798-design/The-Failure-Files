@@ -8,7 +8,7 @@
     const tol = global.FF_DIFFICULTY.DIFFICULTY_TIERS[caseObj.difficulty].toleranceMultiplier;
 
     switch (machine.id) {
-      case 'diesel_generator':
+      case 'automotive_cooling_system':
         return [
           {
             id: 'crit_temp',
