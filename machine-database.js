@@ -50,47 +50,6 @@
       tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'tachometer_sync', 'exhaust_gas_analyser', 'oscilloscope_ignition', 'smoke_leak_tester']
     },
 
-    hydraulic_press: {
-      id: 'hydraulic_press',
-      name: '250-Ton Industrial Hydraulic Press',
-      industry: 'Manufacturing · Heavy Forming',
-      unlockRank: 0,
-      baseParams: { ratedRpm: 1450, ratedLoad: 80, ambientTemp: 30, nominalPressure: 210, nominalFlow: 48, nominalVibration: 1.8 },
-      components: {
-        axial_piston_pump: {
-          name: 'Variable-Displacement Axial Piston Pump',
-          role: 'Converts motor shaft power into high-pressure hydraulic flow.',
-          normalSpec: '46–50 L/min at 210 bar; volumetric efficiency > 92%',
-          dependencies: ['suction_strainer', 'hydraulic_fluid']
-        },
-        proportional_relief_valve: {
-          name: 'Proportional Pressure Relief Valve',
-          role: 'Limits maximum system pressure and holds static forming pressure.',
-          normalSpec: 'Cracks at 215 bar; zero bypass below 205 bar',
-          dependencies: ['pilot_stage']
-        },
-        main_cylinder_seals: {
-          name: 'Double-Acting Ram Cylinder & Piston Seals',
-          role: 'Converts hydraulic pressure into linear pressing force.',
-          normalSpec: 'Internal cross-port bypass < 0.03 L/min at 200 bar',
-          dependencies: ['hydraulic_fluid']
-        },
-        directional_spool_valve: {
-          name: '4/3 Closed-Center Directional Valve',
-          role: 'Directs oil to extend, hold, or retract the main ram.',
-          normalSpec: 'Spool leakage < 0.04 L/min in neutral hold',
-          dependencies: ['pilot_stage']
-        },
-        oil_cooler: {
-          name: 'Air-Blast Hydraulic Oil Cooler',
-          role: 'Maintains fluid viscosity by keeping reservoir temperature below 55°C.',
-          normalSpec: 'Oil temp 42–52°C under continuous cycling',
-          dependencies: ['hydraulic_fluid']
-        }
-      },
-      tools: ['pressure_gauge', 'flow_meter', 'ultrasonic_leak_detector', 'thermal_camera', 'oil_viscosity_tester', 'vibration_analyser']
-    },
-
     manual_transmission: {
       id: 'manual_transmission',
       name: '6-Speed Heavy-Duty Manual Gearbox',
@@ -171,47 +130,6 @@
         }
       },
       tools: ['exhaust_gas_analyser', 'pressure_gauge', 'flow_meter', 'oscilloscope_ignition', 'smoke_leak_tester', 'thermal_camera']
-    },
-
-    rotary_screw_compressor: {
-      id: 'rotary_screw_compressor',
-      name: 'Oil-Flooded Rotary Screw Air Compressor',
-      industry: 'Industrial · Pneumatic Plant',
-      unlockRank: 2,
-      baseParams: { ratedRpm: 2950, ratedLoad: 90, ambientTemp: 32, nominalPressure: 8.5, nominalFlow: 320, nominalVibration: 2.6 },
-      components: {
-        air_end_rotors: {
-          name: 'Helical Male/Female Air-End Rotors',
-          role: 'Compresses trapped air pockets while sealed by injected oil.',
-          normalSpec: '8.5 bar discharge; volumetric output 310–330 CFM',
-          dependencies: ['oil_separator', 'inlet_unloader']
-        },
-        oil_separator: {
-          name: 'Coalescing Air/Oil Separator Element',
-          role: 'Recovers lubricating oil from compressed discharge air.',
-          normalSpec: 'Differential pressure < 0.25 bar across element',
-          dependencies: ['scavenge_line']
-        },
-        thermostatic_bypass_valve: {
-          name: 'Oil Cooler Thermostatic Bypass Valve',
-          role: 'Routes oil through cooler once discharge exceeds 75°C.',
-          normalSpec: 'Discharge temp 80–92°C under 90% load',
-          dependencies: ['air_end_rotors']
-        },
-        inlet_unloader: {
-          name: 'Modulating Intake Unloader Valve',
-          role: 'Controls intake volume to match plant air demand.',
-          normalSpec: 'Full open under load; clean blowdown unloaded',
-          dependencies: ['pressure_transducer']
-        },
-        minimum_pressure_valve: {
-          name: 'Minimum Pressure Check Valve (MPV)',
-          role: 'Maintains internal oil circulation pressure during startup and prevents backflow.',
-          normalSpec: 'Opens smoothly at 4.2 bar; zero reverse leakage',
-          dependencies: ['oil_separator']
-        }
-      },
-      tools: ['pressure_gauge', 'flow_meter', 'thermal_camera', 'vibration_analyser', 'ultrasonic_leak_detector', 'oil_viscosity_tester']
     },
 
     experimental_cvt_drive: {
