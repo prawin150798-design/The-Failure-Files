@@ -30,6 +30,18 @@ for (const diff of tiers) for (const rank of [0, 1, 2, 3, 4]) for (let i = 0; i 
 }
 console.log('cases generated:', cases.length, '| distinct fingerprints:', prints.size);
 ok(cases.length >= 200, 'expected 200+ cases');
+// Scenario engine coverage: stories and investigation methods must vary beyond numeric readings.
+const scenarioIds = new Set(), scenarioMachines = new Set(), scenarioFingerprints = new Set();
+for (let i = 0; i < 600; i++) {
+  const c = G.generateCase({ seed: 'FV' + String(i).padStart(5, '0'), difficulty: tiers[i % tiers.length], playerRank: 4 });
+  scenarioIds.add(c.scenarioId); scenarioMachines.add(c.machineId); scenarioFingerprints.add(c.fingerprint);
+  ok(!!c.scenarioTitle && !!c.scenarioBriefing && c.scenarioMethod && c.scenarioMethod.length === 2, 'scenario story/method missing: ' + c.seed);
+  ok(Array.isArray(c.scenarioHistory) && c.scenarioHistory.length >= 3, 'scenario history missing: ' + c.seed);
+}
+ok(G.SCENARIO_ARCHETYPES.length >= 20, 'expected at least 20 authored scenario archetypes');
+ok(scenarioIds.size >= 18, 'scenario selection lacks variety: ' + scenarioIds.size + ' archetypes');
+ok(scenarioMachines.size >= 5, 'scenario generation lacks machine variety');
+ok(scenarioFingerprints.size >= 150, 'scenario fingerprints lack meaningful variety');
 // every tool of every machine must react to a fault (no silent always-nominal fallbacks)
 for (const m of Object.values(DB.MACHINE_DATABASE)) for (const t of m.tools) {
   const r = D.runDiagnosticTool({ machineId: m.id, primaryFaultId: F.FAULT_CATALOG.find(f => f.machineId === m.id).id, compoundId: null, difficulty: 'investigator', operatingConditions: { ambientTemp: 25 } }, t, { load: 85, duration: 20 }, []);

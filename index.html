@@ -519,7 +519,7 @@ R();
       load: c.operatingConditions.defaultLoad,
       duration: c.operatingConditions.defaultDuration,
       ambientTemp: c.operatingConditions.ambientTemp,
-      rpm: window.FF_DB.MACHINE_DATABASE[c.machineId].baseParams.ratedRpm,
+      rpm: c.operatingConditions.defaultRpm || window.FF_DB.MACHINE_DATABASE[c.machineId].baseParams.ratedRpm,
       hypotheses: [], diagnosis: null, interview: {},
       inspected: {},
       testsRun: [],
@@ -642,6 +642,7 @@ R();
     return chosen;
   }
   function caseTimeline(c) {
+    if (Array.isArray(c.scenarioHistory) && c.scenarioHistory.length) return c.scenarioHistory;
     const h = c.operatingConditions.operatingHours;
     const f = c.formatId;
     const events = [
@@ -718,6 +719,8 @@ R();
             <div class="case-item"><b>📞 ${st.who} calls</b><small>“Please help: ${st.line}.” <em>Why it matters: ${st.stake}.</em></small></div>
             <div class="case-item"><b>❤ Customer trust: ${tr}%</b><div class="meter ${tr < 60 ? 'hot' : ''}"><i style="width:${tr}%"></i></div><small>Wasted tests, needless repairs and hints lower it. Aim to stay high.</small></div>
             ${s.testsRun.length === 0 && !s.repairsApplied.length ? '<div class="note"><b>How to play:</b> 1) Listen to the customer. 2) Use tools to look for what is off. 3) Fix the real cause. 4) Run the acceptance test to prove it works.</div>' : ''}`; })()}
+            <div class="case-item"><b>Scenario: ${c.scenarioTitle || c.formatLabel}</b><small>${c.scenarioBriefing || 'Investigate the reported machine failure using controlled tests and evidence.'}</small></div>
+            <div class="case-item"><b>Investigation Challenge: ${c.scenarioMethod ? c.scenarioMethod[0] : 'Establish the fault conditions'}</b><small>${c.scenarioMethod ? c.scenarioMethod[1] : 'Compare baseline and fault conditions before selecting a repair.'}</small></div>
             <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
             ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
             <div class="case-item"><b>Maintenance & Operating Timeline</b><div class="timeline">${caseTimeline(c).map(e=>`<div class="timeline-item"><time>${e[0]}</time><span>${e[1]}</span></div>`).join('')}</div></div>

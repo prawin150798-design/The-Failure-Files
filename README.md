@@ -15,6 +15,8 @@ A browser mechanical-investigation game. Open `index.html` (modules load from th
 ## Investigation upgrades (v0.3)
 - Field Lab visual theme: graphite panels, signal-orange actions and instrument-lime highlights.
 - Endless Mode now includes a hypothesis board, a customer interview, and a maintenance/operating timeline.
+- Expanded procedural scenario engine with 20 authored investigation archetypes: shift-change failures, heat-soak, cold-start, load thresholds, repeated cycles, weather triggers, comeback repairs, wrong-part installs, deferred maintenance, sensor disputes, paperwork audits, hidden workarounds, failure cascades, prototype drift, duty-cycle mismatch, progressive degradation, restart resets, boundary-condition tests and speed/load-linked noise.
+- Each archetype supplies its own briefing, incident history, operating profile and investigation method; case identity now includes the scenario archetype so changing numeric readings alone is not treated as a new scenario.
 - Diagnostic bench controls include load, duration, ambient temperature and machine RPM; readings use the selected conditions.
 - The hypothesis board records the player's working diagnosis without revealing whether it is correct until the debrief.
 - The original campaign, replay codes, acceptance criteria and local saves are preserved.
@@ -29,7 +31,7 @@ Every generated case has a code such as `FF-AB12CD~i1~3` (base seed ~ tier+rank 
 `machine-database.js`, `fault-engine.js`, `simulation-engine.js`, `diagnostic-engine.js`, `difficulty-engine.js`, `acceptance-engine.js`, `case-generator.js`, `progression-engine.js`; the campaign and Endless UI live in `index.html`.
 
 ## Development
-- `node tests/run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring).
+- `node tests/run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring and 600-seed scenario diversity coverage).
 - `node build-standalone.js` — rebuilds the single-file version after editing any module or `index.html`.
 
 Saves use localStorage keys `failureFiles001`, `failureFiles002`, `failureFilesEndless_v1`. All values are game specifications, not real service data.
