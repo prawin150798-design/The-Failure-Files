@@ -337,25 +337,28 @@ acc:c=>{const a=afr(c,4000),i=idle(c);return[
 {k:'AFR at 4000 RPM',a:f(a,1)+':1',r:'13.2–14.7 : 1',ok:a>=13.2&&a<=14.7,w:a>14.7?'Mixture is lean: the injector cannot supply enough fuel, or air is leaking in.':'Mixture too rich.'},
 {k:'Idle speed',a:f(i,0)+' RPM',r:'1,400–1,600 RPM',ok:i>=1400&&i<=1600,w:'Idle is unstable: poor spray, misfire or an air leak shifts it out of range.'}]},
 arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, machined with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
-/* ---------- CASE 004: hydraulic press ---------- */
-const ct=c=>c.r+c.s+c.d,P4=c=>Math.min(200,20/(ct(c)+20*c.ps)),dec=c=>180*(1-E(-(500*ct(c)/60)*10));
-C[4]={t:'Case 004: Pressure Drop',ind:'Industrial · hydraulic press',xp:150,
-sub:'The press reaches pressure, but while holding a load the pressure sinks and force is lost. The pump sounds normal and nothing leaks outside.',
-sym:['Pressure reaches target initially','Pressure drops while holding','No external leakage','Pump sounds normal'],
-init:()=>({r:.003,s:.00008,d:.00008,ps:.0008}),
-parts:{'Hydraulic pump':'Volumetric efficiency falls with pressure (internal slip). Normal here.','Pressure relief valve':'Should stay shut below its 200 bar setting. A partly open valve bypasses oil back to tank.','Hydraulic cylinder':'Force = pressure × piston area (0.0314 m²).','Piston seals':'Wear lets oil pass from one side of the piston to the other.','Directional control valve':'Spool clearance leaks a little oil even when closed.','Hydraulic lines':'No external leakage found: the oil is going somewhere inside.'},
-tools:[['Pressure gauge',c=>`Reaches ${f(P4(c),0)} bar. Force ${f(P4(c)*1e5*.0314/1000,0)} kN.`],['Flow meter',c=>`Pump delivers ${f(20*(1-c.ps*P4(c)),1)} L/min at pressure. Pump is healthy.`],['Hydraulic leak tester',c=>`External leakage 0.00 L/min. Hold test: ${f(dec(c),1)} bar lost in 10 s. Directional valve leakage ${f(c.d*180,3)} L/min.`],['Cylinder inspection',c=>`Seal bypass at 180 bar: ${f(c.s*180,3)} L/min.`],['Relief valve test',c=>`Relief bypass at 180 bar: ${f(c.r*180,3)} L/min.${c.r*180>.02?' Valve is not seating.':''}`]],
-reps:[['Replace relief valve','Fits a new valve.',c=>c.r=.0001],['Clean and reseat relief valve','Partial improvement.',c=>c.r=Math.min(c.r,.0008)],['Replace piston seals','New seal set.',c=>c.s=.00003],['Replace directional valve spool','Tighter clearance.',c=>c.d=.00003],['Overhaul pump','Reduces slip.',c=>c.ps=.0005],['Tighten hydraulic fittings','External joints only.',c=>c]],
-acc:c=>{const p=P4(c),d=dec(c),b=c.r*180;return[
-{k:'System pressure',a:f(p,0)+' bar',r:'≥ 180 bar',ok:p>=180,w:'Pump flow is being lost before pressure builds.'},
-{k:'Pressure loss in 10 s',a:f(d,1)+' bar',r:'≤ 5 bar',ok:d<=5,w:'Internal bypass (relief, seals or valve) is bleeding oil from the held load.'},
-{k:'Relief valve bypass',a:f(b,3)+' L/min',r:'≤ 0.020 L/min',ok:b<=.02,w:'The relief valve is passing flow while it should be shut.'}]},
-arch:'Fragment 04 — The relief spring is wound with a progressive, double pitch and carries a tiny preload ring, engraved “set by ear”.',note:'Force = pressure × area. Without external leaks, falling pressure means internal bypass. Decay ≈ P₀(1 − e^(−K·Q/V)): bypass flow is the problem.'};
+/* ---------- CASE 004: The Long Stop — automotive braking system ---------- */
+const brakePressure=c=>Math.max(0,100*(1-c.mcBypass)*(1-c.hoseExpand));
+const brakeDecay=c=>Math.max(0,100-brakePressure(c));
+C[4]={t:'Case 004: The Long Stop',ind:'Automotive · hydraulic braking system',xp:150,
+sub:'After several hard stops, the brake pedal slowly sinks at a traffic light. There is no obvious fluid leak and the pads still have usable material. Find the pressure loss before the car returns to the road.',
+sym:['Pedal slowly sinks while held','Brake pressure falls during a sustained application','No visible fluid leak','Brake pads remain within service thickness'],
+init:()=>({mcBypass:.28,hoseExpand:.02,booster:1,pads:1}),
+parts:{'Brake pedal and booster':'The pedal multiplies driver input; the vacuum booster reduces the effort required.','Master cylinder':'Converts pedal force into hydraulic pressure. Internal seal bypass can let pressure fall without an external leak.','Brake fluid':'Transmits pressure through the hydraulic circuit. Water contamination lowers its boiling point.','Flexible brake hose':'Carries pressurised fluid to the caliper. An internally damaged hose can expand under pressure.','Front caliper':'Clamps the pads against the disc when hydraulic pressure is applied.','Brake pads and discs':'Friction converts vehicle kinetic energy into heat. Worn or overheated parts reduce braking performance.'},
+tools:[['Pedal hold / pressure test',c=>`Initial line pressure ${f(brakePressure(c),1)} bar; pressure loss while held ${f(brakeDecay(c),1)} bar.`],['Hydraulic leak inspection',c=>`External fluid loss: 0.00 mL/min. Master-cylinder internal bypass estimate: ${f(c.mcBypass*100,0)}%.`],['Brake hose expansion test',c=>`Hose volumetric expansion: ${f(c.hoseExpand*100,1)}%. ${c.hoseExpand>.08?'Hose expands excessively under pressure.':'Hose expansion is within the test limit.'}`],['Pad and disc inspection',c=>`Pad thickness reserve: ${f(c.pads*100,0)}%. Disc surface: ${c.pads<.3?'scored / near limit':'serviceable'}.`],['Boiling-point tester',c=>`Brake-fluid boiling point estimate: ${f(260-90*(1-c.booster),0)}°C. Replace fluid if below the vehicle specification.`]],
+reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and machine discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
+acc:c=>{const p=brakePressure(c),d=brakeDecay(c);return[
+{k:'Held brake line pressure',a:f(p,1)+' bar',r:'≥ 90 bar',ok:p>=90,w:'Hydraulic pressure is not being retained while the pedal is held.'},
+{k:'Pressure loss during hold',a:f(d,1)+' bar',r:'≤ 10 bar',ok:d<=10,w:'Internal bypass or hose expansion is allowing pressure to fall.'},
+{k:'External fluid leakage',a:'0.00 mL/min',r:'No visible leakage',ok:true,w:'No external leak detected; an internal master-cylinder bypass remains possible.'}]},
+arch:'Fragment 04 — The inventor’s notebook describes a tandem master cylinder with a stepped bore and a seal profile that maintains pressure even after partial circuit failure. The margin reads: “A safe system must fail predictably.”',
+note:'Hydraulic pressure is force divided by piston area. A master-cylinder seal can bypass fluid internally, so pressure falls even when no fluid appears outside the vehicle.'};
+/* ---------- CASE 005: The Inventor’s Automotive Prototype ---------- */
 /* ---------- CASE 005: compound drivetrain ---------- */
 const cal=g=>{const R=g.r1*g.r2*g.rb,Tb=48*g.r1*g.r2*.9409,F=Tb/.05,u=F/(.8*g.ten),sl=Math.min(40,.4+(u>.6?25*(u-.6)**2:0)),eb=.97*(1-sl/100)*(1-g.ten/60000);return{R,Tb,F,sl,eb,w:1750/R*(1-sl/100),T:Tb*g.rb*eb,u}};
 C[5]={t:'Case 005: The Inventor\u2019s Prototype',ind:'Experimental · compound transmission',xp:300,
-sub:'An abandoned laboratory holds an unfinished drivetrain: motor, two gear stages and a belt-driven output. The documentation is incomplete. Configure it to meet the specification.',
-sym:['Motor: 1750 RPM, 48 Nm','Target 580–620 RPM at ≥110 Nm','Belt slip must stay ≤2%','Documentation incomplete'],
+sub:'An unfinished automotive variable-ratio drivetrain sits on a test rig. Its engine input, two reduction stages and belt-driven output must deliver the specified road-speed and wheel-torque window without excessive slip. Configure and validate the prototype.',
+sym:['Engine input: 1750 RPM, 48 Nm','Target 580–620 RPM at ≥110 Nm','Belt slip must stay ≤2%','Documentation incomplete'],
 init:()=>({}),ctl:{r1:2,r2:1.5,rb:1.5,ten:1000},
 ctls:[['r1','First-stage ratio',1,4,.05,''],['r2','Second-stage ratio',1,4,.05,''],['rb','Belt ratio',.5,3,.05,''],['ten','Belt tension (N)',500,5000,100,' N']],
 parts:{'Input motor':'1750 RPM, 48 Nm.','First gear stage':'Each gear mesh is about 97% efficient.','Second gear stage':'Total gear ratio is the product of all stages.','Output shaft':'Speed = 1750 ÷ total ratio, less belt slip.','Belt drive':'Slip rises sharply when belt force exceeds what the tension can grip.','Bearings':'Higher belt tension raises bearing load and friction loss.','Tension adjustment mechanism':'Too loose: slip. Too tight: friction loss and wear.'},
@@ -365,7 +368,7 @@ acc:(c,g)=>{const k=cal(g);return[
 {k:'Output speed',a:f(k.w,0)+' RPM',r:'580–620 RPM',ok:k.w>=580&&k.w<=620,w:'Total ratio is wrong: change stage or belt ratios.'},
 {k:'Output torque',a:f(k.T,0)+' Nm',r:'≥ 110 Nm',ok:k.T>=110,w:'Not enough torque: ratio too low, or losses (slip, over-tension) are too high.'},
 {k:'Belt slip',a:f(k.sl,1)+'%',r:'≤ 2%',ok:k.sl<=2,w:'Belt tension is too low for the load carried.'}]},
-arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this machine, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The campaign ends here, and the notes ask: “Who will build the next one?”',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
+arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this machine, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The next prototype awaits a road test.',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
 const mod=typeof module!=='undefined'&&module.exports;
 if(mod){module.exports={C,cal};return}
 /* ---------- UI / progression / save ---------- */
