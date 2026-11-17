@@ -31,7 +31,7 @@ Every generated case has a code such as `FF-AB12CD~i1~3` (base seed ~ tier+rank 
 `machine-database.js`, `fault-engine.js`, `simulation-engine.js`, `diagnostic-engine.js`, `difficulty-engine.js`, `acceptance-engine.js`, `case-generator.js`, `progression-engine.js`; the campaign and Endless UI live in `index.html`.
 
 ## Development
-- `node tests/run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring and 600-seed scenario diversity coverage).
+- `node run-tests.js` — engine regression tests (generation, validation, replay, tools, scoring and 600-seed scenario diversity coverage).
 - `node build-standalone.js` — rebuilds the single-file version after editing any module or `index.html`.
 
 Saves use localStorage keys `failureFiles001`, `failureFiles002`, `failureFilesEndless_v1`. All values are game specifications, not real service data.
