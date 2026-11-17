@@ -24,9 +24,13 @@ jobs:
         run: node run-tests.js
       - name: Build standalone game
         run: node build-standalone.js
-      - name: Upload standalone game
+      - name: Package source and standalone game
+        run: zip -r the-failure-files-automotive.zip index.html *.js README.md the-failure-files-standalone.html
+      - name: Upload game builds
         uses: actions/upload-artifact@v4
         with:
-          name: the-failure-files-standalone
-          path: the-failure-files-standalone.html
+          name: the-failure-files-automotive-build
+          path: |
+            the-failure-files-standalone.html
+            the-failure-files-automotive.zip
           if-no-files-found: error
