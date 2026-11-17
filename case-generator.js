@@ -138,7 +138,7 @@
     // Endless investigations are automotive-only. Legacy industrial definitions remain in
     // the database temporarily for save compatibility, but are never offered as new cases.
     const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE)
-      .filter(m => m.unlockRank <= playerRank && /^Automotive\\b/i.test(m.industry || ''));
+      .filter(m => m.unlockRank <= playerRank && /^Automotive\b/i.test(m.industry || ''));
     const first = fixedAttempt ?? 0;
     const last = fixedAttempt === null ? 40 : fixedAttempt + 1;
 
