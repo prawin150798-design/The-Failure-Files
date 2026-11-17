@@ -29,16 +29,6 @@
         };
 
       case 'pressure_gauge':
-        if (machine.id === 'hydraulic_press') {
-          return {
-            toolId,
-            label: 'Digital Differential Pressure Gauge',
-            summary: `Peak pressure: ${sim.pressure} bar | 10s hold decay: ${sim.decayRate} bar lost.`,
-            detail: sim.decayRate > 5.0
-              ? 'Excessive pressure decay during static hold indicates internal bypass.'
-              : 'System holds pressure cleanly within tolerance.'
-          };
-        }
         return {
           toolId,
           label: 'Digital Differential Pressure Gauge',
