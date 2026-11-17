@@ -3,10 +3,10 @@
 
 (function(global) {
   const FAULT_CATALOG = [
-    // --- DIESEL GENERATOR FAULTS ---
+    // --- AUTOMOTIVE ENGINE & COOLING FAULTS ---
     {
       id: 'gen_pump_slip',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'cooling_pump',
       faultType: 'Internal Wear / Impeller Slip',
       title: 'Sheared Impeller Key / Eroded Vanes',
@@ -39,7 +39,7 @@
     },
     {
       id: 'gen_radiator_fouling',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'radiator_core',
       faultType: 'Partial Internal Blockage',
       title: 'Silicate Scale Fouling in Radiator Tubes',
@@ -66,7 +66,7 @@
     },
     {
       id: 'gen_injector_overfuel',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'fuel_injector_bank',
       faultType: 'Incorrect Adjustment / Nozzle Wear',
       title: 'Leaking Injector Nozzle Causing Thermal Overload',
@@ -93,13 +93,13 @@
     },
     {
       id: 'gen_turbo_boost_leak',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'turbocharger',
       faultType: 'Internal Leakage / Wastegate Creep',
       title: 'Stuck-Open Turbocharger Wastegate Actuator',
       conditionDependent: 'high_load',
       symptoms: [
-        'RPM droops under heavy electrical load (>75%)',
+        'RPM droops under heavy engine load (>75%)',
         'High exhaust smoke and rising coolant temperature under load',
         'Unloaded idle speed and voltage appear completely normal'
       ],
@@ -107,7 +107,7 @@
         {
           source: 'Maintenance Record',
           text: 'Electronic governor recalibrated last month; fuel filter replaced 50 hours ago.',
-          explanation: 'The governor adds more fuel to hold 1500 RPM, but without sufficient boost air mass, combustion turns rich and hot while losing peak torque.'
+          explanation: 'The governor adds more fuel to hold 3500 RPM, but without sufficient boost air mass, combustion turns rich and hot while losing peak torque.'
         }
       ],
       secondaryEffects: { flowFactor: 0.96, tempRiseFactor: 1.38, pressureFactor: 1.02, rpmDroop: 65, boostFactor: 0.58 },
@@ -116,7 +116,7 @@
         { id: 'rep_governor', label: 'Replace electronic speed governor', fixes: [], cost: 520, time: 2 },
         { id: 'rep_injectors', label: 'Replace fuel injector set', fixes: [], cost: 450, time: 3 }
       ],
-      concept: 'Turbocharged diesels require air mass proportional to fuel delivery. Low boost starves combustion of oxygen, causing rich EGT spikes and torque droop.'
+      concept: 'Turbocharged petrols require air mass proportional to fuel delivery. Low boost starves combustion of oxygen, causing rich EGT spikes and torque droop.'
     },
 
     // --- HYDRAULIC PRESS FAULTS ---
