@@ -6,6 +6,7 @@
     diesel_generator: {
       id: 'diesel_generator',
       name: 'Compact Petrol Hatchback — Cooling System',
+      vehicleId: 'compact_hatchback_01',
       industry: 'Automotive · Passenger Car',
       unlockRank: 0,
       baseParams: { ratedRpm: 3500, ratedLoad: 70, ambientTemp: 28, nominalPressure: 1.1, nominalFlow: 105, nominalVibration: 1.8 },
