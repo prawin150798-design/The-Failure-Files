@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101a22">
 <meta name="color-scheme" content="dark">
-<title>The Failure Files — Case 001</title>
+<title>The Failure Files — The Cooling Crisis</title>
 <style>
 :root{--bg:#101a22;--line:#344955;--ink:#e9f0ed;--muted:#9eb0b5;--cyan:#61d5d0;--amber:#f2b75b;--red:#ef7770;--green:#8bd5a4;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;color-scheme:dark}
 *{box-sizing:border-box}html{scroll-padding-top:70px}body{margin:0;background:#101a22 radial-gradient(ellipse at 50% -20%,#263d49 0,#101a22 58%) no-repeat;color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
@@ -59,14 +59,14 @@ button.primary{background:var(--amber);border-color:var(--amber);color:#21170d}
 <body>
 <header><div class="brand">THE <span>FAILURE</span> FILES</div><div class="save" id="saveState">● CASE FILE SAVED LOCALLY</div></header>
 <main>
-<div class="eyebrow">Independent Engineering Investigation // Archive 01</div>
-<h1>Case 001: The Silent Generator</h1>
-<p class="sub">A 250 kVA diesel generator runs normally without load, then overheats and shuts down after sustained operation. The previous technician replaced the thermostat. The fault remains.</p>
+<div class="eyebrow">Automotive Engineering Investigation // Vehicle File 001</div>
+<h1>Case 001: The Cooling Crisis</h1>
+<p class="sub">A compact petrol hatchback behaves normally on open roads, then overheats in slow traffic with the air conditioning running. The thermostat was replaced, but the fault remains.</p>
 <div class="stats">
  <div class="stat"><small>ENGINE TEMP</small><b id="temp">78.0°</b><span class="unit">°C coolant</span></div>
  <div class="stat"><small>COOLANT FLOW</small><b id="flow">—</b><span class="unit">L/min</span></div>
  <div class="stat"><small>ENGINE SPEED</small><b id="rpm">0</b><span class="unit">RPM</span></div>
- <div class="stat"><small>LOAD</small><b id="loadVal">0%</b><span class="unit">rated output</span></div>
+ <div class="stat"><small>ENGINE LOAD</small><b id="loadVal">0%</b><span class="unit">calculated load</span></div>
 </div>
 <div class="tabs">
  <button class="tab active" data-tab="brief">01 / Case brief</button>
@@ -80,35 +80,35 @@ button.primary{background:var(--amber);border-color:var(--amber);color:#21170d}
  <div id="brief" class="panel view">
   <div class="topline"><h2>Incident report</h2><span class="pill">OPEN INVESTIGATION</span></div>
   <div class="case-list">
-   <div class="case-item"><b>Machine</b><small>Industrial diesel generator · 6-cylinder · liquid cooled · 1500 RPM</small></div>
-   <div class="case-item"><b>Reported symptom</b><small>Coolant temperature climbs steadily during high-load operation. Automatic shutdown occurs near 112°C.</small></div>
-   <div class="case-item"><b>Known history</b><small>Thermostat replaced yesterday. No visible coolant leak. Radiator exterior appears clean. Engine runs normally at idle.</small></div>
+   <div class="case-item"><b>Vehicle</b><small>Compact petrol hatchback · naturally aspirated inline-four · front-wheel drive · 5-speed manual</small></div>
+   <div class="case-item"><b>Reported symptom</b><small>Coolant temperature climbs in slow traffic and with the air conditioning on. The ECU warning appears near 112°C.</small></div>
+   <div class="case-item"><b>Known history</b><small>Thermostat replaced yesterday. Coolant level is stable. No visible leak. Radiator fins look clean. Engine runs normally at idle.</small></div>
   </div>
   <div class="note">Your objective: identify the cause using evidence, not guesswork. Replacing parts without a diagnosis reduces your investigation rating.</div>
   <h3>What you know</h3>
-  <p class="sub" style="margin-bottom:8px">The engine produces more waste heat as load rises. The cooling system must move enough coolant through the engine and radiator to carry that heat away.</p>
+  <p class="sub" style="margin-bottom:8px">The engine produces more waste heat in traffic and under load. The water pump must circulate coolant through the engine and radiator so the radiator fan can remove that heat.</p>
   <div class="actions"><button class="primary" onclick="go('inspect')">Begin inspection →</button><button onclick="resetCase()">Reset investigation</button></div>
  </div>
  <div id="inspect" class="panel view hidden">
   <div class="topline"><h2>Cooling system schematic</h2><span class="pill">SELECT A COMPONENT</span></div>
   <div class="schematic">
-  <svg viewBox="0 0 620 300" role="img" aria-label="Simplified generator cooling system diagram">
+  <svg viewBox="0 0 620 300" role="img" aria-label="Simplified car cooling system diagram">
    <path class="pipe" d="M120 145 H217 M313 145 H390 V75 H470 M470 175 H390 V205 H70 V185"/>
-   <g class="part" tabindex="0" role="button" data-part="engine" id="p-engine"><rect x="20" y="105" width="100" height="80" rx="9"/><text x="70" y="139" text-anchor="middle">DIESEL</text><text x="70" y="156" text-anchor="middle">ENGINE</text></g>
+   <g class="part" tabindex="0" role="button" data-part="engine" id="p-engine"><rect x="20" y="105" width="100" height="80" rx="9"/><text x="70" y="139" text-anchor="middle">PETROL</text><text x="70" y="156" text-anchor="middle">ENGINE</text></g>
    <g class="part" tabindex="0" role="button" data-part="pump" id="p-pump"><circle cx="265" cy="145" r="48"/><text x="265" y="141" text-anchor="middle">WATER</text><text x="265" y="157" text-anchor="middle">PUMP</text></g>
    <g class="part" tabindex="0" role="button" data-part="radiator" id="p-radiator"><rect x="470" y="65" width="115" height="120" rx="8"/><path d="M485 80 V170 M500 80 V170 M515 80 V170 M530 80 V170 M545 80 V170 M560 80 V170" stroke="#70a5aa" stroke-width="2"/><text x="527" y="205" text-anchor="middle">RADIATOR</text></g>
    <g class="part" tabindex="0" role="button" data-part="thermostat" id="p-thermostat"><rect x="360" y="185" width="90" height="42" rx="7"/><text x="405" y="210" text-anchor="middle">THERMOSTAT</text></g>
-   <circle class="flowdot" cx="155" cy="145" r="5"/><text x="18" y="275" fill="#91aaa9" font-size="11">COOLANT CIRCUIT · SIMPLIFIED FLOW PATH</text>
+   <circle class="flowdot" cx="155" cy="145" r="5"/><text x="18" y="275" fill="#91aaa9" font-size="11">CAR COOLANT CIRCUIT · SIMPLIFIED FLOW PATH</text>
   </svg>
   </div>
-  <div id="partInfo" class="case-item" style="margin-top:10px"><b>Choose a component</b><small>Select the engine, water pump, radiator or thermostat to inspect its role and available evidence.</small></div>
+  <div id="partInfo" class="case-item" style="margin-top:10px"><b>Choose a component</b><small>Select the petrol engine, water pump, radiator or thermostat to inspect its role and available evidence.</small></div>
   <div class="actions"><button onclick="go('test')">Open test bench →</button></div>
  </div>
  <div id="test" class="panel view hidden">
   <div class="topline"><h2>Live diagnostic bench</h2><span class="pill">SIMULATION</span></div>
-  <p class="sub">Set the generator load and run it. Time is compressed: each simulation second represents roughly one minute of operation. Flow and thermal tests need the generator running; high load gives the clearest evidence.</p>
-  <label for="load">Generator load: <b id="loadRead">0%</b></label><input id="load" type="range" min="0" max="100" step="5" value="0">
-  <div class="actions"><button class="primary" id="runBtn" onclick="toggleRun()">Start generator</button><button onclick="runTest('flow')">Measure coolant flow</button><button onclick="runTest('pressure')">Pressure test</button><button onclick="runTest('surface')">Thermal scan</button></div>
+  <p class="sub">Set engine load and run the vehicle simulation. Time is compressed: each simulation second represents roughly one minute of operation. Flow and thermal tests need the engine running; high load gives the clearest evidence.</p>
+  <label for="load">Engine load: <b id="loadRead">0%</b></label><input id="load" type="range" min="0" max="100" step="5" value="0">
+  <div class="actions"><button class="primary" id="runBtn" onclick="toggleRun()">Start engine</button><button onclick="runTest('flow')">Measure coolant flow</button><button onclick="runTest('pressure')">Pressure test</button><button onclick="runTest('surface')">Thermal scan</button></div>
   <div class="reading"><span>Engine coolant outlet − inlet ΔT</span><b id="deltaT">—</b></div>
   <div class="reading"><span>Coolant pressure</span><b id="pressure">—</b></div>
   <div class="reading"><span>Radiator outlet temperature</span><b id="radTemp">—</b></div>
@@ -117,7 +117,7 @@ button.primary{background:var(--amber);border-color:var(--amber);color:#21170d}
  </div>
  <div id="repair" class="panel view hidden">
   <div class="topline"><h2>Repair bay</h2><span class="pill">PARTS &amp; VALIDATION</span></div>
-  <p class="sub">Choose a repair only when the evidence supports it. Then validate the generator under sustained load.</p>
+  <p class="sub">Choose a repair only when the evidence supports it. Then validate the vehicle under sustained load.</p>
   <div class="case-list">
    <div class="case-item"><b>Replace water-pump impeller</b><small>Restores coolant circulation if the impeller is damaged or slipping.</small><div class="actions"><button onclick="repair('pump')">Install replacement impeller</button></div></div>
    <div class="case-item"><b>Flush radiator core</b><small>Removes internal restriction. Appropriate only if heat rejection is impaired.</small><div class="actions"><button onclick="repair('radiator')">Flush radiator core</button></div></div>
@@ -183,8 +183,8 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>go(b
 $('load').addEventListener('input',e=>{if(s.validating)return;s.load=+e.target.value;save();render()});
 
 const PARTS={
- engine:['Diesel engine','Combustion heat enters the coolant through water jackets. Higher electrical load means more fuel burned and more waste heat.'],
- pump:['Water pump','A belt-driven impeller circulates coolant. A damaged impeller can spin at normal speed while moving too little coolant.'],
+ engine:['Petrol engine','Combustion heat enters the coolant through water jackets. Higher engine load means more fuel burned and more waste heat.'],
+ pump:['Water pump','The belt-driven water pump circulates coolant. A damaged impeller can spin at normal speed while moving too little coolant.'],
  radiator:['Radiator','Transfers heat from coolant to ambient air. A restriction or blocked core reduces heat rejection.'],
  thermostat:['Thermostat','Regulates coolant flow during warm-up. It was replaced recently, but should still be verified rather than assumed perfect.']
 };
@@ -199,7 +199,7 @@ function toggleRun(){
  if(s.validating)return;
  if(!s.running&&s.temp>100){setHint('Engine is still too hot to restart. Wait for it to cool below 100°C.');render();return}
  s.running=!s.running;s.shutdown=false;
- log(s.running?'Generator started at '+s.load+'% load.':'Generator stopped.');
+ log(s.running?'Engine started at '+s.load+'% load.':'Engine stopped.');
  save();render();
 }
 
@@ -209,7 +209,7 @@ function runTest(kind){
   s.pressureTest=true;addEvidence('Static pressure: 1.1 bar; no pressure loss observed.');
   setHint('Pressure holds steady. A major external leak is unlikely; pressure alone does not prove good circulation.');log('Pressure test completed: stable at 1.1 bar.');
  }else{
-  if(!s.running){setHint('Start the generator first: this test needs the engine running.');render();return}
+  if(!s.running){setHint('Start the engine first: this test needs it running.');render();return}
   if(kind==='flow'){
    s.flowTest=true;s.flowMeasured=true;s.flowVal=flow();
    addEvidence('Coolant flow: '+flow()+' L/min (specification: 95–120 L/min).');
@@ -227,7 +227,7 @@ function runTest(kind){
 
 function repair(part){
  if(s.validating)return;
- if(s.running){setMsg('Stop the generator before servicing it.');render();return}
+ if(s.running){setMsg('Stop the engine before servicing it.');render();return}
  if(!s.flowTest)s.guess++;
  s.repair=part;s.validated=false;s.solved=false;
  s.flowMeasured=false;s.dtShown=false;s.radShown=false;
@@ -242,7 +242,7 @@ function repair(part){
 
 function validateRepair(){
  if(s.validating)return;
- if(s.running){setMsg('Stop the generator before validation.');render();return}
+ if(s.running){setMsg('Stop the engine before validation.');render();return}
  if(s.repair!=='pump'){setMsg('Validation failed: temperature still rises excessively under load. Revisit the circulation evidence.','bad');log('Validation failed under sustained load.');save();render();return}
  s.temp=78;s.load=85;s.validating=true;s.shutdown=false;let n=0;
  log('Started accelerated 20-minute validation at 85% load.');
@@ -269,7 +269,7 @@ function resetCase(){
  clearInterval(valIv);s=fresh();
  log('Case file received.');
  document.querySelectorAll('.part').forEach(x=>x.classList.remove('selected'));
- $('partInfo').innerHTML='<b>Choose a component</b><small>Select the engine, water pump, radiator or thermostat to inspect its role and available evidence.</small>';
+ $('partInfo').innerHTML='<b>Choose a component</b><small>Select the petrol engine, water pump, radiator or thermostat to inspect its role and available evidence.</small>';
  setHint('Run a test to collect evidence. A good diagnosis compares readings under known operating conditions.');
  save();render();go('brief');
 }
@@ -280,7 +280,7 @@ function render(){
  $('flow').textContent=s.flowMeasured?s.flowVal:'—';
  $('rpm').textContent=(s.running||s.validating)?1500:0;
  $('loadVal').textContent=s.load+'%';$('loadRead').textContent=s.load+'%';$('load').value=s.load;$('load').disabled=s.validating;
- $('runBtn').textContent=s.running?'Stop generator':'Start generator';$('runBtn').disabled=s.validating;$('valBtn').disabled=s.validating;
+ $('runBtn').textContent=s.running?'Stop engine':'Start engine';$('runBtn').disabled=s.validating;$('valBtn').disabled=s.validating;
  $('deltaT').textContent=s.dtShown?s.dt+'°C':'—';
  $('pressure').textContent=s.pressureTest?'1.1 bar':'—';
  $('radTemp').textContent=s.radShown?s.radOut+'°C':'—';
@@ -299,7 +299,7 @@ function render(){
  $('archiveStatus').textContent=s.solved?'FRAGMENT RECOVERED':'LOCKED';
  $('archiveContent').innerHTML=s.solved
   ?'<div class="case-item"><b>ARCHIVE FRAGMENT 01 // The impeller that should not exist</b><small>The recovered impeller carried no manufacturer mark, yet its vane geometry matched a pump design that was never put into production. Someone built it by hand, and then it failed quietly, one eroded vane at a time. More fragments will surface in the next case.</small></div>'
-  :'<p class="sub">A fragment of the archive will be recovered when the generator case is solved and the repair is validated.</p>';
+  :'<p class="sub">A fragment of the archive will be recovered when the vehicle case is solved and the repair is validated.</p>';
  const sv=$('saveState');sv.textContent=saveOK?'● CASE FILE SAVED LOCALLY':'● NOT SAVED (STORAGE BLOCKED)';sv.classList.toggle('err',!saveOK);
 }
 
@@ -325,7 +325,7 @@ acc:c=>{const m=mis(c),o=out2(c),e=Math.abs(o/tgt2-1)*100;return[
 arch:'Fragment 02 — Beneath the worn cone, a bronze ring is stamped “H.V. · 3 / not for sale”. Its cone angle is tuned to no production gearbox.',note:'Gear ratio = driven teeth ÷ driving teeth; output RPM = input RPM ÷ ratio. A synchroniser cuts the speed mismatch roughly exponentially with friction × shift time.'};
 /* ---------- CASE 003: fuel injection ---------- */
 const eff3=c=>c.inj*sq(c.P/3),afr=(c,r)=>Math.max(13.8*(1+c.leak),13*(1+c.leak)*(r/4000)/eff3(c)),idle=c=>1500-900*(1-Math.min(1,eff3(c)))+1200*c.leak-600*(1-c.spark);
-C[3]={t:'Case 003: The Unstable Machine',ind:'Motorcycle · 250 cc fuel injection',xp:150,
+C[3]={t:'Case 003: The Unstable Engine',ind:'Motorcycle · 250 cc fuel injection',xp:150,
 sub:'A 250 cc motorcycle idles unevenly and hesitates, worse at high RPM. Compression and ignition looked normal.',
 sym:['Uneven idle','Hesitation on acceleration','Lean readings at high RPM','No mechanical damage'],
 init:()=>({inj:.8,P:3,spark:1,leak:0}),
@@ -337,25 +337,28 @@ acc:c=>{const a=afr(c,4000),i=idle(c);return[
 {k:'AFR at 4000 RPM',a:f(a,1)+':1',r:'13.2–14.7 : 1',ok:a>=13.2&&a<=14.7,w:a>14.7?'Mixture is lean: the injector cannot supply enough fuel, or air is leaking in.':'Mixture too rich.'},
 {k:'Idle speed',a:f(i,0)+' RPM',r:'1,400–1,600 RPM',ok:i>=1400&&i<=1600,w:'Idle is unstable: poor spray, misfire or an air leak shifts it out of range.'}]},
 arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, machined with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
-/* ---------- CASE 004: hydraulic press ---------- */
-const ct=c=>c.r+c.s+c.d,P4=c=>Math.min(200,20/(ct(c)+20*c.ps)),dec=c=>180*(1-E(-(500*ct(c)/60)*10));
-C[4]={t:'Case 004: Pressure Drop',ind:'Industrial · hydraulic press',xp:150,
-sub:'The press reaches pressure, but while holding a load the pressure sinks and force is lost. The pump sounds normal and nothing leaks outside.',
-sym:['Pressure reaches target initially','Pressure drops while holding','No external leakage','Pump sounds normal'],
-init:()=>({r:.003,s:.00008,d:.00008,ps:.0008}),
-parts:{'Hydraulic pump':'Volumetric efficiency falls with pressure (internal slip). Normal here.','Pressure relief valve':'Should stay shut below its 200 bar setting. A partly open valve bypasses oil back to tank.','Hydraulic cylinder':'Force = pressure × piston area (0.0314 m²).','Piston seals':'Wear lets oil pass from one side of the piston to the other.','Directional control valve':'Spool clearance leaks a little oil even when closed.','Hydraulic lines':'No external leakage found: the oil is going somewhere inside.'},
-tools:[['Pressure gauge',c=>`Reaches ${f(P4(c),0)} bar. Force ${f(P4(c)*1e5*.0314/1000,0)} kN.`],['Flow meter',c=>`Pump delivers ${f(20*(1-c.ps*P4(c)),1)} L/min at pressure. Pump is healthy.`],['Hydraulic leak tester',c=>`External leakage 0.00 L/min. Hold test: ${f(dec(c),1)} bar lost in 10 s. Directional valve leakage ${f(c.d*180,3)} L/min.`],['Cylinder inspection',c=>`Seal bypass at 180 bar: ${f(c.s*180,3)} L/min.`],['Relief valve test',c=>`Relief bypass at 180 bar: ${f(c.r*180,3)} L/min.${c.r*180>.02?' Valve is not seating.':''}`]],
-reps:[['Replace relief valve','Fits a new valve.',c=>c.r=.0001],['Clean and reseat relief valve','Partial improvement.',c=>c.r=Math.min(c.r,.0008)],['Replace piston seals','New seal set.',c=>c.s=.00003],['Replace directional valve spool','Tighter clearance.',c=>c.d=.00003],['Overhaul pump','Reduces slip.',c=>c.ps=.0005],['Tighten hydraulic fittings','External joints only.',c=>c]],
-acc:c=>{const p=P4(c),d=dec(c),b=c.r*180;return[
-{k:'System pressure',a:f(p,0)+' bar',r:'≥ 180 bar',ok:p>=180,w:'Pump flow is being lost before pressure builds.'},
-{k:'Pressure loss in 10 s',a:f(d,1)+' bar',r:'≤ 5 bar',ok:d<=5,w:'Internal bypass (relief, seals or valve) is bleeding oil from the held load.'},
-{k:'Relief valve bypass',a:f(b,3)+' L/min',r:'≤ 0.020 L/min',ok:b<=.02,w:'The relief valve is passing flow while it should be shut.'}]},
-arch:'Fragment 04 — The relief spring is wound with a progressive, double pitch and carries a tiny preload ring, engraved “set by ear”.',note:'Force = pressure × area. Without external leaks, falling pressure means internal bypass. Decay ≈ P₀(1 − e^(−K·Q/V)): bypass flow is the problem.'};
+/* ---------- CASE 004: The Long Stop — automotive braking system ---------- */
+const brakePressure=c=>Math.max(0,100*(1-c.mcBypass)*(1-c.hoseExpand));
+const brakeDecay=c=>Math.max(0,100-brakePressure(c));
+C[4]={t:'Case 004: The Long Stop',ind:'Automotive · hydraulic braking system',xp:150,
+sub:'After several hard stops, the brake pedal slowly sinks at a traffic light. There is no obvious fluid leak and the pads still have usable material. Find the pressure loss before the car returns to the road.',
+sym:['Pedal slowly sinks while held','Brake pressure falls during a sustained application','No visible fluid leak','Brake pads remain within service thickness'],
+init:()=>({mcBypass:.28,hoseExpand:.02,booster:1,pads:1}),
+parts:{'Brake pedal and booster':'The pedal multiplies driver input; the vacuum booster reduces the effort required.','Master cylinder':'Converts pedal force into hydraulic pressure. Internal seal bypass can let pressure fall without an external leak.','Brake fluid':'Transmits pressure through the hydraulic circuit. Water contamination lowers its boiling point.','Flexible brake hose':'Carries pressurised fluid to the caliper. An internally damaged hose can expand under pressure.','Front caliper':'Clamps the pads against the disc when hydraulic pressure is applied.','Brake pads and discs':'Friction converts vehicle kinetic energy into heat. Worn or overheated parts reduce braking performance.'},
+tools:[['Pedal hold / pressure test',c=>`Initial line pressure ${f(brakePressure(c),1)} bar; pressure loss while held ${f(brakeDecay(c),1)} bar.`],['Hydraulic leak inspection',c=>`External fluid loss: 0.00 mL/min. Master-cylinder internal bypass estimate: ${f(c.mcBypass*100,0)}%.`],['Brake hose expansion test',c=>`Hose volumetric expansion: ${f(c.hoseExpand*100,1)}%. ${c.hoseExpand>.08?'Hose expands excessively under pressure.':'Hose expansion is within the test limit.'}`],['Pad and disc inspection',c=>`Pad thickness reserve: ${f(c.pads*100,0)}%. Disc surface: ${c.pads<.3?'scored / near limit':'serviceable'}.`],['Boiling-point tester',c=>`Brake-fluid boiling point estimate: ${f(260-90*(1-c.booster),0)}°C. Replace fluid if below the vehicle specification.`]],
+reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and brake discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
+acc:c=>{const p=brakePressure(c),d=brakeDecay(c);return[
+{k:'Held brake line pressure',a:f(p,1)+' bar',r:'≥ 90 bar',ok:p>=90,w:'Hydraulic pressure is not being retained while the pedal is held.'},
+{k:'Pressure loss during hold',a:f(d,1)+' bar',r:'≤ 10 bar',ok:d<=10,w:'Internal bypass or hose expansion is allowing pressure to fall.'},
+{k:'External fluid leakage',a:'0.00 mL/min',r:'No visible leakage',ok:true,w:'No external leak detected; an internal master-cylinder bypass remains possible.'}]},
+arch:'Fragment 04 — The inventor’s notebook describes a tandem master cylinder with a stepped bore and a seal profile that maintains pressure even after partial circuit failure. The margin reads: “A safe system must fail predictably.”',
+note:'Hydraulic pressure is force divided by piston area. A master-cylinder seal can bypass fluid internally, so pressure falls even when no fluid appears outside the vehicle.'};
+/* ---------- CASE 005: The Inventor’s Automotive Prototype ---------- */
 /* ---------- CASE 005: compound drivetrain ---------- */
 const cal=g=>{const R=g.r1*g.r2*g.rb,Tb=48*g.r1*g.r2*.9409,F=Tb/.05,u=F/(.8*g.ten),sl=Math.min(40,.4+(u>.6?25*(u-.6)**2:0)),eb=.97*(1-sl/100)*(1-g.ten/60000);return{R,Tb,F,sl,eb,w:1750/R*(1-sl/100),T:Tb*g.rb*eb,u}};
 C[5]={t:'Case 005: The Inventor\u2019s Prototype',ind:'Experimental · compound transmission',xp:300,
-sub:'An abandoned laboratory holds an unfinished drivetrain: motor, two gear stages and a belt-driven output. The documentation is incomplete. Configure it to meet the specification.',
-sym:['Motor: 1750 RPM, 48 Nm','Target 580–620 RPM at ≥110 Nm','Belt slip must stay ≤2%','Documentation incomplete'],
+sub:'An unfinished automotive variable-ratio drivetrain sits on a test rig. Its engine input, two reduction stages and belt-driven output must deliver the specified road-speed and wheel-torque window without excessive slip. Configure and validate the prototype.',
+sym:['Engine input: 1750 RPM, 48 Nm','Target 580–620 RPM at ≥110 Nm','Belt slip must stay ≤2%','Documentation incomplete'],
 init:()=>({}),ctl:{r1:2,r2:1.5,rb:1.5,ten:1000},
 ctls:[['r1','First-stage ratio',1,4,.05,''],['r2','Second-stage ratio',1,4,.05,''],['rb','Belt ratio',.5,3,.05,''],['ten','Belt tension (N)',500,5000,100,' N']],
 parts:{'Input motor':'1750 RPM, 48 Nm.','First gear stage':'Each gear mesh is about 97% efficient.','Second gear stage':'Total gear ratio is the product of all stages.','Output shaft':'Speed = 1750 ÷ total ratio, less belt slip.','Belt drive':'Slip rises sharply when belt force exceeds what the tension can grip.','Bearings':'Higher belt tension raises bearing load and friction loss.','Tension adjustment mechanism':'Too loose: slip. Too tight: friction loss and wear.'},
@@ -365,7 +368,7 @@ acc:(c,g)=>{const k=cal(g);return[
 {k:'Output speed',a:f(k.w,0)+' RPM',r:'580–620 RPM',ok:k.w>=580&&k.w<=620,w:'Total ratio is wrong: change stage or belt ratios.'},
 {k:'Output torque',a:f(k.T,0)+' Nm',r:'≥ 110 Nm',ok:k.T>=110,w:'Not enough torque: ratio too low, or losses (slip, over-tension) are too high.'},
 {k:'Belt slip',a:f(k.sl,1)+'%',r:'≤ 2%',ok:k.sl<=2,w:'Belt tension is too low for the load carried.'}]},
-arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this machine, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The campaign ends here, and the notes ask: “Who will build the next one?”',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
+arch:'Fragment 05 — The inventor\u2019s notes: every gearbox, injector and valve you recovered was a trial piece for this vehicle, a drivetrain that tunes itself to its load. The lab was finished the day the inventor vanished. The next prototype awaits a road test.',note:'Compound ratio = product of stages; torque × ratio × efficiency; belt slip falls as tension rises, but bearing losses rise.'};
 const mod=typeof module!=='undefined'&&module.exports;
 if(mod){module.exports={C,cal};return}
 /* ---------- UI / progression / save ---------- */
@@ -412,101 +415,61 @@ R();
 
 <script>
 // machine-database.js
-// Reusable databases for machines, components, operating condition templates, and lore fragments
+// Automotive platform, component, operating-condition, tool and lore databases
 
 (function(global) {
   const MACHINE_DATABASE = {
     diesel_generator: {
       id: 'diesel_generator',
-      name: 'Industrial Diesel Generator',
-      industry: 'Power Generation · Heavy Duty',
+      name: 'Compact Petrol Hatchback — Cooling System',
+      vehicleId: 'compact_hatchback_01',
+      industry: 'Automotive · Passenger Car',
       unlockRank: 0,
-      baseParams: { ratedRpm: 1500, ratedLoad: 85, ambientTemp: 28, nominalPressure: 1.2, nominalFlow: 115, nominalVibration: 2.1 },
+      baseParams: { ratedRpm: 3500, ratedLoad: 70, ambientTemp: 28, nominalPressure: 1.1, nominalFlow: 105, nominalVibration: 1.8 },
       components: {
         cooling_pump: {
-          name: 'Centrifugal Coolant Pump',
+          name: 'Engine-Driven Water Pump',
           role: 'Circulates coolant through engine water jackets and radiator core.',
-          normalSpec: '105–125 L/min at 1500 RPM',
+          normalSpec: '90–120 L/min at 3500 RPM',
           dependencies: ['drive_belt', 'thermostat']
         },
         radiator_core: {
-          name: 'Cross-Flow Radiator Core',
+          name: 'Aluminium Cross-Flow Radiator',
           role: 'Rejects thermal energy from coolant to ambient air stream.',
           normalSpec: 'ΔT drop of 10–14°C across core at 85% load',
           dependencies: ['cooling_pump', 'cooling_fan']
         },
         thermostat: {
-          name: 'Wax-Element Thermostat',
+          name: 'Wax-Pellet Engine Thermostat',
           role: 'Regulates coolant bypass during warm-up, opening fully at 82°C.',
           normalSpec: 'Full open at 82–85°C',
           dependencies: ['cooling_pump']
         },
         fuel_injector_bank: {
-          name: 'High-Pressure Fuel Rail & Injectors',
-          role: 'Atomises diesel fuel cleanly into combustion chambers.',
-          normalSpec: 'Rail pressure 1400–1600 bar; balanced cylinder exhaust temps',
-          dependencies: ['fuel_filter', 'turbocharger']
+          name: 'Electronic Fuel Injection Rail & Injectors',
+          role: 'Meters petrol into the intake ports for clean combustion.',
+          normalSpec: 'Fuel rail pressure 3.5 ± 0.2 bar; balanced cylinder fuelling',
+          dependencies: ['fuel_filter', 'intake_manifold']
         },
         turbocharger: {
-          name: 'Exhaust-Driven Turbocharger',
-          role: 'Compresses intake air to sustain combustion stoichiometry under high load.',
-          normalSpec: 'Boost 1.6–1.9 bar at 85% load',
-          dependencies: ['air_intake', 'lubrication_system']
+          name: 'Naturally Aspirated Intake Manifold',
+          role: 'Distributes filtered intake air evenly to the engine cylinders.',
+          normalSpec: 'Intake vacuum stable at warm idle',
+          dependencies: ['air_filter', 'throttle_body']
         },
         avr_governor: {
-          name: 'Electronic Speed Governor & AVR',
-          role: 'Maintains 1500 RPM (50 Hz) and stable voltage across load steps.',
-          normalSpec: '1500 ± 8 RPM; frequency droop < 0.5%',
+          name: 'Engine ECU & Electronic Throttle Control',
+          role: 'Maintains target idle speed and adjusts fuel injection to engine load.',
+          normalSpec: 'Warm idle 800–900 RPM; stable commanded engine speed',
           dependencies: ['fuel_injector_bank']
         }
       },
-      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'vibration_analyser', 'exhaust_gas_analyser', 'oil_spectroscopy']
-    },
-
-    hydraulic_press: {
-      id: 'hydraulic_press',
-      name: '250-Ton Industrial Hydraulic Press',
-      industry: 'Manufacturing · Heavy Forming',
-      unlockRank: 0,
-      baseParams: { ratedRpm: 1450, ratedLoad: 80, ambientTemp: 30, nominalPressure: 210, nominalFlow: 48, nominalVibration: 1.8 },
-      components: {
-        axial_piston_pump: {
-          name: 'Variable-Displacement Axial Piston Pump',
-          role: 'Converts motor shaft power into high-pressure hydraulic flow.',
-          normalSpec: '46–50 L/min at 210 bar; volumetric efficiency > 92%',
-          dependencies: ['suction_strainer', 'hydraulic_fluid']
-        },
-        proportional_relief_valve: {
-          name: 'Proportional Pressure Relief Valve',
-          role: 'Limits maximum system pressure and holds static forming pressure.',
-          normalSpec: 'Cracks at 215 bar; zero bypass below 205 bar',
-          dependencies: ['pilot_stage']
-        },
-        main_cylinder_seals: {
-          name: 'Double-Acting Ram Cylinder & Piston Seals',
-          role: 'Converts hydraulic pressure into linear pressing force.',
-          normalSpec: 'Internal cross-port bypass < 0.03 L/min at 200 bar',
-          dependencies: ['hydraulic_fluid']
-        },
-        directional_spool_valve: {
-          name: '4/3 Closed-Center Directional Valve',
-          role: 'Directs oil to extend, hold, or retract the main ram.',
-          normalSpec: 'Spool leakage < 0.04 L/min in neutral hold',
-          dependencies: ['pilot_stage']
-        },
-        oil_cooler: {
-          name: 'Air-Blast Hydraulic Oil Cooler',
-          role: 'Maintains fluid viscosity by keeping reservoir temperature below 55°C.',
-          normalSpec: 'Oil temp 42–52°C under continuous cycling',
-          dependencies: ['hydraulic_fluid']
-        }
-      },
-      tools: ['pressure_gauge', 'flow_meter', 'ultrasonic_leak_detector', 'thermal_camera', 'oil_viscosity_tester', 'vibration_analyser']
+      tools: ['thermal_camera', 'flow_meter', 'pressure_gauge', 'tachometer_sync', 'exhaust_gas_analyser', 'oscilloscope_ignition', 'smoke_leak_tester']
     },
 
     manual_transmission: {
       id: 'manual_transmission',
-      name: '6-Speed Heavy-Duty Manual Gearbox',
+      name: 'Compact Performance Hatchback — Manual Drivetrain',
       industry: 'Automotive · Drivetrain',
       unlockRank: 0,
       baseParams: { ratedRpm: 3200, ratedLoad: 75, ambientTemp: 25, nominalPressure: 0.4, nominalFlow: 6, nominalVibration: 2.4 },
@@ -547,7 +510,7 @@ R();
 
     petrol_efi_engine: {
       id: 'petrol_efi_engine',
-      name: 'High-Output 4-Cylinder EFI Petrol Engine',
+      name: '250 cc EFI Motorcycle — Engine System',
       industry: 'Automotive · Motorsport & Performance',
       unlockRank: 1,
       baseParams: { ratedRpm: 4500, ratedLoad: 70, ambientTemp: 26, nominalPressure: 3.5, nominalFlow: 140, nominalVibration: 2.0 },
@@ -586,51 +549,10 @@ R();
       tools: ['exhaust_gas_analyser', 'pressure_gauge', 'flow_meter', 'oscilloscope_ignition', 'smoke_leak_tester', 'thermal_camera']
     },
 
-    rotary_screw_compressor: {
-      id: 'rotary_screw_compressor',
-      name: 'Oil-Flooded Rotary Screw Air Compressor',
-      industry: 'Industrial · Pneumatic Plant',
-      unlockRank: 2,
-      baseParams: { ratedRpm: 2950, ratedLoad: 90, ambientTemp: 32, nominalPressure: 8.5, nominalFlow: 320, nominalVibration: 2.6 },
-      components: {
-        air_end_rotors: {
-          name: 'Helical Male/Female Air-End Rotors',
-          role: 'Compresses trapped air pockets while sealed by injected oil.',
-          normalSpec: '8.5 bar discharge; volumetric output 310–330 CFM',
-          dependencies: ['oil_separator', 'inlet_unloader']
-        },
-        oil_separator: {
-          name: 'Coalescing Air/Oil Separator Element',
-          role: 'Recovers lubricating oil from compressed discharge air.',
-          normalSpec: 'Differential pressure < 0.25 bar across element',
-          dependencies: ['scavenge_line']
-        },
-        thermostatic_bypass_valve: {
-          name: 'Oil Cooler Thermostatic Bypass Valve',
-          role: 'Routes oil through cooler once discharge exceeds 75°C.',
-          normalSpec: 'Discharge temp 80–92°C under 90% load',
-          dependencies: ['air_end_rotors']
-        },
-        inlet_unloader: {
-          name: 'Modulating Intake Unloader Valve',
-          role: 'Controls intake volume to match plant air demand.',
-          normalSpec: 'Full open under load; clean blowdown unloaded',
-          dependencies: ['pressure_transducer']
-        },
-        minimum_pressure_valve: {
-          name: 'Minimum Pressure Check Valve (MPV)',
-          role: 'Maintains internal oil circulation pressure during startup and prevents backflow.',
-          normalSpec: 'Opens smoothly at 4.2 bar; zero reverse leakage',
-          dependencies: ['oil_separator']
-        }
-      },
-      tools: ['pressure_gauge', 'flow_meter', 'thermal_camera', 'vibration_analyser', 'ultrasonic_leak_detector', 'oil_viscosity_tester']
-    },
-
     experimental_cvt_drive: {
       id: 'experimental_cvt_drive',
-      name: 'Inventor’s Hydro-Mechanical Variable Drive (Prototype H-09)',
-      industry: 'Experimental Archive · Clandestine Lab',
+      name: 'Inventor’s Experimental Automotive Variable Drive (Prototype H-09)',
+      industry: 'Automotive · Experimental Drivetrain',
       unlockRank: 3,
       isExperimental: true,
       baseParams: { ratedRpm: 2400, ratedLoad: 85, ambientTemp: 24, nominalPressure: 45, nominalFlow: 28, nominalVibration: 1.5 },
@@ -706,15 +628,247 @@ R();
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 <script>
+/*
+ * The Failure Files
+ * Automotive Vehicle Database
+ *
+ * Defines vehicle platforms and their connected systems.
+ * This is a new layer; it does not replace MACHINE_DATABASE yet.
+ */
+
+(function (global) {
+  const VEHICLE_DATABASE = {
+
+    compact_hatchback_01: {
+      id: "compact_hatchback_01",
+      name: "Compact Petrol Hatchback",
+      category: "Passenger Car",
+      unlockRank: 0,
+
+      configuration: {
+        engine: "Naturally Aspirated Inline-4 Petrol",
+        displacementCC: 1197,
+        cylinders: 4,
+        aspiration: "Naturally Aspirated",
+        fuelSystem: "Electronic Fuel Injection",
+        transmission: "5-Speed Manual",
+        drivetrain: "Front-Wheel Drive",
+        cooling: "Liquid Cooled",
+        steering: "Electric Power Steering"
+      },
+
+      specifications: {
+        ratedPowerKW: 61,
+        ratedTorqueNm: 113,
+        idleRPM: 850,
+        redlineRPM: 6500,
+        normalOperatingTemp: 92,
+        fuelPressureBar: 3.5,
+        coolantPressureBar: 1.1
+      },
+
+      systems: {
+
+        engine: {
+          name: "Engine and Combustion",
+          components: [
+            "engine_block",
+            "cylinder_head",
+            "pistons",
+            "connecting_rods",
+            "crankshaft",
+            "camshaft",
+            "valves",
+            "timing_chain",
+            "spark_plugs",
+            "ignition_coils",
+            "fuel_injectors",
+            "fuel_rail",
+            "throttle_body",
+            "intake_manifold",
+            "air_filter"
+          ]
+        },
+
+        exhaust: {
+          name: "Exhaust and Emissions",
+          components: [
+            "exhaust_manifold",
+            "oxygen_sensor",
+            "catalytic_converter",
+            "muffler",
+            "exhaust_pipe"
+          ]
+        },
+
+        cooling: {
+          name: "Cooling System",
+          components: [
+            "radiator",
+            "water_pump",
+            "thermostat",
+            "cooling_fan",
+            "coolant_hoses",
+            "coolant_reservoir"
+          ]
+        },
+
+        lubrication: {
+          name: "Engine Lubrication",
+          components: [
+            "oil_pump",
+            "oil_filter",
+            "oil_sump",
+            "oil_galleries"
+          ]
+        },
+
+        transmission: {
+          name: "Transmission and Drivetrain",
+          components: [
+            "clutch",
+            "flywheel",
+            "input_shaft",
+            "gear_set",
+            "synchronisers",
+            "selector_fork",
+            "differential",
+            "driveshafts",
+            "cv_joints"
+          ]
+        },
+
+        braking: {
+          name: "Braking System",
+          components: [
+            "brake_pedal",
+            "brake_booster",
+            "master_cylinder",
+            "brake_fluid",
+            "front_disc_rotors",
+            "front_brake_pads",
+            "rear_brake_drums",
+            "abs_sensors"
+          ]
+        },
+
+        suspension: {
+          name: "Suspension and Steering",
+          components: [
+            "front_springs",
+            "front_dampers",
+            "control_arms",
+            "ball_joints",
+            "bushings",
+            "steering_rack",
+            "tie_rods",
+            "wheel_bearings"
+          ]
+        },
+
+        wheels: {
+          name: "Wheels and Tyres",
+          components: [
+            "front_left_tyre",
+            "front_right_tyre",
+            "rear_left_tyre",
+            "rear_right_tyre",
+            "wheel_rims",
+            "wheel_balance"
+          ]
+        },
+
+        electrical: {
+          name: "Electrical and Electronics",
+          components: [
+            "battery",
+            "alternator",
+            "starter_motor",
+            "engine_ecu",
+            "crankshaft_sensor",
+            "camshaft_sensor",
+            "coolant_temperature_sensor",
+            "maf_sensor",
+            "wiring_harness",
+            "fuses",
+            "relays"
+          ]
+        }
+
+      }
+    }
+
+  };
+
+  function getVehicle(vehicleId) {
+    return VEHICLE_DATABASE[vehicleId] || null;
+  }
+
+  function getVehicleSystems(vehicleId) {
+    const vehicle = getVehicle(vehicleId);
+    return vehicle ? vehicle.systems : null;
+  }
+
+  function getVehicleComponents(vehicleId) {
+    const vehicle = getVehicle(vehicleId);
+
+    if (!vehicle) return [];
+
+    return Object.values(vehicle.systems)
+      .flatMap(system => system.components);
+  }
+
+  function validateVehicleDatabase() {
+    const errors = [];
+
+    for (const vehicle of Object.values(VEHICLE_DATABASE)) {
+
+      if (!vehicle.id || !vehicle.name) {
+        errors.push("Vehicle is missing its ID or name.");
+      }
+
+      if (!vehicle.configuration) {
+        errors.push(vehicle.id + ": Missing configuration.");
+      }
+
+      if (!vehicle.systems || !Object.keys(vehicle.systems).length) {
+        errors.push(vehicle.id + ": No vehicle systems defined.");
+      }
+
+      for (const [systemId, system] of Object.entries(vehicle.systems || {})) {
+        if (!Array.isArray(system.components) ||
+            system.components.length === 0) {
+          errors.push(vehicle.id + ": Invalid system " + systemId);
+        }
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors
+    };
+  }
+
+  global.FF_AUTO = {
+    VEHICLE_DATABASE,
+    getVehicle,
+    getVehicleSystems,
+    getVehicleComponents,
+    validateVehicleDatabase
+  };
+
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>
 // fault-engine.js
 // Defines fault archetypes, physical interactions, misleading clues, and repair mappings
 
 (function(global) {
   const FAULT_CATALOG = [
-    // --- DIESEL GENERATOR FAULTS ---
+    // --- AUTOMOTIVE ENGINE & COOLING FAULTS ---
     {
       id: 'gen_pump_slip',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'cooling_pump',
       faultType: 'Internal Wear / Impeller Slip',
       title: 'Sheared Impeller Key / Eroded Vanes',
@@ -747,7 +901,7 @@ R();
     },
     {
       id: 'gen_radiator_fouling',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'radiator_core',
       faultType: 'Partial Internal Blockage',
       title: 'Silicate Scale Fouling in Radiator Tubes',
@@ -774,7 +928,7 @@ R();
     },
     {
       id: 'gen_injector_overfuel',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'fuel_injector_bank',
       faultType: 'Incorrect Adjustment / Nozzle Wear',
       title: 'Leaking Injector Nozzle Causing Thermal Overload',
@@ -782,11 +936,11 @@ R();
       symptoms: [
         'Engine overheats under heavy load despite healthy coolant flow',
         'Dark exhaust haze and elevated exhaust gas temperature (EGT)',
-        'Slight low-frequency vibration increase under load'
+        'Slight low-engine speed vibration increase under load'
       ],
       misleadingClues: [
         {
-          source: 'Operator Report',
+          source: 'Driver Report',
           text: '“It’s definitely a cooling system failure—the temperature gauge hits the red zone every afternoon.”',
           explanation: 'Overheating is a thermal balance problem: after-burning from poor atomisation dumps excessive combustion heat into the water jacket, overwhelming a healthy cooling system.'
         }
@@ -801,21 +955,21 @@ R();
     },
     {
       id: 'gen_turbo_boost_leak',
-      machineId: 'diesel_generator',
+      machineId: 'petrol_engine',
       primaryComponent: 'turbocharger',
       faultType: 'Internal Leakage / Wastegate Creep',
       title: 'Stuck-Open Turbocharger Wastegate Actuator',
       conditionDependent: 'high_load',
       symptoms: [
-        'RPM droops under heavy electrical load (>75%)',
+        'RPM droops under heavy engine load (>75%)',
         'High exhaust smoke and rising coolant temperature under load',
         'Unloaded idle speed and voltage appear completely normal'
       ],
       misleadingClues: [
         {
-          source: 'Maintenance Record',
+          source: 'Service Record',
           text: 'Electronic governor recalibrated last month; fuel filter replaced 50 hours ago.',
-          explanation: 'The governor adds more fuel to hold 1500 RPM, but without sufficient boost air mass, combustion turns rich and hot while losing peak torque.'
+          explanation: 'The governor adds more fuel to hold 3500 RPM, but without sufficient boost air mass, combustion turns rich and hot while losing peak torque.'
         }
       ],
       secondaryEffects: { flowFactor: 0.96, tempRiseFactor: 1.38, pressureFactor: 1.02, rpmDroop: 65, boostFactor: 0.58 },
@@ -824,90 +978,7 @@ R();
         { id: 'rep_governor', label: 'Replace electronic speed governor', fixes: [], cost: 520, time: 2 },
         { id: 'rep_injectors', label: 'Replace fuel injector set', fixes: [], cost: 450, time: 3 }
       ],
-      concept: 'Turbocharged diesels require air mass proportional to fuel delivery. Low boost starves combustion of oxygen, causing rich EGT spikes and torque droop.'
-    },
-
-    // --- HYDRAULIC PRESS FAULTS ---
-    {
-      id: 'hyd_relief_chatter',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'proportional_relief_valve',
-      faultType: 'Internal Leakage / Seat Erosion',
-      title: 'Scored Proportional Relief Valve Pilot Seat',
-      conditionDependent: 'high_pressure',
-      symptoms: [
-        'Ram approaches target pressure slowly, then bleeds down during hold phase',
-        'Localized high temperature at relief valve return line to tank',
-        'Zero external oil drips on floor or cylinder gland'
-      ],
-      misleadingClues: [
-        {
-          source: 'Operator Statement',
-          text: '“The main cylinder seals must be blown—the ram creeps upward whenever we hold a 200-ton squeeze.”',
-          explanation: 'Internal bypass across the relief valve dumps pressurised oil straight to the tank, mimicking cylinder seal bypass.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.76, decayRate: 14.5, tempRiseFactor: 1.35, flowLoss: 11.5 },
-      repairs: [
-        { id: 'rep_relief_valve', label: 'Replace & calibrate proportional relief cartridge', fixes: ['hyd_relief_chatter'], cost: 340, time: 1.5 },
-        { id: 'rep_cylinder_seals', label: 'Strip main ram & replace piston seals', fixes: [], cost: 780, time: 5 },
-        { id: 'rep_main_pump', label: 'Overhaul axial piston pump', fixes: [], cost: 920, time: 4 }
-      ],
-      concept: 'Pressure drop across a partially open relief valve converts hydraulic power (P × Q) directly into localised heat in the tank return line.'
-    },
-    {
-      id: 'hyd_piston_seal_bypass',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'main_cylinder_seals',
-      faultType: 'Component Wear',
-      title: 'Extruded PTFE Piston Ring in Main Press Cylinder',
-      conditionDependent: 'high_pressure',
-      symptoms: [
-        'Holding pressure decays rapidly under load',
-        'Warm oil flow detected in cylinder rod-end return line during deadhead hold',
-        'Relief valve return line remains cool and silent'
-      ],
-      misleadingClues: [
-        {
-          source: 'Previous Work Order',
-          text: 'Directional control valve replaced 3 weeks ago after pressure complaints.',
-          explanation: 'Replacing the directional valve could not stop internal cross-port leakage past the worn piston seal inside the barrel.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.79, decayRate: 16.0, tempRiseFactor: 1.25, cylinderBypass: 10.8 },
-      repairs: [
-        { id: 'rep_cylinder_seals', label: 'Hone barrel & install heavy-duty piston seals', fixes: ['hyd_piston_seal_bypass'], cost: 780, time: 5 },
-        { id: 'rep_relief_valve', label: 'Replace proportional relief valve', fixes: [], cost: 340, time: 1.5 },
-        { id: 'rep_dir_valve', label: 'Replace 4/3 directional spool valve', fixes: [], cost: 490, time: 2 }
-      ],
-      concept: 'Isolating internal hydraulic bypass requires comparing return flow from the relief valve versus the cylinder annulus line under static hold.'
-    },
-    {
-      id: 'hyd_oil_viscosity_breakdown',
-      machineId: 'hydraulic_press',
-      primaryComponent: 'oil_cooler',
-      faultType: 'Temperature / Viscosity Degradation',
-      title: 'Clogged Oil Cooler Core Causing Hot-Run Slip',
-      conditionDependent: 'hot_run',
-      symptoms: [
-        'Press achieves full 210 bar when cold at start of shift',
-        'After 25 minutes of cycling, pressure drops and cycle time slows',
-        'Reservoir fluid temperature exceeds 68°C'
-      ],
-      misleadingClues: [
-        {
-          source: 'Operator Report',
-          text: '“The pump is wearing out—it works fine at 7 AM and loses power by coffee break.”',
-          explanation: 'Thermal thinning of ISO 46 hydraulic oil above 65°C increases internal clearances leakage across every valve and pump slipper.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.82, decayRate: 9.5, tempRiseFactor: 1.65, viscosityFactor: 0.54 },
-      repairs: [
-        { id: 'rep_cooler_service', label: 'Clean oil cooler core & flush degraded fluid', fixes: ['hyd_oil_viscosity_breakdown'], cost: 310, time: 2 },
-        { id: 'rep_main_pump', label: 'Replace axial piston pump', fixes: [], cost: 920, time: 4 },
-        { id: 'rep_relief_valve', label: 'Increase relief valve preload', fixes: [], cost: 120, time: 1 }
-      ],
-      concept: 'Internal laminar leakage in hydraulic clearances scales inversely with fluid viscosity (Q_leak ∝ 1/μ). Overheated oil loses viscosity and pressure.'
+      concept: 'Turbocharged petrols require air mass proportional to fuel delivery. Low boost starves combustion of oxygen, causing rich EGT spikes and torque droop.'
     },
 
     // --- MANUAL TRANSMISSION FAULTS ---
@@ -1049,35 +1120,6 @@ R();
       concept: 'Volumetric flow through a fixed injector orifice obeys Q ∝ √(P_rail − P_manifold). Insufficient rail pressure starves the engine at high RPM.'
     },
 
-    // --- ROTARY SCREW COMPRESSOR FAULTS ---
-    {
-      id: 'comp_separator_clog',
-      machineId: 'rotary_screw_compressor',
-      primaryComponent: 'oil_separator',
-      faultType: 'Partial Blockage',
-      title: 'Saturated Air/Oil Separator Element',
-      conditionDependent: 'high_load',
-      symptoms: [
-        'Internal sump pressure reads 10.2 bar while plant discharge is only 8.1 bar',
-        'High motor amperage draw and elevated discharge temperature',
-        'Oil carryover visible in downstream pneumatic filter bowl'
-      ],
-      misleadingClues: [
-        {
-          source: 'Plant Operator',
-          text: '“The pressure transducer must be drifting—the controller shows 10.2 bar even though our shop line is low.”',
-          explanation: 'Both gauges are accurate: a 2.1 bar pressure drop across a clogged separator element forces the air-end to over-compress against internal restriction.'
-        }
-      ],
-      secondaryEffects: { pressureFactor: 0.94, internalDeltaP: 2.1, tempRiseFactor: 1.38, vibFactor: 1.22 },
-      repairs: [
-        { id: 'rep_separator', label: 'Replace coalescing separator element & scavenge orifice', fixes: ['comp_separator_clog'], cost: 290, time: 1.5 },
-        { id: 'rep_unloader', label: 'Rebuild intake unloader valve', fixes: [], cost: 350, time: 2 },
-        { id: 'rep_thermal_valve', label: 'Replace oil thermostatic bypass valve', fixes: [], cost: 195, time: 1 }
-      ],
-      concept: 'Every 1 bar of differential pressure across a clogged separator adds ~7% shaft power draw and drives discharge temperature upward.'
-    },
-
     // --- EXPERIMENTAL PROTOTYPE H-09 FAULT ---
     {
       id: 'exp_clamp_servo_lag',
@@ -1119,16 +1161,6 @@ R();
       extraEffects: { flowFactor: 0.85, tempRiseFactor: 1.18 },
       extraRepair: { id: 'rep_thermostat', label: 'Replace partially sticking thermostat', fixesSecondary: true, cost: 95, time: 1 },
       interactionNote: 'Fixing only the radiator leaves a 15% flow restriction at peak ambient heat; fixing only the thermostat leaves the fouled core unable to reject rated load.'
-    },
-    {
-      id: 'compound_hyd_relief_and_cooler',
-      machineId: 'hydraulic_press',
-      primaryFaultId: 'hyd_relief_chatter',
-      secondaryComponent: 'oil_cooler',
-      secondaryTitle: 'Fouled Oil Cooler Fins from Continuous Relief Bypass Heat',
-      extraEffects: { tempRiseFactor: 1.25, pressureFactor: 0.94 },
-      extraRepair: { id: 'rep_cooler_service', label: 'Clean oil cooler core & refresh heat-stressed oil', fixesSecondary: true, cost: 310, time: 2 },
-      interactionNote: 'Prolonged bypass through the scored relief valve cooked the hydraulic oil and fouled the cooler; both the valve and cooling capacity must be restored.'
     },
     {
       id: 'compound_tx_synchro_and_clutch',
@@ -1223,10 +1255,10 @@ R();
     // Compute physical outputs
     const actualRpm = Math.round(rpmSetting - rpmDroop * loadRatio);
     const actualFlow = +(base.nominalFlow * rpmRatio * flowFactor).toFixed(1);
-    const actualPressure = +(base.nominalPressure * pressureFactor * (machine.id === 'hydraulic_press' ? (0.4 + 0.6 * loadRatio) : (0.85 + 0.15 * rpmRatio))).toFixed(2);
+    const actualPressure = +(base.nominalPressure * pressureFactor * ((0.85 + 0.15 * rpmRatio))).toFixed(2);
 
     const thermalLoad = (0.35 + 0.65 * loadRatio) * (0.6 + 0.4 * Math.min(1.5, durationMin / 15));
-    const baseTempRise = machine.id === 'diesel_generator' ? 54 : (machine.id === 'rotary_screw_compressor' ? 56 : 36);
+    const baseTempRise = machine.id === 'diesel_generator' ? 54 : 36;
     const actualTemp = +(ambient + baseTempRise * thermalLoad * tempRiseFactor).toFixed(1);
 
     const engineDeltaT = machine.id === 'diesel_generator'
@@ -1294,16 +1326,6 @@ R();
         };
 
       case 'pressure_gauge':
-        if (machine.id === 'hydraulic_press') {
-          return {
-            toolId,
-            label: 'Digital Differential Pressure Gauge',
-            summary: `Peak pressure: ${sim.pressure} bar | 10s hold decay: ${sim.decayRate} bar lost.`,
-            detail: sim.decayRate > 5.0
-              ? 'Excessive pressure decay during static hold indicates internal bypass.'
-              : 'System holds pressure cleanly within tolerance.'
-          };
-        }
         return {
           toolId,
           label: 'Digital Differential Pressure Gauge',
@@ -1553,66 +1575,17 @@ R();
           },
           {
             id: 'crit_rpm',
-            name: 'Governor Frequency Stability',
+            name: 'Engine Speed Stability',
             testLoad: 85,
             testDuration: 20,
             metric: 'rpm',
-            targetText: '1485–1515 RPM',
+            targetText: '3300–3700 RPM',
             evaluate: sim => ({
               actual: `${sim.rpm} RPM`,
-              ok: sim.rpm >= 1485 && sim.rpm <= 1515,
+              ok: sim.rpm >= 3300 && sim.rpm <= 3700,
               explanation: sim.rpm >= 1485 && sim.rpm <= 1515
-                ? 'Synchronous 50 Hz speed held under rated electrical load.'
-                : 'Engine speed drooped outside acceptable generator frequency band.'
-            })
-          }
-        ];
-
-      case 'hydraulic_press':
-        return [
-          {
-            id: 'crit_press',
-            name: 'Peak Forming Pressure (80% demand)',
-            testLoad: 80,
-            testDuration: 15,
-            metric: 'pressure',
-            targetText: `≥ ${(175 / tol).toFixed(0)} bar`,
-            evaluate: sim => ({
-              actual: `${sim.pressure} bar`,
-              ok: sim.pressure >= 175 / tol,
-              explanation: sim.pressure >= 175 / tol
-                ? 'System achieves full forming tonnage.'
-                : 'System failed to build required forming pressure.'
-            })
-          },
-          {
-            id: 'crit_decay',
-            name: '10-Second Static Hold Decay',
-            testLoad: 80,
-            testDuration: 15,
-            metric: 'decayRate',
-            targetText: `≤ ${(4.5 * tol).toFixed(1)} bar`,
-            evaluate: sim => ({
-              actual: `${sim.decayRate} bar`,
-              ok: sim.decayRate <= 4.5 * tol,
-              explanation: sim.decayRate <= 4.5 * tol
-                ? 'Internal leakage sealed; ram holds force without creep.'
-                : 'Internal bypass continues to bleed holding pressure.'
-            })
-          },
-          {
-            id: 'crit_oil_temp',
-            name: 'Reservoir Fluid Thermal Stability',
-            testLoad: 80,
-            testDuration: 20,
-            metric: 'temperature',
-            targetText: `≤ ${(58 * tol).toFixed(1)}°C`,
-            evaluate: sim => ({
-              actual: `${sim.temperature}°C`,
-              ok: sim.temperature <= 58 * tol,
-              explanation: sim.temperature <= 58 * tol
-                ? 'Fluid viscosity preserved within optimal operating band.'
-                : 'Excessive fluid heating indicates unresolved throttling or cooler fouling.'
+                ? 'Engine speed remains stable under the specified road-load test.'
+                : 'Engine speed moved outside the expected operating range.'
             })
           }
         ];
@@ -1711,55 +1684,6 @@ R();
               explanation: sim.idleRpm >= 800 && sim.idleRpm <= 920
                 ? 'Idle speed settles cleanly with zero unmetered air leak.'
                 : 'Idle speed remains elevated or unstable.'
-            })
-          }
-        ];
-
-      case 'rotary_screw_compressor':
-        return [
-          {
-            id: 'crit_discharge_p',
-            name: 'Plant Line Discharge Pressure',
-            testLoad: 90,
-            testDuration: 15,
-            metric: 'pressure',
-            targetText: '8.2–8.8 bar',
-            evaluate: sim => ({
-              actual: `${sim.pressure} bar`,
-              ok: sim.pressure >= 8.2 && sim.pressure <= 8.8,
-              explanation: sim.pressure >= 8.2 && sim.pressure <= 8.8
-                ? 'Full pneumatic plant pressure delivered efficiently.'
-                : 'Discharge pressure falls below plant demand.'
-            })
-          },
-          {
-            id: 'crit_comp_temp',
-            name: 'Air-End Discharge Temperature',
-            testLoad: 90,
-            testDuration: 20,
-            metric: 'temperature',
-            targetText: `≤ ${(94 * tol).toFixed(1)}°C`,
-            evaluate: sim => ({
-              actual: `${sim.temperature}°C`,
-              ok: sim.temperature <= 94 * tol,
-              explanation: sim.temperature <= 94 * tol
-                ? 'Oil flooding and cooling keep discharge within safe thermal limit.'
-                : 'Discharge temperature elevated due to internal restriction.'
-            })
-          },
-          {
-            id: 'crit_comp_vib',
-            name: 'Rotor Housing Vibration',
-            testLoad: 90,
-            testDuration: 15,
-            metric: 'vibration',
-            targetText: `≤ ${(3.4 * tol).toFixed(1)} mm/s`,
-            evaluate: sim => ({
-              actual: `${sim.vibration} mm/s`,
-              ok: sim.vibration <= 3.4 * tol,
-              explanation: sim.vibration <= 3.4 * tol
-                ? 'Helical rotors run smoothly.'
-                : 'Excessive rotor vibration detected.'
             })
           }
         ];
@@ -1876,26 +1800,26 @@ R();
   // Scenario archetypes change the *story and investigation structure*, not just readings.
   // Each archetype supplies a distinct operational context, history, and question to investigate.
   const SCENARIO_ARCHETYPES = [
-    { id:'shift-change', formatId:'fault_diagnosis', title:'The Shift-Change Failure', weight:1, briefing:'The machine passes checks during the first shift but develops a fault after the handover. Compare how it behaves across operating periods.', profile:{load:72,duration:18,ambient:0,rpm:1}, events:[['3 shifts ago','A new operator took over the machine. The first shift reported normal operation.'],['2 shifts ago','The fault was first logged near the end of the evening shift.'],['Last shift','The next operator reproduced the symptom after a longer run.']] },
-    { id:'heat-soak', formatId:'intermittent_failure', title:'The Heat-Soak Return', weight:1, briefing:'The fault disappears after a cool-down and returns as the machine heat-soaks. A cold inspection alone may be misleading.', profile:{load:68,duration:22,ambient:8,rpm:0.96}, events:[['Yesterday morning','Cold-start checks were within normal limits.'],['Yesterday afternoon','The fault appeared after sustained operation in a warm environment.'],['After shutdown','The symptom faded while the machine cooled.']] },
-    { id:'cold-start', formatId:'fault_diagnosis', title:'The First-Start Problem', weight:1, briefing:'The machine behaves abnormally only during the first start after an extended shutdown. Once running, it appears healthy.', profile:{load:38,duration:4,ambient:-7,rpm:0.82}, events:[['Overnight','Machine remained shut down for an extended period.'],['First start','Operator recorded hesitation and abnormal readings.'],['Warm restart','The symptom was much less noticeable.']] },
-    { id:'load-threshold', formatId:'fault_diagnosis', title:'The Load Threshold', weight:1, briefing:'The fault appears abruptly beyond a particular operating demand. Find the threshold rather than relying on one snapshot.', profile:{load:88,duration:12,ambient:2,rpm:1}, events:[['Routine operation','Machine operated normally at light demand.'],['Production increase','The fault appeared after demand crossed the usual operating range.'],['Load reduction','Symptoms reduced when demand was lowered.']] },
-    { id:'short-cycle', formatId:'intermittent_failure', title:'The Short-Cycle Trap', weight:1, briefing:'Operators run the machine in short bursts. The reported issue may only emerge when cycles are repeated without enough recovery time.', profile:{load:76,duration:20,ambient:3,rpm:1}, events:[['Last week','Short isolated cycles appeared normal.'],['Two days ago','Repeated cycles began producing inconsistent results.'],['Current shift','The fault returned during a dense production schedule.']] },
-    { id:'weather-exposure', formatId:'fault_diagnosis', title:'The Weather-Linked Incident', weight:1, briefing:'The problem began during a change in environmental conditions. Determine whether the environment is a trigger or merely a coincidence.', profile:{load:64,duration:14,ambient:14,rpm:0.94}, events:[['Earlier in month','No similar issue was recorded in mild conditions.'],['Weather change','Operators began reporting abnormal behaviour during hotter or more humid periods.'],['Current inspection','The machine is still showing symptoms under the reported conditions.']] },
-    { id:'post-repair-comeback', formatId:'incorrect_previous_repair', title:'The Comeback Repair', weight:1, briefing:'A previous repair improved the machine briefly, but the complaint returned. Check whether the repair addressed a symptom instead of the cause.', profile:{load:82,duration:16,ambient:2,rpm:1}, events:[['Service visit','A component was replaced and the job was signed off.'],['Next operating day','Performance improved temporarily.'],['Today','The original complaint returned under production load.']] },
-    { id:'wrong-part', formatId:'incorrect_previous_repair', title:'The Wrong-Part Installation', weight:1, briefing:'A replacement part was fitted, but its specification or compatibility is uncertain. Verify the installed system rather than trusting the invoice.', profile:{load:70,duration:15,ambient:0,rpm:0.9}, events:[['Parts request','A replacement was ordered using an incomplete description.'],['Installation','The machine was returned to service without a full comparison to the original specification.'],['Current shift','A new or persistent symptom was reported.']] },
-    { id:'maintenance-debt', formatId:'incorrect_previous_repair', title:'Deferred Maintenance', weight:1, briefing:'Several minor maintenance actions were postponed. Determine which neglected condition has now become the primary failure.', profile:{load:78,duration:21,ambient:4,rpm:1}, events:[['Six weeks ago','A recommended inspection was deferred to avoid downtime.'],['Two weeks ago','An operator noted a small change but continued operation.'],['Today','The machine can no longer meet its normal duty.']] },
-    { id:'sensor-trust', formatId:'conflicting_evidence', title:'Can the Sensor Be Trusted?', weight:1, briefing:'The control panel reports one condition while the operator and independent observations suggest another. Establish which evidence is trustworthy.', profile:{load:74,duration:13,ambient:1,rpm:1}, events:[['Last service','A sensor or instrument was recalibrated.'],['Yesterday','The panel reading disagreed with an operator observation.'],['Current shift','The machine was stopped pending independent verification.']] },
-    { id:'paper-vs-machine', formatId:'conflicting_evidence', title:'The Paperwork Says Passed', weight:1, briefing:'The maintenance record says the machine passed, but the operating evidence tells a different story. Audit the test conditions and sign-off.', profile:{load:80,duration:17,ambient:0,rpm:1}, events:[['Service record','A post-maintenance check was marked complete.'],['Production restart','The original symptom appeared under a different duty cycle.'],['Investigation','No raw measurement sheet was attached to the sign-off.']] },
-    { id:'operator-workaround', formatId:'conflicting_evidence', title:'The Hidden Workaround', weight:1, briefing:'Operators have developed a workaround that masks the complaint. Reproduce the normal procedure before drawing conclusions.', profile:{load:66,duration:12,ambient:0,rpm:0.92}, events:[['Several weeks ago','Operators discovered a workaround that reduced the visible symptom.'],['Last week','The workaround became part of the normal operating routine.'],['Today','A new operator reported that the machine still feels wrong.']] },
+    { id:'shift-change', formatId:'fault_diagnosis', title:'The Shift-Change Failure', weight:1, briefing:'The vehicle passes checks during the first shift but develops a fault after the handover. Compare how it behaves across operating periods.', profile:{load:72,duration:18,ambient:0,rpm:1}, events:[['3 shifts ago','A new driver took over the vehicle. The first shift reported normal operation.'],['2 shifts ago','The fault was first logged near the end of the evening shift.'],['Last shift','The next driver reproduced the symptom after a longer run.']] },
+    { id:'heat-soak', formatId:'intermittent_failure', title:'The Heat-Soak Return', weight:1, briefing:'The fault disappears after a cool-down and returns as the vehicle heat-soaks. A cold inspection alone may be misleading.', profile:{load:68,duration:22,ambient:8,rpm:0.96}, events:[['Yesterday morning','Cold-start checks were within normal limits.'],['Yesterday afternoon','The fault appeared after sustained operation in a warm environment.'],['After shutdown','The symptom faded while the vehicle cooled.']] },
+    { id:'cold-start', formatId:'fault_diagnosis', title:'The First-Start Problem', weight:1, briefing:'The vehicle behaves abnormally only during the first start after an extended shutdown. Once running, it appears healthy.', profile:{load:38,duration:4,ambient:-7,rpm:0.82}, events:[['Overnight','vehicle remained shut down for an extended period.'],['First start','driver recorded hesitation and abnormal readings.'],['Warm restart','The symptom was much less noticeable.']] },
+    { id:'load-threshold', formatId:'fault_diagnosis', title:'The Load Threshold', weight:1, briefing:'The fault appears abruptly beyond a particular operating demand. Find the threshold rather than relying on one snapshot.', profile:{load:88,duration:12,ambient:2,rpm:1}, events:[['Routine operation','vehicle operated normally at light demand.'],['fleet operation increase','The fault appeared after demand crossed the usual operating range.'],['Load reduction','Symptoms reduced when demand was lowered.']] },
+    { id:'short-cycle', formatId:'intermittent_failure', title:'The Short-Cycle Trap', weight:1, briefing:'drivers run the vehicle in short bursts. The reported issue may only emerge when cycles are repeated without enough recovery time.', profile:{load:76,duration:20,ambient:3,rpm:1}, events:[['Last week','Short isolated cycles appeared normal.'],['Two days ago','Repeated cycles began producing inconsistent results.'],['Current shift','The fault returned during a dense fleet operation schedule.']] },
+    { id:'weather-exposure', formatId:'fault_diagnosis', title:'The Weather-Linked Incident', weight:1, briefing:'The problem began during a change in environmental conditions. Determine whether the environment is a trigger or merely a coincidence.', profile:{load:64,duration:14,ambient:14,rpm:0.94}, events:[['Earlier in month','No similar issue was recorded in mild conditions.'],['Weather change','drivers began reporting abnormal behaviour during hotter or more humid periods.'],['Current inspection','The vehicle is still showing symptoms under the reported conditions.']] },
+    { id:'post-repair-comeback', formatId:'incorrect_previous_repair', title:'The Comeback Repair', weight:1, briefing:'A previous repair improved the vehicle briefly, but the complaint returned. Check whether the repair addressed a symptom instead of the cause.', profile:{load:82,duration:16,ambient:2,rpm:1}, events:[['Service visit','A component was replaced and the job was signed off.'],['Next operating day','Performance improved temporarily.'],['Today','The original complaint returned under fleet operation load.']] },
+    { id:'wrong-part', formatId:'incorrect_previous_repair', title:'The Wrong-Part Installation', weight:1, briefing:'A replacement part was fitted, but its specification or compatibility is uncertain. Verify the installed system rather than trusting the invoice.', profile:{load:70,duration:15,ambient:0,rpm:0.9}, events:[['Parts request','A replacement was ordered using an incomplete description.'],['Installation','The vehicle was returned to service without a full comparison to the original specification.'],['Current shift','A new or persistent symptom was reported.']] },
+    { id:'maintenance-debt', formatId:'incorrect_previous_repair', title:'Deferred Maintenance', weight:1, briefing:'Several minor maintenance actions were postponed. Determine which neglected condition has now become the primary failure.', profile:{load:78,duration:21,ambient:4,rpm:1}, events:[['Six weeks ago','A recommended inspection was deferred to avoid downtime.'],['Two weeks ago','An driver noted a small change but continued operation.'],['Today','The vehicle can no longer meet its normal duty.']] },
+    { id:'sensor-trust', formatId:'conflicting_evidence', title:'Can the Sensor Be Trusted?', weight:1, briefing:'The control panel reports one condition while the driver and independent observations suggest another. Establish which evidence is trustworthy.', profile:{load:74,duration:13,ambient:1,rpm:1}, events:[['Last service','A sensor or instrument was recalibrated.'],['Yesterday','The panel reading disagreed with an driver observation.'],['Current shift','The vehicle was stopped pending independent verification.']] },
+    { id:'paper-vs-vehicle', formatId:'conflicting_evidence', title:'The Paperwork Says Passed', weight:1, briefing:'The maintenance record says the vehicle passed, but the operating evidence tells a different story. Audit the test conditions and sign-off.', profile:{load:80,duration:17,ambient:0,rpm:1}, events:[['Service record','A post-maintenance check was marked complete.'],['fleet operation restart','The original symptom appeared under a different duty cycle.'],['Investigation','No raw measurement sheet was attached to the sign-off.']] },
+    { id:'driver-workaround', formatId:'conflicting_evidence', title:'The Hidden Workaround', weight:1, briefing:'drivers have developed a workaround that masks the complaint. Reproduce the normal procedure before drawing conclusions.', profile:{load:66,duration:12,ambient:0,rpm:0.92}, events:[['Several weeks ago','drivers discovered a workaround that reduced the visible symptom.'],['Last week','The workaround became part of the normal operating routine.'],['Today','A new driver reported that the vehicle still feels wrong.']] },
     { id:'cascade', formatId:'multiple_interacting', title:'The Failure Cascade', weight:1, briefing:'One developing fault may have placed extra stress on another component. Identify both the initiating problem and the resulting damage.', profile:{load:86,duration:24,ambient:5,rpm:1}, events:[['Early warning','A minor abnormal reading was recorded but not investigated.'],['Progression','A second symptom appeared after continued operation.'],['Current condition','Both symptoms are now present under sustained load.']] },
-    { id:'two-symptoms-one-cause', formatId:'multiple_interacting', title:'Two Symptoms, One Trail', weight:1, briefing:'Two complaints appeared close together. Do not assume they are independent; look for a shared physical cause and verify any secondary fault.', profile:{load:79,duration:19,ambient:2,rpm:0.98}, events:[['First report','Operators noticed a change in machine response.'],['Second report','A separate warning appeared during the same duty cycle.'],['Current shift','Both complaints occur together more often than not.']] },
+    { id:'two-symptoms-one-cause', formatId:'multiple_interacting', title:'Two Symptoms, One Trail', weight:1, briefing:'Two complaints appeared close together. Do not assume they are independent; look for a shared physical cause and verify any secondary fault.', profile:{load:79,duration:19,ambient:2,rpm:0.98}, events:[['First report','drivers noticed a change in vehicle response.'],['Second report','A separate warning appeared during the same duty cycle.'],['Current shift','Both complaints occur together more often than not.']] },
     { id:'prototype-drift', formatId:'experimental_archive', title:'Prototype Calibration Drift', weight:1, briefing:'An inventor-era prototype has drifted away from its archived calibration. Compare current behaviour with the intended operating envelope.', profile:{load:83,duration:16,ambient:-2,rpm:1.04}, events:[['Archive entry','The last calibration values were recorded but not independently verified.'],['Recent run','The prototype began behaving differently near a transition point.'],['Current inspection','The archive and live readings no longer agree.']] },
-    { id:'wrong-duty-cycle', formatId:'fault_diagnosis', title:'The Wrong Duty Cycle', weight:1, briefing:'The machine was designed for one duty cycle but is now being used differently. Decide whether the fault is damage, overload or a mismatch in application.', profile:{load:91,duration:23,ambient:3,rpm:1.02}, events:[['Original commissioning','The machine was specified for intermittent duty.'],['Production change','Demand shifted toward longer continuous runs.'],['Current shift','The machine began failing before the end of the required cycle.']] },
-    { id:'progressive-drift', formatId:'intermittent_failure', title:'The Slow Performance Drift', weight:1, briefing:'Performance has degraded gradually rather than failing suddenly. Compare old and new records to identify the trend.', profile:{load:69,duration:20,ambient:1,rpm:0.97}, events:[['One month ago','Output was within the normal operating band.'],['Two weeks ago','A small deviation appeared in routine readings.'],['Today','The accumulated drift is now affecting production.']] },
-    { id:'restart-reset', formatId:'intermittent_failure', title:'The Restart Reset', weight:1, briefing:'A restart temporarily clears the symptom. Determine what changes during shutdown and what returns when the machine is loaded again.', profile:{load:73,duration:15,ambient:0,rpm:1}, events:[['First occurrence','Fault appeared during normal operation.'],['Operator response','A restart restored normal behaviour temporarily.'],['Repeat occurrence','The fault returned after the same operating sequence.']] },
-    { id:'boundary-condition', formatId:'conflicting_evidence', title:'The Boundary-Condition Test', weight:1, briefing:'Two test reports disagree because they were taken at different operating points. Recreate comparable conditions before interpreting the results.', profile:{load:84,duration:18,ambient:6,rpm:1.03}, events:[['Test A','A short test at low demand was recorded as passed.'],['Test B','A longer test at higher demand produced an abnormal result.'],['Current shift','The customer needs the machine to pass its actual duty cycle.']] },
-    { id:'unusual-noise', formatId:'fault_diagnosis', title:'The Noise That Moves', weight:1, briefing:'An abnormal noise changes with speed or load. Use controlled operating changes to determine whether it follows rotation, pressure or temperature.', profile:{load:77,duration:14,ambient:0,rpm:1.08}, events:[['First report','A noise was noticed but could not be reproduced at idle.'],['Follow-up','The sound changed as operating speed increased.'],['Current shift','The operator can reproduce it under a specific duty condition.']] }
+    { id:'wrong-duty-cycle', formatId:'fault_diagnosis', title:'The Wrong Duty Cycle', weight:1, briefing:'The vehicle was designed for one duty cycle but is now being used differently. Decide whether the fault is damage, overload or a mismatch in application.', profile:{load:91,duration:23,ambient:3,rpm:1.02}, events:[['Original commissioning','The vehicle was specified for intermittent duty.'],['fleet operation change','Demand shifted toward longer continuous runs.'],['Current shift','The vehicle began failing before the end of the required cycle.']] },
+    { id:'progressive-drift', formatId:'intermittent_failure', title:'The Slow Performance Drift', weight:1, briefing:'Performance has degraded gradually rather than failing suddenly. Compare old and new records to identify the trend.', profile:{load:69,duration:20,ambient:1,rpm:0.97}, events:[['One month ago','Output was within the normal operating band.'],['Two weeks ago','A small deviation appeared in routine readings.'],['Today','The accumulated drift is now affecting fleet operation.']] },
+    { id:'restart-reset', formatId:'intermittent_failure', title:'The Restart Reset', weight:1, briefing:'A restart temporarily clears the symptom. Determine what changes during shutdown and what returns when the vehicle is loaded again.', profile:{load:73,duration:15,ambient:0,rpm:1}, events:[['First occurrence','Fault appeared during normal operation.'],['driver response','A restart restored normal behaviour temporarily.'],['Repeat occurrence','The fault returned after the same operating sequence.']] },
+    { id:'boundary-condition', formatId:'conflicting_evidence', title:'The Boundary-Condition Test', weight:1, briefing:'Two test reports disagree because they were taken at different operating points. Recreate comparable conditions before interpreting the results.', profile:{load:84,duration:18,ambient:6,rpm:1.03}, events:[['Test A','A short test at low demand was recorded as passed.'],['Test B','A longer test at higher demand produced an abnormal result.'],['Current shift','The customer needs the vehicle to pass its actual duty cycle.']] },
+    { id:'unusual-noise', formatId:'fault_diagnosis', title:'The Noise That Moves', weight:1, briefing:'An abnormal noise changes with speed or load. Use controlled operating changes to determine whether it follows rotation, pressure or temperature.', profile:{load:77,duration:14,ambient:0,rpm:1.08}, events:[['First report','A noise was noticed but could not be reproduced at idle.'],['Follow-up','The sound changed as operating speed increased.'],['Current shift','The driver can reproduce it under a specific duty condition.']] }
   ];
 
   function makeScenario(rng, formatId) {
@@ -1906,20 +1830,20 @@ R();
   const SCENARIO_METHODS = {
     'shift-change':['Compare two operating periods','Run a short baseline test, then compare it with the late-shift operating condition.'],
     'heat-soak':['Reproduce a hot condition','Compare a short cool run with a longer run; note when the readings begin to diverge.'],
-    'cold-start':['Capture the first-start behaviour','Do not warm the machine before the baseline test. Compare cold-start and warm-restart behaviour.'],
+    'cold-start':['Capture the first-start behaviour','Do not warm the vehicle before the baseline test. Compare cold-start and warm-restart behaviour.'],
     'load-threshold':['Find the failure threshold','Increase load in steps and identify the first operating point where the symptom appears.'],
     'short-cycle':['Compare isolated and repeated cycles','Run repeated cycles with and without recovery time; compare the trend across cycles.'],
-    'weather-exposure':['Separate ambient effects from machine faults','Compare readings at different ambient conditions while keeping load and duration as consistent as possible.'],
+    'weather-exposure':['Separate ambient effects from vehicle faults','Compare readings at different ambient conditions while keeping load and duration as consistent as possible.'],
     'post-repair-comeback':['Audit the previous repair','Check what was changed, then verify whether the original system condition was actually corrected.'],
-    'wrong-part':['Verify part compatibility','Compare installed component specifications and system behaviour against the machine requirement.'],
+    'wrong-part':['Verify part compatibility','Compare installed component specifications and system behaviour against the vehicle requirement.'],
     'maintenance-debt':['Trace deferred maintenance','Use service history to identify which neglected check is most relevant to the current symptoms.'],
     'sensor-trust':['Cross-check the instrument','Compare the panel value with an independent measurement before accepting either reading.'],
-    'paper-vs-machine':['Audit the test sign-off','Recreate the recorded test conditions and determine whether the original acceptance test was representative.'],
-    'operator-workaround':['Remove the workaround','Reproduce normal machine operation and compare it with the operator workaround.'],
+    'paper-vs-vehicle':['Audit the test sign-off','Recreate the recorded test conditions and determine whether the original acceptance test was representative.'],
+    'driver-workaround':['Remove the workaround','Reproduce normal vehicle operation and compare it with the driver workaround.'],
     'cascade':['Identify the initiating fault','Separate the earliest abnormal reading from the later symptoms and test the likely causal sequence.'],
     'two-symptoms-one-cause':['Test for a shared cause','Look for one condition that changes both symptoms rather than treating each complaint independently.'],
     'prototype-drift':['Compare live and archived calibration','Check the current operating response against the archived reference points.'],
-    'wrong-duty-cycle':['Recreate the actual duty cycle','Test the machine for the duration and demand the customer now requires, not only its original rating.'],
+    'wrong-duty-cycle':['Recreate the actual duty cycle','Test the vehicle for the duration and demand the customer now requires, not only its original rating.'],
     'progressive-drift':['Compare historical trends','Use the timeline to compare earlier and current readings; look for a gradual change rather than a single outlier.'],
     'restart-reset':['Compare before and after restart','Capture the fault before shutdown, immediately after restart and after the original operating condition returns.'],
     'boundary-condition':['Standardise the test conditions','Repeat both tests at matched load, duration and ambient conditions before comparing results.'],
@@ -1932,12 +1856,12 @@ R();
   }
 
   const CLIENT_PROFILES = [
-    'Northport Marine & Power Ltd.',
-    'Apex Stamping & Forging Works',
-    'Meridian Logistics Fleet Depot',
-    'Vanguard Precision Machining',
-    'Kestrel Cold-Storage Plant',
-    'Clandestine Vault Archive — Sector 7'
+    'Northstar Motors — Customer Care',
+    'Meridian City Taxi Fleet',
+    'Apex Performance Garage',
+    'Coastal Delivery Fleet',
+    'Vanguard Rally Engineering',
+    'The Inventor’s Private Motor Works'
   ];
 
   function pickWeighted(rng, items) {
@@ -1983,7 +1907,10 @@ R();
     const tier = global.FF_DIFFICULTY.DIFFICULTY_TIERS[difficulty];
     if (!tier) throw new Error('Unknown difficulty: ' + difficulty);
 
-    const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE).filter(m => m.unlockRank <= playerRank);
+    // Endless investigations are automotive-only. Historical platform IDs are retained
+    // where needed so existing local case records can still be read.
+    const eligibleMachines = Object.values(global.FF_DB.MACHINE_DATABASE)
+      .filter(m => m.unlockRank <= playerRank && /^Automotive\b/i.test(m.industry || ''));
     const first = fixedAttempt ?? 0;
     const last = fixedAttempt === null ? 40 : fixedAttempt + 1;
 
@@ -1994,7 +1921,7 @@ R();
       const scenario = makeScenario(rng, format.id);
       let machine = eligibleMachines[Math.floor(rng() * eligibleMachines.length)];
       if (format.id === 'experimental_archive') {
-        machine = eligibleMachines.find(m => m.isExperimental);
+        machine = eligibleMachines.find(m => m.isExperimental && /drive|transmission/i.test(m.id));
         if (!machine) continue; // prototype anomalies only exist on the prototype machine
       }
 
@@ -2039,6 +1966,13 @@ R();
         client,
         machineId: machine.id,
         machineName: machine.name,
+        vehicleId: machine.vehicleId || null,
+        vehicleName: machine.vehicleId && global.FF_AUTO
+          ? (global.FF_AUTO.getVehicle(machine.vehicleId) || {}).name || machine.name
+          : machine.name,
+        vehicleConfiguration: machine.vehicleId && global.FF_AUTO
+          ? (global.FF_AUTO.getVehicle(machine.vehicleId) || {}).configuration || null
+          : null,
         industry: machine.industry,
         isExperimental: !!machine.isExperimental,
         title: `${machine.name}: ${scenario.title}`,
@@ -2213,16 +2147,14 @@ R();
   };
 
   const STORIES = {
-    diesel_generator: [['The night manager at St. Aldric Hospital', 'our backup generator keeps overheating when the wards need it most', 'a power cut tonight would be dangerous'], ['A festival organiser', 'the stage generator shuts itself off an hour into every show', 'the headline act goes on at nine']],
-    hydraulic_press: [['Marta, who runs a small metal-stamping shop', 'the press feels weaker the longer it holds', 'a rush order of car brackets ships Friday'], ['The foreman at a bicycle-frame factory', 'the press slowly loses squeeze and ruins parts', 'every ruined part costs real money']],
+    diesel_generator: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
     manual_transmission: [['A taxi driver called Joe', 'the gearbox crunches and fights him on certain shifts', 'he cannot earn a living while it is in the garage'], ['A rally-team mechanic', 'the car will not slot into gear cleanly', 'race day is in two days']],
     petrol_efi_engine: [['A courier on a delivery bike', 'the engine stumbles, then hesitates when she twists the throttle', 'she loses pay for every late parcel'], ['A weekend rider', 'it idles roughly and runs out of breath at speed', 'the group tour leaves on Saturday']],
-    rotary_screw_compressor: [['The plant manager at a bottling factory', 'the air compressor runs hot and struggles to keep pressure', 'the whole filling line runs on that air']],
     experimental_cvt_drive: [['A mysterious letter, unsigned', 'this strange drive keeps slipping and nobody can say why', 'it belongs to the inventor you have been following']]
   };
   const hash = s => { let h = 7; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
   function story(c) {
-    const list = STORIES[c.machineId] || STORIES.diesel_generator, [who, line, stake] = list[hash(c.seed) % list.length];
+    const list = STORIES[c.machineId] || STORIES.manual_transmission, [who, line, stake] = list[hash(c.seed) % list.length];
     return { who, line, stake };
   }
 
@@ -2484,16 +2416,16 @@ R();
     const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
     const cond = fault.conditionDependent;
     const answers = {
-      timing: cond === 'sustained_run' || cond === 'hot_run' ? 'It usually appears after the machine has been working for a while. A short test often looks normal.' : cond === 'high_load' || cond === 'high_pressure' ? 'It is much more noticeable when the machine is working hard. Light-duty operation can look normal.' : 'We have noticed it during ordinary operation too; it is not limited to one short event.',
+      timing: cond === 'sustained_run' || cond === 'hot_run' ? 'It usually appears after the vehicle has been working for a while. A short test often looks normal.' : cond === 'high_load' || cond === 'high_pressure' ? 'It is much more noticeable when the vehicle is working hard. Light-duty operation can look normal.' : 'We have noticed it during ordinary operation too; it is not limited to one short event.',
       recent: c.formatId === 'incorrect_previous_repair' ? 'A repair was carried out recently. The symptom changed briefly, but the underlying problem returned.' : 'No major component replacement is recorded recently. The routine service log may still contain useful clues.',
       repeat: c.formatId === 'intermittent_failure' ? 'It does not happen on every run. Stopping and restarting sometimes makes it disappear for a while.' : 'It is reasonably repeatable when we recreate the same operating conditions.',
       conditions: cond === 'high_load' ? 'The problem is most obvious under heavy load; it becomes less noticeable when the load is reduced.' : cond === 'high_rpm' ? 'It becomes more obvious as rotational speed rises.' : cond === 'high_pressure' ? 'It appears during the high-pressure part of the cycle.' : 'Longer operating time seems to make the behaviour more pronounced.'
     };
     return answers[q] || 'The operator is unsure. The observation should be verified with a controlled test.';
   }
-  function candidateHypotheses(c, machine) {
+  function candidateHypotheses(c, vehicle) {
     const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
-    const entries = Object.entries(machine.components);
+    const entries = Object.entries(vehicle.components);
     const actual = fault.primaryComponent;
     let seed = 0; for (const ch of c.seed) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
     const others = entries.filter(([k]) => k !== actual).sort((a,b) => ((a[0].length*17 + seed) % 97) - ((b[0].length*17 + seed) % 97)).slice(0,3);
@@ -2505,9 +2437,9 @@ R();
     const h = c.operatingConditions.operatingHours;
     const f = c.formatId;
     const events = [
-      [`${Math.max(1,Math.round(h/1000)-2)} weeks ago`, 'Routine service entry recorded; machine returned to operation.'],
-      [`${Math.max(1,Math.round(h/1500))} days ago`, f === 'incorrect_previous_repair' ? 'A corrective repair was signed off. No controlled post-repair test was attached.' : 'Operator first noticed a change in machine behaviour.'],
-      ['Last shift', f === 'intermittent_failure' ? 'The symptom appeared, disappeared after a restart, then returned.' : 'The machine completed a partial shift with the reported symptom.'],
+      [`${Math.max(1,Math.round(h/1000)-2)} weeks ago`, 'Routine service entry recorded; vehicle returned to operation.'],
+      [`${Math.max(1,Math.round(h/1500))} days ago`, f === 'incorrect_previous_repair' ? 'A corrective repair was signed off. No controlled post-repair test was attached.' : 'Operator first noticed a change in vehicle behaviour.'],
+      ['Last shift', f === 'intermittent_failure' ? 'The symptom appeared, disappeared after a restart, then returned.' : 'The vehicle completed a partial shift with the reported symptom.'],
       ['Current shift', 'The issue was escalated for an independent investigation.']
     ];
     if (f === 'conflicting_evidence') events[1][1] = 'Two records disagree about the operating condition when the fault occurred.';
@@ -2544,7 +2476,7 @@ R();
           <h2>Endless Investigation Command</h2>
           <span class="pill">${rank.title} · ${totalXp} XP</span>
         </div>
-        <p class="sub">Procedural investigations derived from physics-linked machine models. Every fault is generated first, and every symptom follows causally.</p>
+        <p class="sub">Procedural investigations derived from physics-linked vehicle models. Every fault is generated first, and every symptom follows causally.</p>
         <div class="actions">
           <button class="${EState.selectedDifficulty==='adaptive'?'primary':''}" onclick="ffEndless.setDiff('adaptive')">Adaptive Difficulty</button>
           <button class="${EState.selectedDifficulty==='apprentice'?'primary':''}" onclick="ffEndless.setDiff('apprentice')">Apprentice</button>
@@ -2561,9 +2493,9 @@ R();
     `;
 
     if (c && s) {
-      const machine = window.FF_DB.MACHINE_DATABASE[c.machineId];
+      const vehicle = window.FF_DB.MACHINE_DATABASE[c.machineId];
       const tier = window.FF_DIFFICULTY.DIFFICULTY_TIERS[c.difficulty];
-      const unlockedTools = machine.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
+      const unlockedTools = vehicle.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
 
       html += `
         <div class="panel">
@@ -2578,7 +2510,7 @@ R();
             <div class="case-item"><b>📞 ${st.who} calls</b><small>“Please help: ${st.line}.” <em>Why it matters: ${st.stake}.</em></small></div>
             <div class="case-item"><b>❤ Customer trust: ${tr}%</b><div class="meter ${tr < 60 ? 'hot' : ''}"><i style="width:${tr}%"></i></div><small>Wasted tests, needless repairs and hints lower it. Aim to stay high.</small></div>
             ${s.testsRun.length === 0 && !s.repairsApplied.length ? '<div class="note"><b>How to play:</b> 1) Listen to the customer. 2) Use tools to look for what is off. 3) Fix the real cause. 4) Run the acceptance test to prove it works.</div>' : ''}`; })()}
-            <div class="case-item"><b>Scenario: ${c.scenarioTitle || c.formatLabel}</b><small>${c.scenarioBriefing || 'Investigate the reported machine failure using controlled tests and evidence.'}</small></div>
+            <div class="case-item"><b>Scenario: ${c.scenarioTitle || c.formatLabel}</b><small>${c.scenarioBriefing || 'Investigate the reported vehicle failure using controlled tests and evidence.'}</small></div>
             <div class="case-item"><b>Investigation Challenge: ${c.scenarioMethod ? c.scenarioMethod[0] : 'Establish the fault conditions'}</b><small>${c.scenarioMethod ? c.scenarioMethod[1] : 'Compare baseline and fault conditions before selecting a repair.'}</small></div>
             <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
             ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
@@ -2590,11 +2522,11 @@ R();
         <div class="panel">
           <h2>01 / Component Architecture Inspection</h2>
           <div class="chips">
-            ${Object.entries(machine.components).map(([k, comp]) => `
+            ${Object.entries(vehicle.components).map(([k, comp]) => `
               <button class="${s.inspected[k]?'on':''}" onclick="ffEndless.inspect('${k}')">${comp.name}</button>
             `).join('')}
           </div>
-          ${Object.entries(machine.components).filter(([k]) => s.inspected[k]).map(([k, comp]) => `
+          ${Object.entries(vehicle.components).filter(([k]) => s.inspected[k]).map(([k, comp]) => `
             <div class="case-item" style="margin-top:8px"><b>${comp.name}</b><small>${comp.role} <em>(Spec: ${comp.normalSpec})</em></small></div>
           `).join('')}
         </div>
@@ -2602,9 +2534,9 @@ R();
         <div class="panel">
           <div class="topline"><h2>02 / Diagnostic Hypothesis Board</h2><span class="pill">YOUR WORKING THEORY</span></div>
           <p class="sub">Select the components you currently suspect. Use evidence to narrow the list, then record your leading diagnosis. You can revise it as new information arrives.</p>
-          <div class="hypothesis-grid">${candidateHypotheses(c,machine).map(([k,comp])=>`<button class="hypothesis ${s.hypotheses.includes(k)?'selected':''}" onclick="ffEndless.toggleHypothesis('${k}')">${s.hypotheses.includes(k)?'✓ ':''}${comp.name}</button>`).join('')}</div>
+          <div class="hypothesis-grid">${candidateHypotheses(c,vehicle).map(([k,comp])=>`<button class="hypothesis ${s.hypotheses.includes(k)?'selected':''}" onclick="ffEndless.toggleHypothesis('${k}')">${s.hypotheses.includes(k)?'✓ ':''}${comp.name}</button>`).join('')}</div>
           <div class="actions"><button class="primary" onclick="ffEndless.submitDiagnosis('${s.hypotheses[0]||''}')" ${s.hypotheses.length!==1?'disabled':''}>Record selected diagnosis</button><span class="pill">${s.hypotheses.length} selected</span></div>
-          ${s.diagnosis?`<div class="note ${s.diagnosisCorrect?'good':''}">Recorded working diagnosis: ${machine.components[s.diagnosis]?.name || s.diagnosis}. Your hypothesis is recorded. Continue testing before committing to a repair.</div>`:''}
+          ${s.diagnosis?`<div class="note ${s.diagnosisCorrect?'good':''}">Recorded working diagnosis: ${vehicle.components[s.diagnosis]?.name || s.diagnosis}. Your hypothesis is recorded. Continue testing before committing to a repair.</div>`:''}
         </div>
 
         <div class="panel">
@@ -2614,7 +2546,7 @@ R();
             <div><label>Run duration: <b>${s.duration} min</b></label><input type="range" min="5" max="30" step="5" value="${s.duration}" onchange="ffEndless.setDur(this.value)"></div>
             <div><label>Ambient temperature: <b>${s.ambientTemp}°C</b></label><input type="range" min="10" max="45" step="1" value="${s.ambientTemp}" onchange="ffEndless.setAmbient(this.value)"></div>
           </div>
-          <label>Machine speed: <b>${s.rpm} RPM</b></label><input type="range" min="${Math.round(machine.baseParams.ratedRpm*.65)}" max="${Math.round(machine.baseParams.ratedRpm*1.1)}" step="25" value="${s.rpm}" onchange="ffEndless.setRPM(this.value)">
+          <label>Vehicle speed: <b>${s.rpm} RPM</b></label><input type="range" min="${Math.round(vehicle.baseParams.ratedRpm*.65)}" max="${Math.round(vehicle.baseParams.ratedRpm*1.1)}" step="25" value="${s.rpm}" onchange="ffEndless.setRPM(this.value)">
           <p class="sub" style="font-size:12px;margin:6px 0 0">Experiment with one variable at a time. Compare readings under controlled conditions instead of changing every setting at once.</p>
           <div class="chips" style="margin-top:10px">
             ${unlockedTools.map(tid => {
