@@ -325,7 +325,7 @@ acc:c=>{const m=mis(c),o=out2(c),e=Math.abs(o/tgt2-1)*100;return[
 arch:'Fragment 02 — Beneath the worn cone, a bronze ring is stamped “H.V. · 3 / not for sale”. Its cone angle is tuned to no production gearbox.',note:'Gear ratio = driven teeth ÷ driving teeth; output RPM = input RPM ÷ ratio. A synchroniser cuts the speed mismatch roughly exponentially with friction × shift time.'};
 /* ---------- CASE 003: fuel injection ---------- */
 const eff3=c=>c.inj*sq(c.P/3),afr=(c,r)=>Math.max(13.8*(1+c.leak),13*(1+c.leak)*(r/4000)/eff3(c)),idle=c=>1500-900*(1-Math.min(1,eff3(c)))+1200*c.leak-600*(1-c.spark);
-C[3]={t:'Case 003: The Unstable Vehicle',ind:'Motorcycle · 250 cc fuel injection',xp:150,
+C[3]={t:'Case 003: The Unstable Engine',ind:'Motorcycle · 250 cc fuel injection',xp:150,
 sub:'A 250 cc motorcycle idles unevenly and hesitates, worse at high RPM. Compression and ignition looked normal.',
 sym:['Uneven idle','Hesitation on acceleration','Lean readings at high RPM','No mechanical damage'],
 init:()=>({inj:.8,P:3,spark:1,leak:0}),
