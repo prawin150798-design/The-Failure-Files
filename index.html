@@ -336,7 +336,7 @@ acc:c=>{const a=afr(c,4000),i=idle(c);return[
 {k:'Fuel pressure',a:f(c.P,2)+' bar',r:'3.0 ± 0.2 bar',ok:Math.abs(c.P-3)<=.2,w:'Pump output is outside tolerance.'},
 {k:'AFR at 4000 RPM',a:f(a,1)+':1',r:'13.2–14.7 : 1',ok:a>=13.2&&a<=14.7,w:a>14.7?'Mixture is lean: the injector cannot supply enough fuel, or air is leaking in.':'Mixture too rich.'},
 {k:'Idle speed',a:f(i,0)+' RPM',r:'1,400–1,600 RPM',ok:i>=1400&&i<=1600,w:'Idle is unstable: poor spray, misfire or an air leak shifts it out of range.'}]},
-arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, vehicled with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
+arch:'Fragment 03 — The injector has a swirl nozzle with two counter-rotating channels, machined with tolerances beyond any workshop. Engraved: “mist, not spray”.',note:'AFR = air mass ÷ fuel mass. Injector flow ∝ √(pressure). A restricted injector shows up first at high RPM, when fuel demand is greatest.'};
 /* ---------- CASE 004: The Long Stop — automotive braking system ---------- */
 const brakePressure=c=>Math.max(0,100*(1-c.mcBypass)*(1-c.hoseExpand));
 const brakeDecay=c=>Math.max(0,100-brakePressure(c));
@@ -346,7 +346,7 @@ sym:['Pedal slowly sinks while held','Brake pressure falls during a sustained ap
 init:()=>({mcBypass:.28,hoseExpand:.02,booster:1,pads:1}),
 parts:{'Brake pedal and booster':'The pedal multiplies driver input; the vacuum booster reduces the effort required.','Master cylinder':'Converts pedal force into hydraulic pressure. Internal seal bypass can let pressure fall without an external leak.','Brake fluid':'Transmits pressure through the hydraulic circuit. Water contamination lowers its boiling point.','Flexible brake hose':'Carries pressurised fluid to the caliper. An internally damaged hose can expand under pressure.','Front caliper':'Clamps the pads against the disc when hydraulic pressure is applied.','Brake pads and discs':'Friction converts vehicle kinetic energy into heat. Worn or overheated parts reduce braking performance.'},
 tools:[['Pedal hold / pressure test',c=>`Initial line pressure ${f(brakePressure(c),1)} bar; pressure loss while held ${f(brakeDecay(c),1)} bar.`],['Hydraulic leak inspection',c=>`External fluid loss: 0.00 mL/min. Master-cylinder internal bypass estimate: ${f(c.mcBypass*100,0)}%.`],['Brake hose expansion test',c=>`Hose volumetric expansion: ${f(c.hoseExpand*100,1)}%. ${c.hoseExpand>.08?'Hose expands excessively under pressure.':'Hose expansion is within the test limit.'}`],['Pad and disc inspection',c=>`Pad thickness reserve: ${f(c.pads*100,0)}%. Disc surface: ${c.pads<.3?'scored / near limit':'serviceable'}.`],['Boiling-point tester',c=>`Brake-fluid boiling point estimate: ${f(260-90*(1-c.booster),0)}°C. Replace fluid if below the vehicle specification.`]],
-reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and vehicle discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
+reps:[['Replace master-cylinder seal kit','Restores hydraulic pressure retention.',c=>c.mcBypass=.01],['Replace flexible brake hose','Prevents hose expansion under pressure.',c=>c.hoseExpand=.01],['Bleed and replace brake fluid','Removes moisture and air from the hydraulic circuit.',c=>c.booster=1],['Replace front brake pads and brake discs','Restores friction material; does not repair hydraulic pressure loss.',c=>c.pads=1]],
 acc:c=>{const p=brakePressure(c),d=brakeDecay(c);return[
 {k:'Held brake line pressure',a:f(p,1)+' bar',r:'≥ 90 bar',ok:p>=90,w:'Hydraulic pressure is not being retained while the pedal is held.'},
 {k:'Pressure loss during hold',a:f(d,1)+' bar',r:'≤ 10 bar',ok:d<=10,w:'Internal bypass or hose expansion is allowing pressure to fall.'},
@@ -413,14 +413,14 @@ R();
 })();
 </script>
 
-<script src="vehicle-database.js"></script>
-<script src="automotive-vehicle-database.js"></script>
+<script src="machine-database.js"></script>
+<script src="automotive-machine-database.js"></script>
 <script src="fault-engine.js"></script>
 <script src="simulation-engine.js"></script>
 <script src="diagnostic-engine.js"></script>
 <script src="difficulty-engine.js"></script>
 <script src="acceptance-engine.js"></script>
-<script src="case-vehicle.js"></script>
+<script src="case-generator.js"></script>
 <script src="progression-engine.js"></script>
 <script src="plain-language.js"></script>
 <script>
@@ -446,7 +446,7 @@ R();
     EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
   }
 
-  if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.vehicleId] ||
+  if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId] ||
       !window.FF_FAULTS.FAULT_CATALOG.some(f => f.id === EState.activeCase.primaryFaultId))) {
     EState.activeCase = null; EState.session = null; // discard saves from incompatible versions
   }
@@ -455,7 +455,7 @@ R();
     const ss = EState.session;
     ss.inspected = ss.inspected || {}; ss.testsRun = ss.testsRun || []; ss.repairsApplied = ss.repairsApplied || [];
     ss.hints = ss.hints || 0; ss.hintLog = ss.hintLog || []; ss.wrongRepairs = ss.wrongRepairs || 0;
-    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15; ss.ambientTemp = ss.ambientTemp ?? EState.activeCase.operatingConditions.ambientTemp; ss.rpm = ss.rpm ?? window.FF_DB.MACHINE_DATABASE[EState.activeCase.vehicleId].baseParams.ratedRpm; ss.hypotheses = ss.hypotheses || []; ss.diagnosis = ss.diagnosis || null; ss.interview = ss.interview || {}; 
+    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15; ss.ambientTemp = ss.ambientTemp ?? EState.activeCase.operatingConditions.ambientTemp; ss.rpm = ss.rpm ?? window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId].baseParams.ratedRpm; ss.hypotheses = ss.hypotheses || []; ss.diagnosis = ss.diagnosis || null; ss.interview = ss.interview || {}; 
   }
   EState.history = EState.history || []; EState.fingerprints = EState.fingerprints || [];
   EState.loreUnlocked = EState.loreUnlocked || []; EState.solvedSeeds = EState.solvedSeeds || [];
@@ -523,7 +523,7 @@ R();
       load: c.operatingConditions.defaultLoad,
       duration: c.operatingConditions.defaultDuration,
       ambientTemp: c.operatingConditions.ambientTemp,
-      rpm: c.operatingConditions.defaultRpm || window.FF_DB.MACHINE_DATABASE[c.vehicleId].baseParams.ratedRpm,
+      rpm: c.operatingConditions.defaultRpm || window.FF_DB.MACHINE_DATABASE[c.machineId].baseParams.ratedRpm,
       hypotheses: [], diagnosis: null, interview: {},
       inspected: {},
       testsRun: [],
@@ -706,7 +706,7 @@ R();
     `;
 
     if (c && s) {
-      const vehicle = window.FF_DB.MACHINE_DATABASE[c.vehicleId];
+      const vehicle = window.FF_DB.MACHINE_DATABASE[c.machineId];
       const tier = window.FF_DIFFICULTY.DIFFICULTY_TIERS[c.difficulty];
       const unlockedTools = vehicle.tools.filter(tid => window.FF_DB.TOOL_CATALOG[tid].unlockRank <= rank.level);
 
