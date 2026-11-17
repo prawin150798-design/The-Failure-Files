@@ -20,7 +20,7 @@
     const rpmSetting = operatingState.rpm ?? base.ratedRpm;
     const rpmRatio = rpmSetting / base.ratedRpm;
     const durationMin = operatingState.duration ?? 15;
-    const ambient = caseObj.operatingConditions.ambientTemp;
+    const ambient = operatingState.ambientTemp ?? caseObj.operatingConditions.ambientTemp;
 
     // Effective multipliers
     let flowFactor = 1.0;

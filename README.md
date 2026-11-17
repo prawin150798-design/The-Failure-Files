@@ -12,6 +12,13 @@ A browser mechanical-investigation game. Open `index.html` (modules load from th
 
 **Endless Investigation** (unlocks after all five) — procedurally generated cases with a hidden fault, a difficulty tier (Apprentice / Investigator / Master, or adaptive), misleading clues, compound faults, a diagnostic budget and an independent acceptance simulation plus debrief.
 
+## Investigation upgrades (v0.3)
+- Field Lab visual theme: graphite panels, signal-orange actions and instrument-lime highlights.
+- Endless Mode now includes a hypothesis board, a customer interview, and a maintenance/operating timeline.
+- Diagnostic bench controls include load, duration, ambient temperature and machine RPM; readings use the selected conditions.
+- The hypothesis board records the player's working diagnosis without revealing whether it is correct until the debrief.
+- The original campaign, replay codes, acceptance criteria and local saves are preserved.
+
 ## Friendly layer
 `plain-language.js` adds a **Simple words** toggle (header) that rewrites technical terms on screen and keeps the real term in brackets, plus customer stories, plain tool descriptions, a green/orange verdict on every reading, a customer-trust meter and three-step hints from Mia. New players start at Apprentice.
 

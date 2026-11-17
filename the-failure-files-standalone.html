@@ -29,6 +29,31 @@ h1{font-size:clamp(27px,4vw,42px);line-height:1.08;margin:7px 0 8px;letter-spaci
 input[type=range]{width:100%;accent-color:var(--cyan)}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 3px}
 .footer{margin-top:18px;color:var(--muted);font-size:11px;text-align:center}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.panel{padding:14px}main{padding:17px 12px calc(36px + env(safe-area-inset-bottom))}.tabs{margin-top:14px}.actions button{flex:1 1 145px}}
+
+/* THEME UPDATE: FIELD LAB / graphite, signal orange and instrument-lime */
+:root{--bg:#111315;--line:#3a4144;--ink:#f0eee7;--muted:#a5aaa6;--cyan:#c5e86c;--amber:#ff9f43;--red:#ff6b5f;--green:#a6df8b;color-scheme:dark}
+body{background:#111315 radial-gradient(ellipse at 12% -20%,#354039 0,#171b1b 42%,#111315 76%) no-repeat;color:var(--ink)}
+header{background:#111315ed;border-bottom-color:#424a43}
+.brand{letter-spacing:.17em}.brand span{color:var(--amber)}
+.panel{background:linear-gradient(145deg,#252a28,#1b201f);border-color:#46504a;box-shadow:0 14px 36px #0005}
+.stat,.case-item{background:#151a18;border-color:#39433d}
+.tab,button{background:#2b322e;border-color:#4a554c;color:#f0eee7}
+.tab.active{background:#3a472e;border-color:var(--cyan);color:#f6ffe7}
+button.primary{background:var(--amber);border-color:var(--amber);color:#21170d}
+.eyebrow{color:var(--cyan)}
+.schematic{background:#131816;border-color:#485249}
+.part rect,.part circle{fill:#27332b;stroke:#9ab77a}
+.pipe{stroke:#a3b98a}.flowdot{fill:var(--amber)}
+.note{background:#342a20;color:#ffe0b7}.note.good{background:#233329;color:#d4f5c5}.note.bad{background:#382522;color:#ffd0cb}
+.meter i{background:var(--cyan)}
+.p{color:#b6e58e}.fl{color:#ff8177}
+/* New investigation tools */
+.hypothesis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:8px;margin-top:10px}
+.hypothesis{white-space:normal;text-align:left;min-height:54px}.hypothesis.selected{border-color:var(--amber);background:#453222;box-shadow:inset 0 0 0 1px var(--amber)}
+.timeline{display:grid;gap:8px;margin-top:10px}.timeline-item{display:grid;grid-template-columns:105px 1fr;gap:10px;padding:9px 11px;border:1px solid #3b4540;border-radius:9px;background:#171d1a}.timeline-item time{font:11px var(--mono);color:var(--cyan)}
+.interview-answer{margin-top:8px;padding:10px;border-left:3px solid var(--amber);background:#292820;border-radius:0 8px 8px 0;font-size:13px}
+.bench-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.bench-grid>div{min-width:0}
+@media(max-width:600px){.bench-grid{grid-template-columns:1fr}.timeline-item{grid-template-columns:1fr;gap:3px}}
 </style>
 </head>
 <body>
@@ -1143,7 +1168,7 @@ R();
     const rpmSetting = operatingState.rpm ?? base.ratedRpm;
     const rpmRatio = rpmSetting / base.ratedRpm;
     const durationMin = operatingState.duration ?? 15;
-    const ambient = caseObj.operatingConditions.ambientTemp;
+    const ambient = operatingState.ambientTemp ?? caseObj.operatingConditions.ambientTemp;
 
     // Effective multipliers
     let flowFactor = 1.0;
@@ -2214,7 +2239,7 @@ R();
     const ss = EState.session;
     ss.inspected = ss.inspected || {}; ss.testsRun = ss.testsRun || []; ss.repairsApplied = ss.repairsApplied || [];
     ss.hints = ss.hints || 0; ss.hintLog = ss.hintLog || []; ss.wrongRepairs = ss.wrongRepairs || 0;
-    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15;
+    ss.load = ss.load ?? 85; ss.duration = ss.duration ?? 15; ss.ambientTemp = ss.ambientTemp ?? EState.activeCase.operatingConditions.ambientTemp; ss.rpm = ss.rpm ?? window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId].baseParams.ratedRpm; ss.hypotheses = ss.hypotheses || []; ss.diagnosis = ss.diagnosis || null; ss.interview = ss.interview || {}; 
   }
   EState.history = EState.history || []; EState.fingerprints = EState.fingerprints || [];
   EState.loreUnlocked = EState.loreUnlocked || []; EState.solvedSeeds = EState.solvedSeeds || [];
@@ -2281,6 +2306,9 @@ R();
     EState.session = {
       load: c.operatingConditions.defaultLoad,
       duration: c.operatingConditions.defaultDuration,
+      ambientTemp: c.operatingConditions.ambientTemp,
+      rpm: window.FF_DB.MACHINE_DATABASE[c.machineId].baseParams.ratedRpm,
+      hypotheses: [], diagnosis: null, interview: {},
       inspected: {},
       testsRun: [],
       repairsApplied: [],
@@ -2302,6 +2330,11 @@ R();
     loadSeed() { const el = document.getElementById('replayIn'); if (el && el.value.trim()) startNewEndlessCase(el.value); },
     setLoad(v) { if (EState.session) { EState.session.load = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
     setDur(v) { if (EState.session) { EState.session.duration = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
+    setAmbient(v) { if (EState.session) { EState.session.ambientTemp = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
+    setRPM(v) { if (EState.session) { EState.session.rpm = +v; EState.session.acceptance = null; saveEndless(); rerender(); } },
+    askCustomer(q) { const s=EState.session,c=EState.activeCase;if(!s||!c||s.debrief)return; s.interview[q]=customerAnswer(c,q); saveEndless(); rerender(); },
+    toggleHypothesis(key) { const s=EState.session;if(!s||s.debrief)return; s.hypotheses=s.hypotheses.includes(key)?s.hypotheses.filter(x=>x!==key):[...s.hypotheses,key];saveEndless();rerender(); },
+    submitDiagnosis(key) { const s=EState.session,c=EState.activeCase;if(!s||s.debrief)return; s.diagnosis=key; s.diagnosisCorrect=key===window.FF_FAULTS.FAULT_CATALOG.find(f=>f.id===c.primaryFaultId).primaryComponent; saveEndless();rerender(); },
     inspect(compKey) {
       if (!EState.session) return;
       EState.session.inspected[compKey] = true;
@@ -2326,7 +2359,7 @@ R();
         rerender();
         return;
       }
-      const res = window.FF_DIAG.runDiagnosticTool(c, toolId, { load: s.load, duration: s.duration }, s.repairsApplied);
+      const res = window.FF_DIAG.runDiagnosticTool(c, toolId, { load: s.load, duration: s.duration, ambientTemp: s.ambientTemp, rpm: s.rpm }, s.repairsApplied);
       s.testsRun.push({ ...res, load: s.load, duration: s.duration });
       saveEndless();
       rerender();
@@ -2375,6 +2408,40 @@ R();
       rerender();
     }
   };
+
+  function customerAnswer(c, q) {
+    const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
+    const cond = fault.conditionDependent;
+    const answers = {
+      timing: cond === 'sustained_run' || cond === 'hot_run' ? 'It usually appears after the machine has been working for a while. A short test often looks normal.' : cond === 'high_load' || cond === 'high_pressure' ? 'It is much more noticeable when the machine is working hard. Light-duty operation can look normal.' : 'We have noticed it during ordinary operation too; it is not limited to one short event.',
+      recent: c.formatId === 'incorrect_previous_repair' ? 'A repair was carried out recently. The symptom changed briefly, but the underlying problem returned.' : 'No major component replacement is recorded recently. The routine service log may still contain useful clues.',
+      repeat: c.formatId === 'intermittent_failure' ? 'It does not happen on every run. Stopping and restarting sometimes makes it disappear for a while.' : 'It is reasonably repeatable when we recreate the same operating conditions.',
+      conditions: cond === 'high_load' ? 'The problem is most obvious under heavy load; it becomes less noticeable when the load is reduced.' : cond === 'high_rpm' ? 'It becomes more obvious as rotational speed rises.' : cond === 'high_pressure' ? 'It appears during the high-pressure part of the cycle.' : 'Longer operating time seems to make the behaviour more pronounced.'
+    };
+    return answers[q] || 'The operator is unsure. The observation should be verified with a controlled test.';
+  }
+  function candidateHypotheses(c, machine) {
+    const fault = window.FF_FAULTS.FAULT_CATALOG.find(f => f.id === c.primaryFaultId);
+    const entries = Object.entries(machine.components);
+    const actual = fault.primaryComponent;
+    let seed = 0; for (const ch of c.seed) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+    const others = entries.filter(([k]) => k !== actual).sort((a,b) => ((a[0].length*17 + seed) % 97) - ((b[0].length*17 + seed) % 97)).slice(0,3);
+    const chosen = [...entries.filter(([k]) => k === actual), ...others].sort((a,b) => ((a[0].charCodeAt(0)+seed)%101)-((b[0].charCodeAt(0)+seed)%101));
+    return chosen;
+  }
+  function caseTimeline(c) {
+    const h = c.operatingConditions.operatingHours;
+    const f = c.formatId;
+    const events = [
+      [`${Math.max(1,Math.round(h/1000)-2)} weeks ago`, 'Routine service entry recorded; machine returned to operation.'],
+      [`${Math.max(1,Math.round(h/1500))} days ago`, f === 'incorrect_previous_repair' ? 'A corrective repair was signed off. No controlled post-repair test was attached.' : 'Operator first noticed a change in machine behaviour.'],
+      ['Last shift', f === 'intermittent_failure' ? 'The symptom appeared, disappeared after a restart, then returned.' : 'The machine completed a partial shift with the reported symptom.'],
+      ['Current shift', 'The issue was escalated for an independent investigation.']
+    ];
+    if (f === 'conflicting_evidence') events[1][1] = 'Two records disagree about the operating condition when the fault occurred.';
+    if (f === 'experimental_archive') events[0][1] = 'An undocumented modification was found in the inventor archive.';
+    return events;
+  }
 
   function renderEndlessContent() {
     try { renderEndlessInner(); }
@@ -2441,6 +2508,8 @@ R();
             ${s.testsRun.length === 0 && !s.repairsApplied.length ? '<div class="note"><b>How to play:</b> 1) Listen to the customer. 2) Use tools to look for what is off. 3) Fix the real cause. 4) Run the acceptance test to prove it works.</div>' : ''}`; })()}
             <div class="case-item"><b>Reported Symptoms</b><small>${c.symptoms.join(' · ')}</small></div>
             ${c.misleadingClues.map(m => `<div class="note"><b>${m.source}:</b> ${m.text}</div>`).join('')}
+            <div class="case-item"><b>Maintenance & Operating Timeline</b><div class="timeline">${caseTimeline(c).map(e=>`<div class="timeline-item"><time>${e[0]}</time><span>${e[1]}</span></div>`).join('')}</div></div>
+            <div class="case-item"><b>Customer Interview</b><small>Ask focused questions before spending diagnostic tests.</small><div class="chips" style="margin-top:9px">${[['timing','When does it happen?'],['recent','What changed recently?'],['repeat','Can you reproduce it?'],['conditions','Which conditions make it worse?']].map(([q,l])=>`<button onclick="ffEndless.askCustomer('${q}')">${l}</button>`).join('')}</div>${Object.entries(s.interview).map(([q,a])=>`<div class="interview-answer"><b>${({timing:'Operating pattern',recent:'Recent work',repeat:'Repeatability',conditions:'Trigger conditions'})[q]}:</b> ${a}</div>`).join('')}</div>
           </div>
         </div>
 
@@ -2457,11 +2526,22 @@ R();
         </div>
 
         <div class="panel">
-          <div class="topline"><h2>02 / Operating Conditions & Diagnostic Bench</h2><span class="pill">BUDGET: ${c.diagnosticBudget - s.testsRun.length} TESTS LEFT</span></div>
-          <label>Simulated Load: <b>${s.load}%</b></label>
-          <input type="range" min="10" max="100" step="5" value="${s.load}" onchange="ffEndless.setLoad(this.value)">
-          <label>Sustained Run Duration: <b>${s.duration} min</b></label>
-          <input type="range" min="5" max="30" step="5" value="${s.duration}" onchange="ffEndless.setDur(this.value)">
+          <div class="topline"><h2>02 / Diagnostic Hypothesis Board</h2><span class="pill">YOUR WORKING THEORY</span></div>
+          <p class="sub">Select the components you currently suspect. Use evidence to narrow the list, then record your leading diagnosis. You can revise it as new information arrives.</p>
+          <div class="hypothesis-grid">${candidateHypotheses(c,machine).map(([k,comp])=>`<button class="hypothesis ${s.hypotheses.includes(k)?'selected':''}" onclick="ffEndless.toggleHypothesis('${k}')">${s.hypotheses.includes(k)?'✓ ':''}${comp.name}</button>`).join('')}</div>
+          <div class="actions"><button class="primary" onclick="ffEndless.submitDiagnosis('${s.hypotheses[0]||''}')" ${s.hypotheses.length!==1?'disabled':''}>Record selected diagnosis</button><span class="pill">${s.hypotheses.length} selected</span></div>
+          ${s.diagnosis?`<div class="note ${s.diagnosisCorrect?'good':''}">Recorded working diagnosis: ${machine.components[s.diagnosis]?.name || s.diagnosis}. Your hypothesis is recorded. Continue testing before committing to a repair.</div>`:''}
+        </div>
+
+        <div class="panel">
+          <div class="topline"><h2>03 / Operating Conditions & Diagnostic Bench</h2><span class="pill">BUDGET: ${c.diagnosticBudget - s.testsRun.length} TESTS LEFT</span></div>
+          <div class="bench-grid">
+            <div><label>Load: <b>${s.load}%</b></label><input type="range" min="10" max="100" step="5" value="${s.load}" onchange="ffEndless.setLoad(this.value)"></div>
+            <div><label>Run duration: <b>${s.duration} min</b></label><input type="range" min="5" max="30" step="5" value="${s.duration}" onchange="ffEndless.setDur(this.value)"></div>
+            <div><label>Ambient temperature: <b>${s.ambientTemp}°C</b></label><input type="range" min="10" max="45" step="1" value="${s.ambientTemp}" onchange="ffEndless.setAmbient(this.value)"></div>
+          </div>
+          <label>Machine speed: <b>${s.rpm} RPM</b></label><input type="range" min="${Math.round(machine.baseParams.ratedRpm*.65)}" max="${Math.round(machine.baseParams.ratedRpm*1.1)}" step="25" value="${s.rpm}" onchange="ffEndless.setRPM(this.value)">
+          <p class="sub" style="font-size:12px;margin:6px 0 0">Experiment with one variable at a time. Compare readings under controlled conditions instead of changing every setting at once.</p>
           <div class="chips" style="margin-top:10px">
             ${unlockedTools.map(tid => {
               const t = window.FF_DB.TOOL_CATALOG[tid];
@@ -2477,7 +2557,7 @@ R();
         </div>
 
         <div class="panel">
-          <h2>03 / Repair & Calibration Bay</h2>
+          <h2>04 / Repair & Calibration Bay</h2>
           <div class="case-list">
             ${c.repairOptions.map(r => `
               <div class="case-item">
@@ -2490,7 +2570,7 @@ R();
         </div>
 
         <div class="panel">
-          <div class="topline"><h2>04 / Independent Acceptance Testing</h2><span class="pill">${s.acceptance ? (s.acceptance.passed ? 'ALL CRITERIA PASSED' : 'CRITERIA FAILED') : 'PENDING'}</span></div>
+          <div class="topline"><h2>05 / Independent Acceptance Testing</h2><span class="pill">${s.acceptance ? (s.acceptance.passed ? 'ALL CRITERIA PASSED' : 'CRITERIA FAILED') : 'PENDING'}</span></div>
           <div class="actions" style="margin-top:0">
             <button class="primary" onclick="ffEndless.runAcceptance()">Run Simulated Acceptance Test</button>
           </div>
@@ -2513,6 +2593,7 @@ R();
             <div class="topline"><h2>🎉 Case closed: here is what really happened</h2><span class="pill">+${d.earnedXp} XP · EFFICIENCY ${d.efficiencyScore}%</span></div>
             <div class="note good"><b>Confirmed Root Cause:</b> ${d.rootCauseTitle} (${d.faultType})${d.compoundTitle ? ' + Secondary Interacting Fault: ' + d.compoundTitle : ''}</div>
             <div class="case-list">
+              <div class="case-item"><b>Your diagnostic reasoning</b><small>${s.diagnosis ? (s.diagnosisCorrect ? 'You recorded the correct component before validation.' : 'Your recorded diagnosis differed from the confirmed fault. Review the evidence that distinguishes them.') : 'You completed the repair without recording a formal hypothesis.'}</small></div>
               <div class="case-item"><b>Physical Mechanism</b><small>${d.whyItBehavedThatWay}</small></div>
               ${d.interactionNote ? `<div class="case-item"><b>Fault Interaction Analysis</b><small>${d.interactionNote}</small></div>` : ''}
               ${d.misleadingCluesExplained.map(mc => `<div class="case-item"><b>Misleading Clue Resolved (${mc.source})</b><small>Claim: ${mc.claim}<br>Reality: ${mc.reality}</small></div>`).join('')}
