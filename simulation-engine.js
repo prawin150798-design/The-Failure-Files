@@ -75,10 +75,10 @@
     // Compute physical outputs
     const actualRpm = Math.round(rpmSetting - rpmDroop * loadRatio);
     const actualFlow = +(base.nominalFlow * rpmRatio * flowFactor).toFixed(1);
-    const actualPressure = +(base.nominalPressure * pressureFactor * (machine.id === 'hydraulic_press' ? (0.4 + 0.6 * loadRatio) : (0.85 + 0.15 * rpmRatio))).toFixed(2);
+    const actualPressure = +(base.nominalPressure * pressureFactor * ((0.85 + 0.15 * rpmRatio))).toFixed(2);
 
     const thermalLoad = (0.35 + 0.65 * loadRatio) * (0.6 + 0.4 * Math.min(1.5, durationMin / 15));
-    const baseTempRise = machine.id === 'diesel_generator' ? 54 : (machine.id === 'rotary_screw_compressor' ? 56 : 36);
+    const baseTempRise = machine.id === 'diesel_generator' ? 54 : 36;
     const actualTemp = +(ambient + baseTempRise * thermalLoad * tempRiseFactor).toFixed(1);
 
     const engineDeltaT = machine.id === 'diesel_generator'
