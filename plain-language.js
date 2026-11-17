@@ -29,7 +29,7 @@
   };
 
   const STORIES = {
-    diesel_generator: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
+    automotive_cooling_system: [['A family-car owner', 'the hatchback overheats in slow traffic but cools down on the open road', 'the car is needed for a long family trip tomorrow'], ['A city taxi operator', 'the temperature warning appears after long shifts with the air conditioning running', 'the vehicle must be safe before returning to service']],
     manual_transmission: [['A taxi driver called Joe', 'the gearbox crunches and fights him on certain shifts', 'he cannot earn a living while it is in the garage'], ['A rally-team mechanic', 'the car will not slot into gear cleanly', 'race day is in two days']],
     petrol_efi_engine: [['A courier on a delivery bike', 'the engine stumbles, then hesitates when she twists the throttle', 'she loses pay for every late parcel'], ['A weekend rider', 'it idles roughly and runs out of breath at speed', 'the group tour leaves on Saturday']],
     experimental_cvt_drive: [['A mysterious letter, unsigned', 'this strange drive keeps slipping and nobody can say why', 'it belongs to the inventor you have been following']]
