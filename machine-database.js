@@ -53,7 +53,7 @@
 
     manual_transmission: {
       id: 'manual_transmission',
-      name: '6-Speed Heavy-Duty Manual Gearbox',
+      name: 'Compact Performance Hatchback — Manual Drivetrain',
       industry: 'Automotive · Drivetrain',
       unlockRank: 0,
       baseParams: { ratedRpm: 3200, ratedLoad: 75, ambientTemp: 25, nominalPressure: 0.4, nominalFlow: 6, nominalVibration: 2.4 },
@@ -94,7 +94,7 @@
 
     petrol_efi_engine: {
       id: 'petrol_efi_engine',
-      name: 'High-Output 4-Cylinder EFI Petrol Engine',
+      name: '250 cc EFI Motorcycle — Engine System',
       industry: 'Automotive · Motorsport & Performance',
       unlockRank: 1,
       baseParams: { ratedRpm: 4500, ratedLoad: 70, ambientTemp: 26, nominalPressure: 3.5, nominalFlow: 140, nominalVibration: 2.0 },
