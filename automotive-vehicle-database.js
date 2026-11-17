@@ -4,7 +4,7 @@
  * Automotive Vehicle Database
  *
  * Defines vehicle platforms and their connected systems.
- * This is a new layer; it does not replace MACHINE_DATABASE yet.
+ * Vehicle specifications and connected systems are linked to the automotive case platform.
  */
 
 (function (global) {
