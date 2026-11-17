@@ -446,6 +446,14 @@ R();
     EState = { history: [], fingerprints: [], endlessXp: 0, selectedDifficulty: 'adaptive', activeCase: null, session: null, loreUnlocked: [] };
   }
 
+  // Migrate the former cooling-platform ID without discarding an existing investigation.
+  if (EState.activeCase && EState.activeCase.machineId === 'diesel_generator') {
+    EState.activeCase.machineId = 'automotive_cooling_system';
+    EState.activeCase.machineName = 'Compact Petrol Hatchback — Cooling System';
+    EState.activeCase.vehicleId = 'compact_hatchback_01';
+    EState.activeCase.vehicleName = 'Compact Petrol Hatchback';
+  }
+
   if (EState.activeCase && (!EState.session || !window.FF_DB.MACHINE_DATABASE[EState.activeCase.machineId] ||
       !window.FF_FAULTS.FAULT_CATALOG.some(f => f.id === EState.activeCase.primaryFaultId))) {
     EState.activeCase = null; EState.session = null; // discard saves from incompatible versions
